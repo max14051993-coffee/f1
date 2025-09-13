@@ -118,5 +118,3 @@ async function main() {
     console.error('Failed to update schedule', err);
   }
 }
-
-main();
