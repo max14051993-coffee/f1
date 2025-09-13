@@ -1,4 +1,4 @@
-﻿name: Generate package-lock.json
+name: Generate package-lock.json
 
 on:
   workflow_dispatch:
