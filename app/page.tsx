@@ -20,8 +20,8 @@ export default function Home() {
 
   useEffect(() => {
     const now = DateTime.utc().toISO();
-    const in30 = DateTime.utc().plus({ days: 30 }).toISO();
-    const url = `https://api.openf1.org/v1/sessions?date_start>=${encodeURIComponent(now)}&date_start<=${encodeURIComponent(in30)}&session_name=Qualifying&session_name=Race&session_name=Sprint&csv=false`;
+    const in180 = DateTime.utc().plus({ days: 180 }).toISO();
+    const url = `https://api.openf1.org/v1/sessions?date_start>=${encodeURIComponent(now)}&date_start<=${encodeURIComponent(in180)}&session_name=Qualifying&session_name=Race&session_name=Sprint&csv=false`;
 
     async function load() {
       const [f1Res, f2f3Res] = await Promise.all([
@@ -54,11 +54,10 @@ export default function Home() {
   const filtered = useMemo(() => {
     let arr = rows;
     if (!includeF2F3) arr = rows.filter(r => r.series === 'F1');
-    if (hours && hours > 0) {
-      const to = DateTime.utc().plus({ hours });
-      arr = arr.filter(r => DateTime.fromISO(r.startsAtUtc, {zone:'utc'}) <= to);
-    }
-    return arr.slice().sort((a,b) => Date.parse(a.startsAtUtc) - Date.parse(b.startsAtUtc));
+    const limit = hours && hours > 0 ? hours : 24 * 30; // default 30 days
+    const to = DateTime.utc().plus({ hours: limit });
+    arr = arr.filter(r => DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }) <= to);
+    return arr.slice().sort((a, b) => Date.parse(a.startsAtUtc) - Date.parse(b.startsAtUtc));
   }, [rows, includeF2F3, hours]);
 
   return (
