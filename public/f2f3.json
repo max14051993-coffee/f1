@@ -1,0 +1,10 @@
+[
+  {
+    "series": "F2",
+    "round": "Sample Round",
+    "country": "Sampleland",
+    "circuit": "Sample Circuit",
+    "session": "Race",
+    "startsAtUtc": "2099-01-01T12:00:00Z"
+  }
+]
