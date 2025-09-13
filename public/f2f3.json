@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "series": "F2",
+    "round": "Monza",
+    "country": "Italy",
+    "circuit": "Autodromo Nazionale Monza",
+    "session": "Qualifying",
+    "startsAtUtc": "2025-09-05T14:00:00Z"
+  }
+]
