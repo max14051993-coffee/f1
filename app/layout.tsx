@@ -17,8 +17,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         style={{
           fontFamily: '"Titillium Web", system-ui, Arial, sans-serif',
-          background: '#000',
-          color: '#fff',
+          background: '#f5f5f5',
+          color: '#000',
           margin: 0,
         }}
       >

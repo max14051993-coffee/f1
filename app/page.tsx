@@ -93,6 +93,12 @@ function parseICS(ics: string): Row[] {
 
 const BELGRADE_TZ = 'Europe/Belgrade';
 
+const SERIES_COLORS: Record<Row['series'], string> = {
+  F1: '#e10600',
+  F2: '#0090ff',
+  F3: '#ff6f00',
+};
+
 export default function Home() {
   const [rows, setRows] = useState<Row[]>([]);
   const [includeF2F3, setIncludeF2F3] = useState(true);
@@ -191,7 +197,15 @@ export default function Home() {
         </div>
       </section>
 
-      <ul style={{ display: 'grid', gap: 12, listStyle: 'none', padding: 0 }}>
+      <ul
+        style={{
+          display: 'grid',
+          gap: 16,
+          listStyle: 'none',
+          padding: 0,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        }}
+      >
         {filtered.map((r, i) => {
           const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(BELGRADE_TZ);
           const utc = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' });
@@ -199,10 +213,15 @@ export default function Home() {
             <li
               key={i}
               style={{
-                border: '1px solid #333',
-                borderRadius: 8,
-                padding: 16,
-                background: '#111',
+                borderTop: `4px solid ${SERIES_COLORS[r.series]}`,
+                borderRadius: 12,
+                padding: 20,
+                background: '#fff',
+                color: '#111',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
               }}
             >
               <div
@@ -210,15 +229,14 @@ export default function Home() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  marginBottom: 8,
                 }}
               >
-                <div style={{ fontSize: 12, opacity: 0.7 }}>{r.series}</div>
-                <div style={{ fontSize: 12, opacity: 0.6 }}>
+                <span style={{ fontWeight: 600, color: SERIES_COLORS[r.series] }}>{r.series}</span>
+                <span style={{ fontSize: 12, opacity: 0.7 }}>
                   UTC: {utc.toFormat('dd LLL yyyy • HH:mm')}
-                </div>
+                </span>
               </div>
-              <div style={{ fontSize: 18, fontWeight: 700 }}>
+              <div style={{ fontSize: 20, fontWeight: 700 }}>
                 {r.round}
                 {r.country ? ` • ${r.country}` : ''}
               </div>
@@ -226,7 +244,16 @@ export default function Home() {
                 {r.circuit ? r.circuit + ' • ' : ''}
                 {r.session}
               </div>
-              <div style={{ marginTop: 6 }}>
+              <div
+                style={{
+                  marginTop: 'auto',
+                  fontSize: 14,
+                  background: '#f5f5f5',
+                  padding: '8px 12px',
+                  borderRadius: 8,
+                  alignSelf: 'flex-start',
+                }}
+              >
                 <b>{local.toFormat('ccc, dd LLL yyyy • HH:mm')}</b> ({BELGRADE_TZ})
               </div>
             </li>
