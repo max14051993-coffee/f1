@@ -11,6 +11,17 @@ type Row = {
   startsAtUtc: string;     // ISO
 };
 
+function normalizeSession(raw: string): Row['session'] | undefined {
+  const s = raw.toLowerCase();
+  if (s.includes('sprint')) {
+    if (s.includes('qual')) return 'Qualifying';
+    return 'Sprint';
+  }
+  if (s.includes('qual')) return 'Qualifying';
+  if (s.includes('race')) return 'Race';
+  return undefined;
+}
+
 function parseICS(ics: string): Row[] {
   const lines = ics.split(/\r?\n/);
   const events: Row[] = [];
@@ -19,26 +30,62 @@ function parseICS(ics: string): Row[] {
     if (line === 'BEGIN:VEVENT') {
       current = {};
     } else if (line === 'END:VEVENT') {
-      if (current.SUMMARY && current.DTSTART) {
-        const parts = current.SUMMARY.split('|');
-        if (parts.length >= 5) {
-          const [series, round, country, circuit, session] = parts;
-          const dt = DateTime.fromFormat(current.DTSTART, "yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' });
-          if (dt.isValid) {
-            events.push({
-              series: series as Row['series'],
-              round,
-              country,
-              circuit,
-              session: session as Row['session'],
-              startsAtUtc: dt.toUTC().toISO()!,
-            });
+      const summary = current.SUMMARY;
+      const dtstart = current.DTSTART;
+      if (summary && dtstart) {
+        if (summary.includes('|')) {
+          const parts = summary.split('|');
+          if (parts.length >= 5) {
+            const [series, round, country, circuit, session] = parts;
+            let dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' });
+            if (!dt.isValid) {
+              const tz = current.DTSTART_TZID || 'utc';
+              dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss", { zone: tz });
+            }
+            if (dt.isValid) {
+              events.push({
+                series: series as Row['series'],
+                round,
+                country,
+                circuit,
+                session: session as Row['session'],
+                startsAtUtc: dt.toUTC().toISO()!,
+              });
+            }
+          }
+        } else {
+          const [rawEvent, rawSession] = summary.split(' - ');
+          if (rawEvent && rawSession) {
+            const session = normalizeSession(rawSession);
+            if (session) {
+              const eventName = rawEvent.replace(/^RN365\s*/, '').trim();
+              const tz = current.DTSTART_TZID || 'utc';
+              const dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss", { zone: tz });
+              if (dt.isValid) {
+                const circuit = current.LOCATION
+                  ?.replace(/\\,/g, ',')
+                  .replace(/\\\\/g, '\\');
+                events.push({
+                  series: 'F1',
+                  round: eventName,
+                  circuit,
+                  session,
+                  startsAtUtc: dt.toUTC().toISO()!,
+                });
+              }
+            }
           }
         }
       }
     } else {
-      const [key, value] = line.split(':', 2);
-      if (key && value) current[key] = value;
+      const [rawKey, value] = line.split(':', 2);
+      if (!rawKey || !value) continue;
+      const [key, ...params] = rawKey.split(';');
+      current[key] = value;
+      if (key === 'DTSTART') {
+        const tzParam = params.find(p => p.startsWith('TZID='));
+        if (tzParam) current.DTSTART_TZID = tzParam.split('=')[1];
+      }
     }
   }
   return events;
