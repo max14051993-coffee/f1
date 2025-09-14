@@ -277,9 +277,6 @@ export default function Home() {
         })}
       </ul>
 
-      <footer style={{ marginTop: 24, fontSize: 12, opacity: 0.7 }}>
-        Расписание читается из <code>/schedule.ics</code> (обновляется вручную или через GitHub Actions).
-      </footer>
     </main>
   );
 }
