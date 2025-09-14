@@ -99,6 +99,14 @@ const SERIES_COLORS: Record<Row['series'], string> = {
   F3: '#ff6f00',
 };
 
+const PERIOD_OPTIONS: { label: string; value?: number }[] = [
+  { label: '24 часа', value: 24 },
+  { label: '48 часов', value: 48 },
+  { label: '72 часа', value: 72 },
+  { label: '7 дней', value: 168 },
+  { label: '30 дней', value: undefined },
+];
+
 export default function Home() {
   const [rows, setRows] = useState<Row[]>([]);
   const [includeF2F3, setIncludeF2F3] = useState(true);
@@ -168,46 +176,58 @@ export default function Home() {
           fontSize: 14,
         }}
       >
-        <label
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            cursor: 'pointer',
-          }}
-        >
-          <input
-            type="checkbox"
-            checked={includeF2F3}
-            onChange={e => setIncludeF2F3(e.target.checked)}
-            style={{ width: 16, height: 16 }}
-          />
-          <span>Показывать F2/F3 (если есть данные)</span>
-        </label>
-        <label
-          style={{ display: 'flex', alignItems: 'center', gap: 8 }}
-        >
-          <span style={{ opacity: 0.8 }}>Период:</span>
-          <select
-            value={String(hours ?? '')}
-            onChange={e => {
-              const v = e.target.value;
-              setHours(v ? Number(v) : undefined);
-            }}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            role="switch"
+            aria-checked={includeF2F3}
+            onClick={() => setIncludeF2F3(v => !v)}
             style={{
-              padding: '4px 8px',
-              borderRadius: 4,
-              border: '1px solid #ccc',
-              background: '#fff',
+              position: 'relative',
+              width: 40,
+              height: 20,
+              border: 'none',
+              borderRadius: 10,
+              background: includeF2F3 ? '#e10600' : '#ccc',
+              cursor: 'pointer',
+              padding: 0,
             }}
           >
-            <option value="">30 дней</option>
-            <option value="24">24 часа</option>
-            <option value="48">48 часов</option>
-            <option value="72">72 часа</option>
-            <option value="168">7 дней</option>
-          </select>
-        </label>
+            <span
+              style={{
+                position: 'absolute',
+                top: 2,
+                left: includeF2F3 ? 22 : 2,
+                width: 16,
+                height: 16,
+                borderRadius: '50%',
+                background: '#fff',
+                transition: 'left 0.2s',
+              }}
+            />
+          </button>
+          <span>Показывать F2/F3 (если есть данные)</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ opacity: 0.8 }}>Период:</span>
+          <div style={{ display: 'flex', gap: 4 }}>
+            {PERIOD_OPTIONS.map(opt => (
+              <button
+                key={opt.label}
+                onClick={() => setHours(opt.value)}
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: 12,
+                  border: '1px solid #ccc',
+                  background: hours === opt.value ? '#e10600' : '#fff',
+                  color: hours === opt.value ? '#fff' : '#000',
+                  cursor: 'pointer',
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
         <div style={{ fontSize: 12, opacity: 0.7 }}>
           Часовой пояс: <b>{BELGRADE_TZ}</b>
         </div>
