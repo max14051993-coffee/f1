@@ -110,10 +110,17 @@ export default function Home() {
   const filtered = useMemo(() => {
     let arr = rows;
     if (!includeF2F3) arr = rows.filter(r => r.series === 'F1');
+    const now = DateTime.utc();
     const limit = hours && hours > 0 ? hours : 24 * 30; // default 30 days
-    const to = DateTime.utc().plus({ hours: limit });
-    arr = arr.filter(r => DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }) <= to);
-    return arr.slice().sort((a, b) => Date.parse(a.startsAtUtc) - Date.parse(b.startsAtUtc));
+    const from = now.minus({ hours: 24 });
+    const to = now.plus({ hours: limit });
+    arr = arr.filter(r => {
+      const dt = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' });
+      return dt >= from && dt <= to;
+    });
+    return arr
+      .slice()
+      .sort((a, b) => Date.parse(a.startsAtUtc) - Date.parse(b.startsAtUtc));
   }, [rows, includeF2F3, hours]);
 
   return (
