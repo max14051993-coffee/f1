@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'F1/F2/F3 schedule',
-  description: 'Upcoming qualifying & race times (Europe/Belgrade)',
+  description: 'Upcoming qualifying & race times (your time zone)',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

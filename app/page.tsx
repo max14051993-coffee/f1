@@ -91,8 +91,6 @@ function parseICS(ics: string): Row[] {
   return events;
 }
 
-const BELGRADE_TZ = 'Europe/Belgrade';
-
 const SERIES_COLORS: Record<Row['series'], string> = {
   F1: '#e10600',
   F2: '#0090ff',
@@ -103,6 +101,7 @@ export default function Home() {
   const [rows, setRows] = useState<Row[]>([]);
   const [includeF2F3, setIncludeF2F3] = useState(true);
   const [hours, setHours] = useState<number|undefined>(undefined);
+  const [userTz, setUserTz] = useState<string>('UTC');
 
   useEffect(() => {
     async function load() {
@@ -111,6 +110,7 @@ export default function Home() {
       setRows(events);
     }
     load().catch(console.error);
+    setUserTz(DateTime.local().zoneName);
   }, []);
 
   const filtered = useMemo(() => {
@@ -209,7 +209,7 @@ export default function Home() {
           </select>
         </label>
         <div style={{ fontSize: 12, opacity: 0.7 }}>
-          Часовой пояс: <b>{BELGRADE_TZ}</b>
+          Часовой пояс: <b>{userTz}</b>
         </div>
       </section>
 
@@ -223,8 +223,7 @@ export default function Home() {
         }}
       >
         {filtered.map((r, i) => {
-          const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(BELGRADE_TZ);
-          const utc = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' });
+          const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(userTz);
           return (
             <li
               key={i}
@@ -243,14 +242,10 @@ export default function Home() {
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'space-between',
                   alignItems: 'center',
                 }}
               >
                 <span style={{ fontWeight: 600, color: SERIES_COLORS[r.series] }}>{r.series}</span>
-                <span style={{ fontSize: 12, opacity: 0.7 }}>
-                  UTC: {utc.toFormat('dd LLL yyyy • HH:mm')}
-                </span>
               </div>
               <div style={{ fontSize: 20, fontWeight: 700 }}>
                 {r.round}
@@ -270,7 +265,7 @@ export default function Home() {
                   alignSelf: 'flex-start',
                 }}
               >
-                <b>{local.toFormat('ccc, dd LLL yyyy • HH:mm')}</b> ({BELGRADE_TZ})
+                <b>{local.toFormat('ccc, dd LLL yyyy • HH:mm')}</b> ({userTz})
               </div>
             </li>
           );
