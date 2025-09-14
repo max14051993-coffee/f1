@@ -152,37 +152,53 @@ export default function Home() {
         >
           Ближайшие квалификации и гонки — F1 / F2 / F3
         </h1>
-        <div
-          style={{ fontSize: 12, opacity: 0.8, color: '#fff' }}
-        >
-          Источник: schedule.ics
-        </div>
       </header>
 
       <section
         style={{
           display: 'flex',
-          gap: 16,
+          gap: 24,
           alignItems: 'center',
           flexWrap: 'wrap',
           marginBottom: 20,
+          padding: '12px 16px',
+          background: '#f5f5f5',
+          border: '1px solid #ddd',
+          borderRadius: 8,
+          fontSize: 14,
         }}
       >
-        <label style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+        <label
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            cursor: 'pointer',
+          }}
+        >
           <input
             type="checkbox"
             checked={includeF2F3}
             onChange={e => setIncludeF2F3(e.target.checked)}
+            style={{ width: 16, height: 16 }}
           />
-          Показывать F2/F3 (если есть данные)
+          <span>Показывать F2/F3 (если есть данные)</span>
         </label>
-        <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
-          <span style={{ fontSize: 14, opacity: 0.8 }}>Период:</span>
+        <label
+          style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+        >
+          <span style={{ opacity: 0.8 }}>Период:</span>
           <select
             value={String(hours ?? '')}
             onChange={e => {
               const v = e.target.value;
               setHours(v ? Number(v) : undefined);
+            }}
+            style={{
+              padding: '4px 8px',
+              borderRadius: 4,
+              border: '1px solid #ccc',
+              background: '#fff',
             }}
           >
             <option value="">30 дней</option>
@@ -191,7 +207,7 @@ export default function Home() {
             <option value="72">72 часа</option>
             <option value="168">7 дней</option>
           </select>
-        </div>
+        </label>
         <div style={{ fontSize: 12, opacity: 0.7 }}>
           Часовой пояс: <b>{BELGRADE_TZ}</b>
         </div>
