@@ -11,6 +11,39 @@ type Row = {
   startsAtUtc: string;     // ISO
 };
 
+function parseICS(ics: string): Row[] {
+  const lines = ics.split(/\r?\n/);
+  const events: Row[] = [];
+  let current: Record<string, string> = {};
+  for (const line of lines) {
+    if (line === 'BEGIN:VEVENT') {
+      current = {};
+    } else if (line === 'END:VEVENT') {
+      if (current.SUMMARY && current.DTSTART) {
+        const parts = current.SUMMARY.split('|');
+        if (parts.length >= 5) {
+          const [series, round, country, circuit, session] = parts;
+          const dt = DateTime.fromFormat(current.DTSTART, "yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' });
+          if (dt.isValid) {
+            events.push({
+              series: series as Row['series'],
+              round,
+              country,
+              circuit,
+              session: session as Row['session'],
+              startsAtUtc: dt.toUTC().toISO()!,
+            });
+          }
+        }
+      }
+    } else {
+      const [key, value] = line.split(':', 2);
+      if (key && value) current[key] = value;
+    }
+  }
+  return events;
+}
+
 const BELGRADE_TZ = 'Europe/Belgrade';
 
 export default function Home() {
@@ -19,34 +52,10 @@ export default function Home() {
   const [hours, setHours] = useState<number|undefined>(undefined);
 
   useEffect(() => {
-    const now = DateTime.utc().toISO();
-    const in180 = DateTime.utc().plus({ days: 180 }).toISO();
-    const url = `https://api.openf1.org/v1/sessions?date_start>=${encodeURIComponent(now)}&date_start<=${encodeURIComponent(in180)}&session_name=Qualifying&session_name=Race&session_name=Sprint&csv=false`;
-
     async function load() {
-      const [f1Res, f2f3Res] = await Promise.all([
-        fetch(url),
-        fetch('./f2f3.json').catch(() => undefined),
-      ]);
-      const f1Data = await f1Res.json();
-      const f1: Row[] = (f1Data || []).map((s: any) => ({
-        series: 'F1',
-        round: s.meeting_name,
-        country: s.country_name,
-        circuit: s.circuit_short_name || s.circuit_name,
-        session: s.session_name,
-        startsAtUtc: s.date_start
-      }));
-
-      let extra: Row[] = [];
-      if (f2f3Res && f2f3Res.ok) {
-        try {
-          const json = await f2f3Res.json();
-          extra = Array.isArray(json) ? json : [];
-        } catch {}
-      }
-
-      setRows([...f1, ...extra]);
+      const text = await fetch('./schedule.ics').then(r => r.text());
+      const events = parseICS(text);
+      setRows(events);
     }
     load().catch(console.error);
   }, []);
@@ -83,14 +92,11 @@ export default function Home() {
         >
           Ближайшие квалификации и гонки — F1 / F2 / F3
         </h1>
-        <a
-          href="https://openf1.org"
-          target="_blank"
-          rel="noreferrer"
-          style={{ fontSize: 12, opacity: 0.8, color: '#fff', textDecoration: 'none' }}
+        <div
+          style={{ fontSize: 12, opacity: 0.8, color: '#fff' }}
         >
-          Источник F1: OpenF1
-        </a>
+          Источник: schedule.ics
+        </div>
       </header>
 
       <section
@@ -175,7 +181,7 @@ export default function Home() {
       </ul>
 
       <footer style={{ marginTop: 24, fontSize: 12, opacity: 0.7 }}>
-        F2/F3 данные читаются из <code>/f2f3.json</code> (обновляется вручную или через GitHub Actions).
+        Расписание читается из <code>/schedule.ics</code> (обновляется вручную или через GitHub Actions).
       </footer>
     </main>
   );
