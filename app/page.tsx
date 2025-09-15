@@ -3,105 +3,16 @@
 import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import { getTrackLayout } from '../lib/track-layouts';
-
-type SeriesDefinition = {
-  label: string;
-  accentColor: string;
-  accentRgb: string;
-  logoBackground: string;
-  logoAccent: string;
-  renderLogoContent?: (context: { accent: string; label: string }) => JSX.Element;
-};
-
-const SERIES_DEFINITIONS = {
-  F1: {
-    label: 'F1',
-    accentColor: '#e10600',
-    accentRgb: '225, 6, 0',
-    logoBackground: '#111',
-    logoAccent: '#e10600',
-    renderLogoContent: ({ accent }) => (
-      <>
-        <path d="M7 17h8l1.8-4H8.8l1.4-3.2h7.2L19.2 6H11c-.9 0-1.7.5-2.1 1.3L5.5 16c-.4.9.2 2 1.5 2Z" fill="#fff" />
-        <path
-          d="M33.5 6h-8.6l-3.4 7.5c-.6 1.4.3 3 1.8 3h9.6c1.3 0 2.6-.5 3.5-1.4l2.4-2.4c.6-.6.2-1.7-.7-1.7h-7.5l2.5-5Z"
-          fill={accent}
-        />
-      </>
-    ),
-  },
-  F2: {
-    label: 'F2',
-    accentColor: '#0090ff',
-    accentRgb: '0, 144, 255',
-    logoBackground: '#0090ff',
-    logoAccent: '#fff',
-    renderLogoContent: ({ accent, label }) => (
-      <>
-        <text
-          x="50%"
-          y="50%"
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fill={accent}
-          fontFamily="var(--font-display, 'Manrope')"
-          fontSize={15}
-          letterSpacing={1.2}
-        >
-          {label}
-        </text>
-        <path d="M9 7h14l-1.4 3.2H15l-.8 1.8h6.4L19 15H9l3-8Z" fill="#fff" />
-      </>
-    ),
-  },
-  F3: {
-    label: 'F3',
-    accentColor: '#ff6f00',
-    accentRgb: '255, 111, 0',
-    logoBackground: '#ff6f00',
-    logoAccent: '#fff',
-    renderLogoContent: ({ accent, label }) => (
-      <>
-        <text
-          x="50%"
-          y="50%"
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fill={accent}
-          fontFamily="var(--font-display, 'Manrope')"
-          fontSize={15}
-          letterSpacing={1.2}
-        >
-          {label}
-        </text>
-        <path
-          d="M9 7h15c1 0 1.6 1.1 1.1 2l-1 1.8c.4.3.6.9.4 1.4l-1 2.4c-.2.7-.9 1.2-1.7 1.2H10l1.4-3.2h7.2l.4-.8h-6.6l1.2-2.8h7.6l.4-.8H10.8L9 7Z"
-          fill="#fff"
-        />
-      </>
-    ),
-  },
-} as const satisfies Record<string, SeriesDefinition>;
-
-type SeriesId = keyof typeof SERIES_DEFINITIONS;
-
-const SERIES_IDS = Object.keys(SERIES_DEFINITIONS) as SeriesId[];
-
-const DEFAULT_SERIES_ID = SERIES_IDS[0];
-
-const FALLBACK_SERIES_DEFINITION =
-  DEFAULT_SERIES_ID ? SERIES_DEFINITIONS[DEFAULT_SERIES_ID] : undefined;
-
-function isSeriesId(value: string): value is SeriesId {
-  return Object.prototype.hasOwnProperty.call(SERIES_DEFINITIONS, value);
-}
-
-function buildSeriesVisibility(value: boolean): Record<SeriesId, boolean> {
-  return SERIES_IDS.reduce((acc, series) => {
-    acc[series] = value;
-    return acc;
-  }, {} as Record<SeriesId, boolean>);
-}
+import {
+  SERIES_DEFINITIONS,
+  SERIES_IDS,
+  SERIES_TITLE,
+  buildSeriesVisibility,
+  DEFAULT_SERIES_ID,
+  FALLBACK_SERIES_DEFINITION,
+  isSeriesId,
+  type SeriesId,
+} from '../lib/series';
 
 type Row = {
   series: SeriesId;
@@ -228,8 +139,8 @@ function SeriesLogo({ series }: { series: SeriesId }) {
       width={56}
       height={24}
       viewBox="0 0 56 24"
-      role="img"
-      aria-label={`${label} logo`}
+      aria-hidden="true"
+      focusable="false"
       style={{ display: 'block' }}
     >
       <rect x={0} y={0} width={56} height={24} rx={6} fill={logoBackground} />
@@ -237,8 +148,6 @@ function SeriesLogo({ series }: { series: SeriesId }) {
     </svg>
   );
 }
-
-const SERIES_TITLE = SERIES_IDS.map(series => SERIES_DEFINITIONS[series].label).join(' / ');
 
 const PERIOD_OPTIONS: { label: string; value?: number }[] = [
   { label: '24 часа', value: 24 },
@@ -340,7 +249,7 @@ export default function Home() {
           <div className="hero__stat">
             <span className="hero__stat-label">Активные серии</span>
             <span className="hero__stat-value">{activeSeriesLabel}</span>
-            <span className="hero__stat-meta">переключите ниже</span>
+            <span className="hero__stat-meta">управляйте в верхнем меню</span>
           </div>
           <div className="hero__stat hero__stat--accent">
             <span className="hero__stat-label">Ближайший старт</span>
@@ -371,17 +280,21 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="control-panel">
-        <div className="control-panel__group">
-          <span className="control-panel__label">Серии</span>
-          <div className="series-chips">
+      <section className="top-menu">
+        <div className="top-menu__series">
+          <div className="top-menu__series-header">
+            <span className="control-panel__label">Серии</span>
+            <span className="top-menu__active-summary">Активно: {activeSeriesLabel}</span>
+          </div>
+          <div className="top-menu__series-list">
             {SERIES_IDS.map(series => {
               const definition = SERIES_DEFINITIONS[series];
+              const isActive = visibleSeries[series];
               return (
                 <label
                   key={series}
-                  className="series-chip"
-                  data-active={visibleSeries[series]}
+                  className="series-toggle"
+                  data-active={isActive}
                   style={
                     {
                       '--chip-color': definition.accentColor,
@@ -391,7 +304,7 @@ export default function Home() {
                 >
                   <input
                     type="checkbox"
-                    checked={visibleSeries[series]}
+                    checked={isActive}
                     onChange={() =>
                       setVisibleSeries(prev => ({
                         ...prev,
@@ -399,68 +312,37 @@ export default function Home() {
                       }))
                     }
                   />
-                  <span className="series-chip__indicator" aria-hidden />
-                  <span>{definition.label}</span>
+                  <span className="series-toggle__logo">
+                    <SeriesLogo series={series} />
+                  </span>
+                  <span className="series-toggle__name">{definition.label}</span>
                 </label>
               );
             })}
           </div>
-          <div className="hero__controls">
-            <div className="control-panel__group">
-              <span className="control-panel__label">Серии</span>
-              <div className="series-chips">
-                {(['F1', 'F2', 'F3'] as Row['series'][]).map(series => (
-                  <label
-                    key={series}
-                    className="series-chip"
-                    data-active={visibleSeries[series]}
-                    style={
-                      {
-                        '--chip-color': SERIES_COLORS[series],
-                        '--chip-rgb': SERIES_ACCENT_RGB[series],
-                      } as CSSProperties
-                    }
-                  >
-                    <input
-                      type="checkbox"
-                      checked={visibleSeries[series]}
-                      onChange={() =>
-                        setVisibleSeries(prev => ({
-                          ...prev,
-                          [series]: !prev[series],
-                        }))
-                      }
-                    />
-                    <span className="series-chip__indicator" aria-hidden />
-                    <span>{series}</span>
-                  </label>
-                ))}
-              </div>
+        </div>
+        <div className="top-menu__filters">
+          <div className="control-panel__group">
+            <span className="control-panel__label">Период обзора</span>
+            <div className="period-buttons">
+              {PERIOD_OPTIONS.map(opt => (
+                <button
+                  key={opt.label}
+                  type="button"
+                  className="period-button"
+                  data-active={hours === opt.value}
+                  onClick={() => setHours(opt.value)}
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
-
-            <div className="control-panel__group">
-              <span className="control-panel__label">Период обзора</span>
-              <div className="period-buttons">
-                {PERIOD_OPTIONS.map(opt => (
-                  <button
-                    key={opt.label}
-                    type="button"
-                    className="period-button"
-                    data-active={hours === opt.value}
-                    onClick={() => setHours(opt.value)}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="control-panel__group">
-              <span className="control-panel__label">Часовой пояс</span>
-              <div className="timezone-chip">
-                <span className="timezone-chip__dot" aria-hidden />
-                <span>{userTz}</span>
-              </div>
+          </div>
+          <div className="control-panel__group">
+            <span className="control-panel__label">Часовой пояс</span>
+            <div className="timezone-chip">
+              <span className="timezone-chip__dot" aria-hidden />
+              <span>{userTz}</span>
             </div>
           </div>
         </div>
