@@ -453,7 +453,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 3vw, 20px);
-  min-height: 220px;
+  min-height: clamp(220px, 44vw, 300px);
 }
 
 .event-card__top {
@@ -551,6 +551,57 @@ button {
   content: '•';
   margin-right: 8px;
   color: rgba(255, 255, 255, 0.32);
+}
+
+.event-card__track {
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.2), rgba(255, 255, 255, 0.04));
+  padding: clamp(18px, 3vw, 24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: clamp(160px, 32vw, 220px);
+  box-shadow: 0 30px 90px -60px rgba(var(--accent-rgb), 0.9);
+}
+
+.event-card__track::before {
+  content: '';
+  position: absolute;
+  inset: -40% -20% -60% -20%;
+  background: radial-gradient(circle at center, rgba(var(--accent-rgb), 0.3), transparent 70%);
+  filter: blur(70px);
+  opacity: 0.55;
+  z-index: 0;
+}
+
+.event-card__track svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: clamp(200px, 36vw, 260px);
+  aspect-ratio: 1 / 1;
+}
+
+.event-card__track-outline,
+.event-card__track-path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.event-card__track-outline {
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 70;
+  opacity: 0.65;
+}
+
+.event-card__track-path {
+  stroke: rgba(var(--accent-rgb), 0.85);
+  stroke-width: 38;
+  filter: drop-shadow(0 24px 60px rgba(var(--accent-rgb), 0.45));
 }
 
 .event-card__countdown {
