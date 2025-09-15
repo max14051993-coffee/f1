@@ -340,7 +340,7 @@ export default function Home() {
           <div className="hero__stat">
             <span className="hero__stat-label">Активные серии</span>
             <span className="hero__stat-value">{activeSeriesLabel}</span>
-            <span className="hero__stat-meta">переключите ниже</span>
+            <span className="hero__stat-meta">управляйте в верхнем меню</span>
           </div>
           <div className="hero__stat hero__stat--accent">
             <span className="hero__stat-label">Ближайший старт</span>
@@ -371,17 +371,21 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="control-panel">
-        <div className="control-panel__group">
-          <span className="control-panel__label">Серии</span>
-          <div className="series-chips">
+      <section className="top-menu">
+        <div className="top-menu__series">
+          <div className="top-menu__series-header">
+            <span className="control-panel__label">Серии</span>
+            <span className="top-menu__active-summary">Активно: {activeSeriesLabel}</span>
+          </div>
+          <div className="top-menu__series-list">
             {SERIES_IDS.map(series => {
               const definition = SERIES_DEFINITIONS[series];
+              const isActive = visibleSeries[series];
               return (
                 <label
                   key={series}
-                  className="series-chip"
-                  data-active={visibleSeries[series]}
+                  className="series-toggle"
+                  data-active={isActive}
                   style={
                     {
                       '--chip-color': definition.accentColor,
@@ -391,7 +395,7 @@ export default function Home() {
                 >
                   <input
                     type="checkbox"
-                    checked={visibleSeries[series]}
+                    checked={isActive}
                     onChange={() =>
                       setVisibleSeries(prev => ({
                         ...prev,
@@ -399,68 +403,37 @@ export default function Home() {
                       }))
                     }
                   />
-                  <span className="series-chip__indicator" aria-hidden />
-                  <span>{definition.label}</span>
+                  <span className="series-toggle__logo">
+                    <SeriesLogo series={series} />
+                  </span>
+                  <span className="series-toggle__name">{definition.label}</span>
                 </label>
               );
             })}
           </div>
-          <div className="hero__controls">
-            <div className="control-panel__group">
-              <span className="control-panel__label">Серии</span>
-              <div className="series-chips">
-                {(['F1', 'F2', 'F3'] as Row['series'][]).map(series => (
-                  <label
-                    key={series}
-                    className="series-chip"
-                    data-active={visibleSeries[series]}
-                    style={
-                      {
-                        '--chip-color': SERIES_COLORS[series],
-                        '--chip-rgb': SERIES_ACCENT_RGB[series],
-                      } as CSSProperties
-                    }
-                  >
-                    <input
-                      type="checkbox"
-                      checked={visibleSeries[series]}
-                      onChange={() =>
-                        setVisibleSeries(prev => ({
-                          ...prev,
-                          [series]: !prev[series],
-                        }))
-                      }
-                    />
-                    <span className="series-chip__indicator" aria-hidden />
-                    <span>{series}</span>
-                  </label>
-                ))}
-              </div>
+        </div>
+        <div className="top-menu__filters">
+          <div className="control-panel__group">
+            <span className="control-panel__label">Период обзора</span>
+            <div className="period-buttons">
+              {PERIOD_OPTIONS.map(opt => (
+                <button
+                  key={opt.label}
+                  type="button"
+                  className="period-button"
+                  data-active={hours === opt.value}
+                  onClick={() => setHours(opt.value)}
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
-
-            <div className="control-panel__group">
-              <span className="control-panel__label">Период обзора</span>
-              <div className="period-buttons">
-                {PERIOD_OPTIONS.map(opt => (
-                  <button
-                    key={opt.label}
-                    type="button"
-                    className="period-button"
-                    data-active={hours === opt.value}
-                    onClick={() => setHours(opt.value)}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="control-panel__group">
-              <span className="control-panel__label">Часовой пояс</span>
-              <div className="timezone-chip">
-                <span className="timezone-chip__dot" aria-hidden />
-                <span>{userTz}</span>
-              </div>
+          </div>
+          <div className="control-panel__group">
+            <span className="control-panel__label">Часовой пояс</span>
+            <div className="timezone-chip">
+              <span className="timezone-chip__dot" aria-hidden />
+              <span>{userTz}</span>
             </div>
           </div>
         </div>
