@@ -285,9 +285,11 @@ export default function Home() {
   const activeSeries = (Object.entries(visibleSeries) as [SeriesId, boolean][])
     .filter(([, active]) => active)
     .map(([series]) => series);
-  const activeSeriesLabel = activeSeries.length
-    ? activeSeries.map(series => SERIES_DEFINITIONS[series].label).join(' · ')
-    : 'Нет';
+  const activeSeriesNames = activeSeries.map(series => SERIES_DEFINITIONS[series].label);
+  const hasActiveSeries = activeSeriesNames.length > 0;
+  const activeSeriesSelection = hasActiveSeries
+    ? `Выбрано: ${activeSeriesNames.join(' · ')}`
+    : 'Все серии скрыты';
   const selectedPeriodLabel =
     PERIOD_OPTIONS.find(opt => opt.value === hours)?.label ?? '30 дней';
   const nextEvent = filtered[0];
@@ -337,11 +339,6 @@ export default function Home() {
           горизонтом просмотра и следите за временем старта в собственном часовом поясе.
         </p>
         <div className="hero__stats">
-          <div className="hero__stat">
-            <span className="hero__stat-label">Активные серии</span>
-            <span className="hero__stat-value">{activeSeriesLabel}</span>
-            <span className="hero__stat-meta">переключите ниже</span>
-          </div>
           <div className="hero__stat hero__stat--accent">
             <span className="hero__stat-label">Ближайший старт</span>
             {nextEvent && nextLocal ? (
@@ -373,8 +370,17 @@ export default function Home() {
 
       <section className="control-panel">
         <div className="hero__controls">
-          <div className="control-panel__group">
-            <span className="control-panel__label">Серии</span>
+          <div className="control-panel__group control-panel__group--series">
+            <div className="control-panel__group-header">
+              <span className="control-panel__label">Серии</span>
+              <span
+                className="control-panel__selection"
+                aria-live="polite"
+                data-empty={!hasActiveSeries}
+              >
+                {activeSeriesSelection}
+              </span>
+            </div>
             <div className="series-chips">
               {SERIES_IDS.map(series => {
                 const definition = SERIES_DEFINITIONS[series];

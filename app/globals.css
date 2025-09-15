@@ -308,6 +308,31 @@ button {
   min-width: 0;
 }
 
+.control-panel__group--series {
+  gap: 16px;
+}
+
+.control-panel__group-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.control-panel__selection {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.72);
+  text-transform: none;
+}
+
+.control-panel__selection[data-empty='true'] {
+  color: rgba(255, 255, 255, 0.45);
+}
+
 .control-panel__label {
   font-size: 0.75rem;
   text-transform: uppercase;
