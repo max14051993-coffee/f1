@@ -2,6 +2,7 @@
 
 import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
+import { getTrackLayout } from '../lib/track-layouts';
 
 type SeriesDefinition = {
   label: string;
@@ -404,30 +405,63 @@ export default function Home() {
               );
             })}
           </div>
-        </div>
+          <div className="hero__controls">
+            <div className="control-panel__group">
+              <span className="control-panel__label">Серии</span>
+              <div className="series-chips">
+                {(['F1', 'F2', 'F3'] as Row['series'][]).map(series => (
+                  <label
+                    key={series}
+                    className="series-chip"
+                    data-active={visibleSeries[series]}
+                    style={
+                      {
+                        '--chip-color': SERIES_COLORS[series],
+                        '--chip-rgb': SERIES_ACCENT_RGB[series],
+                      } as CSSProperties
+                    }
+                  >
+                    <input
+                      type="checkbox"
+                      checked={visibleSeries[series]}
+                      onChange={() =>
+                        setVisibleSeries(prev => ({
+                          ...prev,
+                          [series]: !prev[series],
+                        }))
+                      }
+                    />
+                    <span className="series-chip__indicator" aria-hidden />
+                    <span>{series}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
 
-        <div className="control-panel__group">
-          <span className="control-panel__label">Период обзора</span>
-          <div className="period-buttons">
-            {PERIOD_OPTIONS.map(opt => (
-              <button
-                key={opt.label}
-                type="button"
-                className="period-button"
-                data-active={hours === opt.value}
-                onClick={() => setHours(opt.value)}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
+            <div className="control-panel__group">
+              <span className="control-panel__label">Период обзора</span>
+              <div className="period-buttons">
+                {PERIOD_OPTIONS.map(opt => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    className="period-button"
+                    data-active={hours === opt.value}
+                    onClick={() => setHours(opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        <div className="control-panel__group">
-          <span className="control-panel__label">Часовой пояс</span>
-          <div className="timezone-chip">
-            <span className="timezone-chip__dot" aria-hidden />
-            <span>{userTz}</span>
+            <div className="control-panel__group">
+              <span className="control-panel__label">Часовой пояс</span>
+              <div className="timezone-chip">
+                <span className="timezone-chip__dot" aria-hidden />
+                <span>{userTz}</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -450,6 +484,17 @@ export default function Home() {
               ? `Старт ${relative}`
               : `Финиш ${relative}`
             : 'По расписанию';
+          const track = getTrackLayout(r.circuit, r.round);
+          const trackLabelParts = Array.from(
+            new Set(
+              [r.circuit, r.round].filter(
+                (part): part is string => !!part && part.trim().length > 0
+              )
+            )
+          );
+          const trackLabel = trackLabelParts.length
+            ? `Схема автодрома: ${trackLabelParts.join(' — ')}`
+            : 'Схема автодрома';
 
           return (
             <li
@@ -486,6 +531,19 @@ export default function Home() {
                   {r.circuit ? <span>{r.circuit}</span> : null}
                   <span>{r.session}</span>
                 </div>
+                {track ? (
+                  <div className="event-card__track">
+                    <svg
+                      viewBox={track.layout.viewBox}
+                      role="img"
+                      aria-label={trackLabel}
+                      focusable="false"
+                    >
+                      <path className="event-card__track-outline" d={track.layout.path} />
+                      <path className="event-card__track-path" d={track.layout.path} />
+                    </svg>
+                  </div>
+                ) : null}
                 <div className="event-card__countdown">
                   <span className="event-card__countdown-dot" aria-hidden />
                   <span>{countdown}</span>
