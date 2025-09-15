@@ -24,7 +24,9 @@ body {
     var(--bg-primary);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Titillium Web', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-sans), 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  font-optical-sizing: auto;
   position: relative;
 }
 
@@ -186,8 +188,8 @@ button {
   z-index: 1;
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.1;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 800;
+  letter-spacing: 0.015em;
 }
 
 .hero__subtitle {
@@ -197,6 +199,24 @@ button {
   font-size: clamp(1rem, 2.4vw, 1.2rem);
   line-height: 1.6;
   color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.hero__title,
+.hero__badge,
+.hero__stat-label,
+.hero__stat-value,
+.hero__stat-meta--highlight,
+.control-panel__label,
+.series-chip,
+.period-button,
+.timezone-chip,
+.event-card__series-pill,
+.event-card__datetime,
+.event-card__time,
+.event-card__title,
+.event-card__countdown {
+  font-family: var(--font-display), var(--font-sans), 'Manrope', sans-serif;
 }
 
 .hero__stats {
@@ -228,14 +248,14 @@ button {
 .hero__stat-label {
   font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: rgba(255, 255, 255, 0.62);
 }
 
 .hero__stat-value {
   font-size: clamp(1.1rem, 2.6vw, 1.6rem);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .hero__stat-meta {
@@ -276,12 +296,6 @@ button {
   font-weight: 700;
 }
 
-.control-panel__caption {
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1.4;
-}
-
 .series-chips,
 .period-buttons {
   display: flex;
@@ -299,8 +313,8 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(14, 18, 30, 0.65);
   color: #ffffff;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
@@ -347,8 +361,8 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(14, 18, 30, 0.6);
   color: #ffffff;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
@@ -375,7 +389,7 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(14, 18, 30, 0.6);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   color: #ffffff;
   box-shadow: 0 16px 34px -30px rgba(0, 0, 0, 0.8);
 }
@@ -481,7 +495,7 @@ button {
   align-items: flex-end;
   gap: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.62);
   font-size: 0.78rem;
 }
@@ -489,7 +503,7 @@ button {
 .event-card__time {
   font-size: clamp(1.6rem, 3.4vw, 2rem);
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   color: #ffffff;
 }
 
@@ -510,6 +524,7 @@ button {
   font-weight: 700;
   line-height: 1.35;
   color: #f7f8fc;
+  letter-spacing: 0.01em;
 }
 
 .event-card__country {
@@ -550,7 +565,7 @@ button {
   color: #ffffff;
   font-size: 0.9rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   box-shadow: 0 20px 50px -36px rgba(var(--accent-rgb), 0.9);
 }
 
