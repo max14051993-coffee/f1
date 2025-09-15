@@ -91,6 +91,54 @@ function parseICS(ics: string): Row[] {
   return events;
 }
 
+function SeriesLogo({ series }: { series: Row['series'] }) {
+  const background: Record<Row['series'], string> = {
+    F1: '#111',
+    F2: '#0090ff',
+    F3: '#ff6f00',
+  };
+
+  const accent = series === 'F1' ? '#e10600' : '#fff';
+
+  return (
+    <svg
+      width={56}
+      height={24}
+      viewBox="0 0 56 24"
+      role="img"
+      aria-label={`${series} logo`}
+      style={{ display: 'block' }}
+    >
+      <rect x={0} y={0} width={56} height={24} rx={6} fill={background[series]} />
+      {series === 'F1' ? (
+        <>
+          <path d="M7 17h8l1.8-4H8.8l1.4-3.2h7.2L19.2 6H11c-.9 0-1.7.5-2.1 1.3L5.5 16c-.4.9.2 2 1.5 2Z" fill="#fff" />
+          <path d="M33.5 6h-8.6l-3.4 7.5c-.6 1.4.3 3 1.8 3h9.6c1.3 0 2.6-.5 3.5-1.4l2.4-2.4c.6-.6.2-1.7-.7-1.7h-7.5l2.5-5Z" fill={accent} />
+        </>
+      ) : (
+        <text
+          x="50%"
+          y="50%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fill={accent}
+          fontFamily="'Arial Black', 'Segoe UI', sans-serif"
+          fontSize={14}
+          letterSpacing={1}
+        >
+          {series}
+        </text>
+      )}
+      {series === 'F2' && (
+        <path d="M9 7h14l-1.4 3.2H15l-.8 1.8h6.4L19 15H9l3-8Z" fill="#fff" />
+      )}
+      {series === 'F3' && (
+        <path d="M9 7h15c1 0 1.6 1.1 1.1 2l-1 1.8c.4.3.6.9.4 1.4l-1 2.4c-.2.7-.9 1.2-1.7 1.2H10l1.4-3.2h7.2l.4-.8h-6.6l1.2-2.8h7.6l.4-.8H10.8L9 7Z" fill="#fff" />
+      )}
+    </svg>
+  );
+}
+
 const SERIES_COLORS: Record<Row['series'], string> = {
   F1: '#e10600',
   F2: '#0090ff',
@@ -263,8 +311,10 @@ export default function Home() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
+                  gap: 8,
                 }}
               >
+                <SeriesLogo series={r.series} />
                 <span style={{ fontWeight: 600, color: SERIES_COLORS[r.series] }}>{r.series}</span>
               </div>
               <div style={{ fontSize: 20, fontWeight: 700 }}>
