@@ -292,50 +292,48 @@ export default function Home() {
       >
         {filtered.map((r, i) => {
           const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(userTz);
+          const isoLocal = local.toISO();
           return (
             <li
               key={i}
               style={{
                 borderTop: `4px solid ${SERIES_COLORS[r.series]}`,
                 borderRadius: 12,
-                padding: 20,
+                padding: 16,
                 background: '#fff',
                 color: '#111',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 8,
+                gap: 6,
               }}
             >
               <div
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
+                  justifyContent: 'space-between',
+                  gap: 12,
                 }}
               >
-                <SeriesLogo series={r.series} />
-                <span style={{ fontWeight: 600, color: SERIES_COLORS[r.series] }}>{r.series}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <SeriesLogo series={r.series} />
+                  <span style={{ fontWeight: 600, color: SERIES_COLORS[r.series] }}>{r.series}</span>
+                </div>
+                <time
+                  dateTime={isoLocal ?? undefined}
+                  style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}
+                >
+                  {local.toFormat('ccc, dd LLL • HH:mm')}
+                </time>
               </div>
-              <div style={{ fontSize: 20, fontWeight: 700 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.3 }}>
                 {r.round}
                 {r.country ? ` • ${r.country}` : ''}
               </div>
-              <div style={{ opacity: 0.8 }}>
+              <div style={{ fontSize: 13, opacity: 0.75 }}>
                 {r.circuit ? r.circuit + ' • ' : ''}
                 {r.session}
-              </div>
-              <div
-                style={{
-                  marginTop: 'auto',
-                  fontSize: 14,
-                  background: '#f5f5f5',
-                  padding: '8px 12px',
-                  borderRadius: 8,
-                  alignSelf: 'flex-start',
-                }}
-              >
-                <b>{local.toFormat('ccc, dd LLL yyyy • HH:mm')}</b> ({userTz})
               </div>
             </li>
           );
