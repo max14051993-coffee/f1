@@ -1,3 +1,5 @@
+import './globals.css';
+
 export const metadata = {
   title: 'F1/F2/F3 schedule',
   description: 'Upcoming qualifying & race times (your time zone)',
@@ -14,16 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body
-        style={{
-          fontFamily: '"Titillium Web", system-ui, Arial, sans-serif',
-          background: '#f5f5f5',
-          color: '#000',
-          margin: 0,
-        }}
-      >
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,14 +1,15 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+
+import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 
 type Row = {
-  series: 'F1'|'F2'|'F3';
+  series: 'F1' | 'F2' | 'F3';
   round: string;
   country?: string;
   circuit?: string;
-  session: 'Qualifying'|'Race'|'Sprint';
-  startsAtUtc: string;     // ISO
+  session: 'Qualifying' | 'Race' | 'Sprint';
+  startsAtUtc: string; // ISO
 };
 
 function normalizeSession(raw: string): Row['session'] | undefined {
@@ -145,6 +146,12 @@ const SERIES_COLORS: Record<Row['series'], string> = {
   F3: '#ff6f00',
 };
 
+const SERIES_ACCENT_RGB: Record<Row['series'], string> = {
+  F1: '225, 6, 0',
+  F2: '0, 144, 255',
+  F3: '255, 111, 0',
+};
+
 const PERIOD_OPTIONS: { label: string; value?: number }[] = [
   { label: '24 часа', value: 24 },
   { label: '48 часов', value: 48 },
@@ -160,7 +167,7 @@ export default function Home() {
     F2: true,
     F3: true,
   });
-  const [hours, setHours] = useState<number|undefined>(undefined);
+  const [hours, setHours] = useState<number | undefined>(undefined);
   const [userTz, setUserTz] = useState<string>('UTC');
 
   useEffect(() => {
@@ -188,62 +195,104 @@ export default function Home() {
       .sort((a, b) => Date.parse(a.startsAtUtc) - Date.parse(b.startsAtUtc));
   }, [rows, visibleSeries, hours]);
 
-  return (
-    <main style={{ maxWidth: 980, margin: '0 auto', padding: '32px 16px' }}>
-      <header
-        style={{
-          display: 'flex',
-          gap: 12,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 24,
-          background: '#e10600',
-          padding: 16,
-          borderRadius: 8,
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 'clamp(20px, 3vw, 28px)',
-            margin: 0,
-            color: '#fff',
-          }}
-        >
-          Ближайшие квалификации и гонки — F1 / F2 / F3
-        </h1>
-      </header>
+  const nowLocal = DateTime.local().setZone(userTz);
+  const activeSeries = (Object.entries(visibleSeries) as [Row['series'], boolean][])
+    .filter(([, active]) => active)
+    .map(([series]) => series);
+  const activeSeriesLabel = activeSeries.length ? activeSeries.join(' · ') : 'Нет';
+  const selectedPeriodLabel =
+    PERIOD_OPTIONS.find(opt => opt.value === hours)?.label ?? '30 дней';
+  const nextEvent = filtered[0];
+  const nextLocal = nextEvent
+    ? DateTime.fromISO(nextEvent.startsAtUtc, { zone: 'utc' })
+        .setZone(userTz)
+        .setLocale('ru')
+    : null;
+  const nextRelative = nextLocal
+    ? nextLocal.toRelative({ base: nowLocal, locale: 'ru', style: 'long' })
+    : null;
+  const nextCountdown =
+    nextLocal && nextRelative
+      ? nextLocal > nowLocal
+        ? `Старт ${nextRelative}`
+        : `Финиш ${nextRelative}`
+      : null;
+  const nextDescriptor = nextEvent
+    ? `${nextEvent.round}${nextEvent.country ? ` • ${nextEvent.country}` : ''}`
+    : 'Нет событий';
+  const heroAccentColor = nextEvent ? SERIES_COLORS[nextEvent.series] : SERIES_COLORS.F1;
+  const heroAccentRgb = nextEvent ? SERIES_ACCENT_RGB[nextEvent.series] : SERIES_ACCENT_RGB.F1;
 
+  return (
+    <main className="page-shell">
       <section
-        style={{
-          display: 'flex',
-          gap: 24,
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          marginBottom: 20,
-          padding: '12px 16px',
-          background: '#f5f5f5',
-          border: '1px solid #ddd',
-          borderRadius: 8,
-          fontSize: 14,
-        }}
+        className="hero"
+        style={
+          {
+            '--hero-accent': heroAccentColor,
+            '--hero-accent-rgb': heroAccentRgb,
+          } as CSSProperties
+        }
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <span style={{ opacity: 0.8 }}>Серии:</span>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <span className="hero__badge">
+          <span className="hero__pulse" aria-hidden />
+          живой календарь уик-эндов
+        </span>
+        <h1 className="hero__title">Ближайшие квалификации и гонки — F1 / F2 / F3</h1>
+        <p className="hero__subtitle">
+          Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте
+          горизонтом просмотра и следите за временем старта в собственном часовом поясе.
+        </p>
+        <div className="hero__stats">
+          <div className="hero__stat">
+            <span className="hero__stat-label">Активные серии</span>
+            <span className="hero__stat-value">{activeSeriesLabel}</span>
+            <span className="hero__stat-meta">переключите ниже</span>
+          </div>
+          <div className="hero__stat hero__stat--accent">
+            <span className="hero__stat-label">Ближайший старт</span>
+            {nextEvent && nextLocal ? (
+              <>
+                <span className="hero__stat-value">{nextLocal.toFormat('dd LLL • HH:mm')}</span>
+                <span className="hero__stat-meta">
+                  {nextEvent.series} · {nextDescriptor}
+                </span>
+                {nextCountdown && (
+                  <span className="hero__stat-meta hero__stat-meta--highlight">
+                    {nextCountdown}
+                  </span>
+                )}
+              </>
+            ) : (
+              <>
+                <span className="hero__stat-value">Нет событий</span>
+                <span className="hero__stat-meta">Попробуйте расширить период</span>
+              </>
+            )}
+          </div>
+          <div className="hero__stat">
+            <span className="hero__stat-label">Событий в окне</span>
+            <span className="hero__stat-value">{filtered.length}</span>
+            <span className="hero__stat-meta">{selectedPeriodLabel}</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="control-panel">
+        <div className="control-panel__group">
+          <span className="control-panel__label">Серии</span>
+          <div className="series-chips">
             {(['F1', 'F2', 'F3'] as Row['series'][]).map(series => (
               <label
                 key={series}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '4px 8px',
-                  borderRadius: 12,
-                  border: '1px solid #ccc',
-                  background: '#fff',
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                }}
+                className="series-chip"
+                data-active={visibleSeries[series]}
+                style={
+                  {
+                    '--chip-color': SERIES_COLORS[series],
+                    '--chip-rgb': SERIES_ACCENT_RGB[series],
+                  } as CSSProperties
+                }
               >
                 <input
                   type="checkbox"
@@ -254,102 +303,112 @@ export default function Home() {
                       [series]: !prev[series],
                     }))
                   }
-                  style={{
-                    accentColor: SERIES_COLORS[series],
-                    width: 16,
-                    height: 16,
-                  }}
                 />
-                <span style={{ fontWeight: 600 }}>{series}</span>
+                <span className="series-chip__indicator" aria-hidden />
+                <span>{series}</span>
               </label>
             ))}
           </div>
+          <span className="control-panel__caption">
+            Сочетайте разные формулы, чтобы поймать общий ритм гоночного уик-энда.
+          </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ opacity: 0.8 }}>Период:</span>
-          <div style={{ display: 'flex', gap: 4 }}>
+
+        <div className="control-panel__group">
+          <span className="control-panel__label">Период обзора</span>
+          <div className="period-buttons">
             {PERIOD_OPTIONS.map(opt => (
               <button
                 key={opt.label}
+                type="button"
+                className="period-button"
+                data-active={hours === opt.value}
                 onClick={() => setHours(opt.value)}
-                style={{
-                  padding: '4px 8px',
-                  borderRadius: 12,
-                  border: '1px solid #ccc',
-                  background: hours === opt.value ? '#e10600' : '#fff',
-                  color: hours === opt.value ? '#fff' : '#000',
-                  cursor: 'pointer',
-                }}
               >
                 {opt.label}
               </button>
             ))}
           </div>
+          <span className="control-panel__caption">
+            Окно прокручивается вместе с настоящим моментом — расширьте диапазон, чтобы увидеть
+            больше.
+          </span>
         </div>
-        <div style={{ fontSize: 12, opacity: 0.7 }}>
-          Часовой пояс: <b>{userTz}</b>
+
+        <div className="control-panel__group">
+          <span className="control-panel__label">Часовой пояс</span>
+          <div className="timezone-chip">
+            <span className="timezone-chip__dot" aria-hidden />
+            <span>{userTz}</span>
+          </div>
+          <span className="control-panel__caption">
+            Все времена на карточках автоматически приведены к вашему устройству.
+          </span>
         </div>
       </section>
 
-      <ul
-        style={{
-          display: 'grid',
-          gap: 16,
-          listStyle: 'none',
-          padding: 0,
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        }}
-      >
-        {filtered.map((r, i) => {
+      <ul className="events-grid">
+        {filtered.map((r, index) => {
+          const accentColor = SERIES_COLORS[r.series];
+          const accentRgb = SERIES_ACCENT_RGB[r.series];
           const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(userTz);
+          const localized = local.setLocale('ru');
           const isoLocal = local.toISO();
+          const timeLabel = localized.toFormat('HH:mm');
+          const dayLabel = localized.toFormat('ccc');
+          const dateLabel = localized.toFormat('dd LLL');
+          const tzLabel = localized.toFormat('ZZZZ');
+          const relative = localized.toRelative({ base: nowLocal, locale: 'ru', style: 'long' });
+          const countdown = relative
+            ? localized > nowLocal
+              ? `Старт ${relative}`
+              : `Финиш ${relative}`
+            : 'По расписанию';
+
           return (
             <li
-              key={i}
-              style={{
-                borderTop: `4px solid ${SERIES_COLORS[r.series]}`,
-                borderRadius: 12,
-                padding: 16,
-                background: '#fff',
-                color: '#111',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 6,
-              }}
+              key={`${r.startsAtUtc}-${index}`}
+              className="event-card"
+              style={
+                {
+                  '--accent-color': accentColor,
+                  '--accent-rgb': accentRgb,
+                } as CSSProperties
+              }
             >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <SeriesLogo series={r.series} />
-                  <span style={{ fontWeight: 600, color: SERIES_COLORS[r.series] }}>{r.series}</span>
+              <div className="event-card__inner">
+                <div className="event-card__top">
+                  <div className="event-card__series">
+                    <div className="event-card__logo">
+                      <SeriesLogo series={r.series} />
+                    </div>
+                    <span className="event-card__series-pill">{r.series}</span>
+                  </div>
+                  <time className="event-card__datetime" dateTime={isoLocal ?? undefined}>
+                    <span className="event-card__time">{timeLabel}</span>
+                    <span className="event-card__date">
+                      {dayLabel}, {dateLabel}
+                    </span>
+                    <span className="event-card__tz">{tzLabel}</span>
+                  </time>
                 </div>
-                <time
-                  dateTime={isoLocal ?? undefined}
-                  style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}
-                >
-                  {local.toFormat('ccc, dd LLL • HH:mm')}
-                </time>
-              </div>
-              <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.3 }}>
-                {r.round}
-                {r.country ? ` • ${r.country}` : ''}
-              </div>
-              <div style={{ fontSize: 13, opacity: 0.75 }}>
-                {r.circuit ? r.circuit + ' • ' : ''}
-                {r.session}
+                <div className="event-card__title">
+                  <span>{r.round}</span>
+                  {r.country ? <span className="event-card__country">{r.country}</span> : null}
+                </div>
+                <div className="event-card__meta">
+                  {r.circuit ? <span>{r.circuit}</span> : null}
+                  <span>{r.session}</span>
+                </div>
+                <div className="event-card__countdown">
+                  <span className="event-card__countdown-dot" aria-hidden />
+                  <span>{countdown}</span>
+                </div>
               </div>
             </li>
           );
         })}
       </ul>
-
     </main>
   );
 }
