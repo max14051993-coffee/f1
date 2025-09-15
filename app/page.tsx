@@ -409,32 +409,36 @@ export default function Home() {
             <div className="control-panel__group">
               <span className="control-panel__label">Серии</span>
               <div className="series-chips">
-                {(['F1', 'F2', 'F3'] as Row['series'][]).map(series => (
-                  <label
-                    key={series}
-                    className="series-chip"
-                    data-active={visibleSeries[series]}
-                    style={
-                      {
-                        '--chip-color': SERIES_COLORS[series],
-                        '--chip-rgb': SERIES_ACCENT_RGB[series],
-                      } as CSSProperties
-                    }
-                  >
-                    <input
-                      type="checkbox"
-                      checked={visibleSeries[series]}
-                      onChange={() =>
-                        setVisibleSeries(prev => ({
-                          ...prev,
-                          [series]: !prev[series],
-                        }))
+                {(['F1', 'F2', 'F3'] as Row['series'][]).map(series => {
+                  const definition = SERIES_DEFINITIONS[series];
+
+                  return (
+                    <label
+                      key={series}
+                      className="series-chip"
+                      data-active={visibleSeries[series]}
+                      style={
+                        {
+                          '--chip-color': definition.accentColor,
+                          '--chip-rgb': definition.accentRgb,
+                        } as CSSProperties
                       }
-                    />
-                    <span className="series-chip__indicator" aria-hidden />
-                    <span>{series}</span>
-                  </label>
-                ))}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={visibleSeries[series]}
+                        onChange={() =>
+                          setVisibleSeries(prev => ({
+                            ...prev,
+                            [series]: !prev[series],
+                          }))
+                        }
+                      />
+                      <span className="series-chip__indicator" aria-hidden />
+                      <span>{definition.label}</span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import './globals.css';
 import { Exo_2, Manrope } from 'next/font/google';
 
@@ -13,9 +14,12 @@ const display = Exo_2({
   variable: '--font-display',
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'F1/F2/F3 schedule',
   description: 'Upcoming qualifying & race times (your time zone)',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
