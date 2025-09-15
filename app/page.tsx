@@ -123,9 +123,9 @@ function SeriesLogo({ series }: { series: Row['series'] }) {
           textAnchor="middle"
           dominantBaseline="middle"
           fill={accent}
-          fontFamily="'Arial Black', 'Segoe UI', sans-serif"
-          fontSize={14}
-          letterSpacing={1}
+          fontFamily="var(--font-display, 'Manrope')"
+          fontSize={15}
+          letterSpacing={1.2}
         >
           {series}
         </text>
@@ -309,9 +309,6 @@ export default function Home() {
               </label>
             ))}
           </div>
-          <span className="control-panel__caption">
-            Сочетайте разные формулы, чтобы поймать общий ритм гоночного уик-энда.
-          </span>
         </div>
 
         <div className="control-panel__group">
@@ -329,10 +326,6 @@ export default function Home() {
               </button>
             ))}
           </div>
-          <span className="control-panel__caption">
-            Окно прокручивается вместе с настоящим моментом — расширьте диапазон, чтобы увидеть
-            больше.
-          </span>
         </div>
 
         <div className="control-panel__group">
@@ -341,9 +334,6 @@ export default function Home() {
             <span className="timezone-chip__dot" aria-hidden />
             <span>{userTz}</span>
           </div>
-          <span className="control-panel__caption">
-            Все времена на карточках автоматически приведены к вашему устройству.
-          </span>
         </div>
       </section>
 
