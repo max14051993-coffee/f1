@@ -155,7 +155,11 @@ const PERIOD_OPTIONS: { label: string; value?: number }[] = [
 
 export default function Home() {
   const [rows, setRows] = useState<Row[]>([]);
-  const [includeF2F3, setIncludeF2F3] = useState(true);
+  const [visibleSeries, setVisibleSeries] = useState<Record<Row['series'], boolean>>({
+    F1: true,
+    F2: true,
+    F3: true,
+  });
   const [hours, setHours] = useState<number|undefined>(undefined);
   const [userTz, setUserTz] = useState<string>('UTC');
 
@@ -170,8 +174,7 @@ export default function Home() {
   }, []);
 
   const filtered = useMemo(() => {
-    let arr = rows;
-    if (!includeF2F3) arr = rows.filter(r => r.series === 'F1');
+    let arr = rows.filter(r => visibleSeries[r.series]);
     const now = DateTime.utc();
     const limit = hours && hours > 0 ? hours : 24 * 30; // default 30 days
     const from = now.minus({ hours: 24 });
@@ -183,7 +186,7 @@ export default function Home() {
     return arr
       .slice()
       .sort((a, b) => Date.parse(a.startsAtUtc) - Date.parse(b.startsAtUtc));
-  }, [rows, includeF2F3, hours]);
+  }, [rows, visibleSeries, hours]);
 
   return (
     <main style={{ maxWidth: 980, margin: '0 auto', padding: '32px 16px' }}>
@@ -224,36 +227,43 @@ export default function Home() {
           fontSize: 14,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button
-            role="switch"
-            aria-checked={includeF2F3}
-            onClick={() => setIncludeF2F3(v => !v)}
-            style={{
-              position: 'relative',
-              width: 40,
-              height: 20,
-              border: 'none',
-              borderRadius: 10,
-              background: includeF2F3 ? '#e10600' : '#ccc',
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          >
-            <span
-              style={{
-                position: 'absolute',
-                top: 2,
-                left: includeF2F3 ? 22 : 2,
-                width: 16,
-                height: 16,
-                borderRadius: '50%',
-                background: '#fff',
-                transition: 'left 0.2s',
-              }}
-            />
-          </button>
-          <span>Показывать F2/F3 (если есть данные)</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{ opacity: 0.8 }}>Серии:</span>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {(['F1', 'F2', 'F3'] as Row['series'][]).map(series => (
+              <label
+                key={series}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '4px 8px',
+                  borderRadius: 12,
+                  border: '1px solid #ccc',
+                  background: '#fff',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={visibleSeries[series]}
+                  onChange={() =>
+                    setVisibleSeries(prev => ({
+                      ...prev,
+                      [series]: !prev[series],
+                    }))
+                  }
+                  style={{
+                    accentColor: SERIES_COLORS[series],
+                    width: 16,
+                    height: 16,
+                  }}
+                />
+                <span style={{ fontWeight: 600 }}>{series}</span>
+              </label>
+            ))}
+          </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ opacity: 0.8 }}>Период:</span>
