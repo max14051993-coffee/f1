@@ -18,7 +18,10 @@ export const metadata: Metadata = {
   title: 'F1/F2/F3 schedule',
   description: 'Upcoming qualifying & race times (your time zone)',
   icons: {
-    icon: '/favicon.svg',
+    icon: [
+      { rel: 'icon', url: '/icon.svg', type: 'image/svg+xml' },
+      { rel: 'alternate icon', url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
   },
 };
 
