@@ -2,6 +2,7 @@
 
 import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
+import { getTrackLayout } from '../lib/track-layouts';
 
 type Row = {
   series: 'F1' | 'F2' | 'F3';
@@ -354,6 +355,17 @@ export default function Home() {
               ? `Старт ${relative}`
               : `Финиш ${relative}`
             : 'По расписанию';
+          const track = getTrackLayout(r.circuit, r.round);
+          const trackLabelParts = Array.from(
+            new Set(
+              [r.circuit, r.round].filter(
+                (part): part is string => !!part && part.trim().length > 0
+              )
+            )
+          );
+          const trackLabel = trackLabelParts.length
+            ? `Схема автодрома: ${trackLabelParts.join(' — ')}`
+            : 'Схема автодрома';
 
           return (
             <li
@@ -390,6 +402,19 @@ export default function Home() {
                   {r.circuit ? <span>{r.circuit}</span> : null}
                   <span>{r.session}</span>
                 </div>
+                {track ? (
+                  <div className="event-card__track">
+                    <svg
+                      viewBox={track.layout.viewBox}
+                      role="img"
+                      aria-label={trackLabel}
+                      focusable="false"
+                    >
+                      <path className="event-card__track-outline" d={track.layout.path} />
+                      <path className="event-card__track-path" d={track.layout.path} />
+                    </svg>
+                  </div>
+                ) : null}
                 <div className="event-card__countdown">
                   <span className="event-card__countdown-dot" aria-hidden />
                   <span>{countdown}</span>
