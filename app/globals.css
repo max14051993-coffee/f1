@@ -279,10 +279,20 @@ button {
   gap: 18px;
 }
 
+.hero__period-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px 24px;
+}
+
 .hero__period-card-controls {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1 1 240px;
+  min-width: min(320px, 100%);
 }
 
 .hero__event-summary {
@@ -320,8 +330,13 @@ button {
 
 .hero__timezone {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  min-width: fit-content;
+}
+
+.hero__timezone .control-panel__label {
+  white-space: nowrap;
 }
 
 .hero__stat {
@@ -770,6 +785,18 @@ button {
 
   .page-shell {
     padding: clamp(32px, 6vw, 56px) clamp(16px, 6vw, 36px) clamp(72px, 10vw, 100px);
+  }
+
+  .hero__period-card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .hero__timezone {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
 
