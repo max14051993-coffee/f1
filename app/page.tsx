@@ -36,8 +36,8 @@ const SERIES_DEFINITIONS = {
   },
   MotoGP: {
     label: 'MotoGP',
-    accentColor: '#ff1801',
-    accentRgb: '255, 24, 1',
+    accentColor: '#ff0050',
+    accentRgb: '255, 0, 80',
     logoBackground: '#fff',
     logoAsset: '/logos/motogp.svg',
   },
