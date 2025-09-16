@@ -554,8 +554,9 @@ export default function Home() {
                       aria-label={trackLabel}
                       focusable="false"
                     >
+                      <path className="event-card__track-shadow" d={track.layout.path} />
                       <path className="event-card__track-outline" d={track.layout.path} />
-                      <path className="event-card__track-path" d={track.layout.path} />
+                      <path className="event-card__track-highlight" d={track.layout.path} />
                     </svg>
                   </div>
                 ) : null}
