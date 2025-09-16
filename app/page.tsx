@@ -420,118 +420,112 @@ export default function Home() {
           } as CSSProperties
         }
       >
-        <span className="hero__badge">
-          <span className="hero__badge-heading">
-            <span className="hero__pulse" aria-hidden />
+        <div className="hero__intro">
+          <span className="hero__badge">
             <span className="hero__badge-text">живой календарь уик-эндов</span>
+            <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
           </span>
-          <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
-        </span>
-        <h1 className="hero__title">
-          Ближайшие квалификации и гонки — {SERIES_TITLE || 'F1 / F2 / F3'}
-        </h1>
-        <p className="hero__subtitle">
-          Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте
-          горизонтом просмотра и следите за временем старта в собственном часовом поясе.
-        </p>
-        <div className="hero__footer">
-          <div className="hero__footer-column hero__footer-column--series">
-            <div className="control-panel__group control-panel__group--series">
-              <div className="control-panel__group-header">
-                <span className="control-panel__label">Серии</span>
-                <span
-                  className="control-panel__selection"
-                  aria-live="polite"
-                  data-empty={!hasActiveSeries}
-                >
-                  {activeSeriesSelection}
-                </span>
-              </div>
-              <div className="series-chips">
-                {SERIES_IDS.map(series => {
-                  const definition = SERIES_DEFINITIONS[series];
-                  return (
-                    <label
-                      key={series}
-                      className="series-chip"
-                      data-active={visibleSeries[series]}
-                      style={
-                        {
-                          '--chip-color': definition.accentColor,
-                          '--chip-rgb': definition.accentRgb,
-                        } as CSSProperties
-                      }
-                    >
-                      <input
-                        type="checkbox"
-                        checked={visibleSeries[series]}
-                        onChange={() =>
-                          setVisibleSeries(prev => ({
-                            ...prev,
-                            [series]: !prev[series],
-                          }))
-                        }
-                      />
-                      <span className="series-chip__indicator" aria-hidden />
-                      <span>{definition.label}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className="hero__footer-column hero__footer-column--stat">
-            <div className="hero__stat hero__stat--accent">
-              <span className="hero__stat-label">Ближайший старт</span>
-              {nextEvent && nextLocal ? (
-                <>
-                  <span className="hero__stat-value">{nextLocal.toFormat('dd LLL • HH:mm')}</span>
-                  <span className="hero__stat-meta">
-                    {nextSeriesLabel} · {nextDescriptor}
+          <h1 className="hero__title">
+            Ближайшие квалификации и гонки — {SERIES_TITLE || 'F1 / F2 / F3'}
+          </h1>
+          <p className="hero__subtitle">
+            Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте
+            горизонтом просмотра и следите за временем старта в собственном часовом поясе.
+          </p>
+        </div>
+        <div className="hero__layout">
+          <div className="hero__column">
+            <div className="hero-card">
+              <div className="hero-card__section">
+                <div className="hero-card__section-header">
+                  <span className="control-panel__label">Серии</span>
+                  <span
+                    className="control-panel__selection"
+                    aria-live="polite"
+                    data-empty={!hasActiveSeries}
+                  >
+                    {activeSeriesSelection}
                   </span>
-                  {nextCountdown && (
-                    <span className="hero__stat-meta hero__stat-meta--highlight">
-                      {nextCountdown}
-                    </span>
-                  )}
-                </>
-              ) : (
-                <>
-                  <span className="hero__stat-value">Нет событий</span>
-                  <span className="hero__stat-meta">Попробуйте расширить период</span>
-                </>
-              )}
-            </div>
-          </div>
-
-          <div className="hero__footer-column hero__footer-column--period">
-            <div className="hero__period-card">
-              <div className="hero__period-card-header">
-                <div className="hero__period-card-controls">
-                  <span className="control-panel__label">Период обзора</span>
-                  <div className="period-buttons">
-                    {PERIOD_OPTIONS.map(opt => (
-                      <button
-                        key={opt.label}
-                        type="button"
-                        className="period-button"
-                        data-active={hours === opt.value}
-                        onClick={() => setHours(opt.value)}
+                </div>
+                <div className="series-chips">
+                  {SERIES_IDS.map(series => {
+                    const definition = SERIES_DEFINITIONS[series];
+                    return (
+                      <label
+                        key={series}
+                        className="series-chip"
+                        data-active={visibleSeries[series]}
+                        style={
+                          {
+                            '--chip-color': definition.accentColor,
+                            '--chip-rgb': definition.accentRgb,
+                          } as CSSProperties
+                        }
                       >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
+                        <input
+                          type="checkbox"
+                          checked={visibleSeries[series]}
+                          onChange={() =>
+                            setVisibleSeries(prev => ({
+                              ...prev,
+                              [series]: !prev[series],
+                            }))
+                          }
+                        />
+                        <span className="series-chip__indicator" aria-hidden />
+                        <span>{definition.label}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
-              <div className="hero__event-summary">
-                <span className="hero__event-summary-label">Событий в окне</span>
-                <div className="hero__event-summary-values">
+              <div className="hero-card__section">
+                <div className="hero-card__section-header">
+                  <span className="control-panel__label">Период обзора</span>
+                </div>
+                <div className="period-buttons">
+                  {PERIOD_OPTIONS.map(opt => (
+                    <button
+                      key={opt.label}
+                      type="button"
+                      className="period-button"
+                      data-active={hours === opt.value}
+                      onClick={() => setHours(opt.value)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="hero__event-summary">
+                  <span className="hero__event-summary-label">Событий в окне</span>
                   <span className="hero__event-summary-value">{filtered.length}</span>
                   <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="hero__column">
+            <div className="hero-card hero-card--summary">
+              <span className="hero-card__label">Ближайший старт</span>
+              {nextEvent && nextLocal ? (
+                <>
+                  <span className="hero-card__value">{nextLocal.toFormat('dd LLL • HH:mm')}</span>
+                  <span className="hero-card__meta">{nextSeriesLabel}</span>
+                  <span className="hero-card__meta hero-card__meta--muted">{nextDescriptor}</span>
+                  {nextCountdown ? (
+                    <span className="hero-card__meta hero-card__meta--accent">
+                      {nextCountdown}
+                    </span>
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <span className="hero-card__value">Нет событий</span>
+                  <span className="hero-card__meta hero-card__meta--muted">
+                    Попробуйте расширить период
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>
