@@ -84,6 +84,7 @@ function normalizeSession(raw: string): Row['session'] | undefined {
     return 'Sprint';
   }
   if (lower.includes('qual') || /^Q\d+$/.test(upper)) return 'Qualifying';
+  if (lower.includes('feature')) return 'Race';
   if (lower.includes('race') || upper === 'RAC' || lower === 'grand prix' || upper === 'GP') return 'Race';
   return undefined;
 }
