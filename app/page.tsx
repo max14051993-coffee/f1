@@ -12,6 +12,16 @@ type SeriesDefinition = {
   logoAsset?: string;
 };
 
+const ASSET_PREFIX = (process.env.NEXT_PUBLIC_ASSET_PREFIX ?? '').replace(/\/$/, '');
+
+function prefixAssetPath(asset?: string) {
+  if (!asset) return undefined;
+  if (asset.startsWith('http://') || asset.startsWith('https://')) return asset;
+  if (!ASSET_PREFIX) return asset;
+  if (asset.startsWith('/')) return `${ASSET_PREFIX}${asset}`;
+  return `${ASSET_PREFIX}/${asset}`;
+}
+
 const SERIES_DEFINITIONS = {
   F1: {
     label: 'F1',
@@ -236,6 +246,7 @@ function parseICS(ics: string): Row[] {
 function SeriesLogo({ series }: { series: SeriesId }) {
   const definition = SERIES_DEFINITIONS[series];
   const { label, logoBackground, logoAsset, accentColor } = definition;
+  const resolvedLogoAsset = useMemo(() => prefixAssetPath(logoAsset), [logoAsset]);
 
   const defaultText = (
     <text
@@ -262,15 +273,15 @@ function SeriesLogo({ series }: { series: SeriesId }) {
       style={{ display: 'block' }}
     >
       <rect x={0} y={0} width={56} height={24} rx={6} fill={logoBackground} />
-      {logoAsset ? (
+      {resolvedLogoAsset ? (
         <image
           x={0}
           y={0}
           width={56}
           height={24}
           preserveAspectRatio="xMidYMid meet"
-          href={logoAsset}
-          xlinkHref={logoAsset}
+          href={resolvedLogoAsset}
+          xlinkHref={resolvedLogoAsset}
         />
       ) : (
         defaultText
