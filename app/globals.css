@@ -161,10 +161,12 @@ button {
 .hero__badge {
   position: relative;
   z-index: 1;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   align-self: flex-start;
+  width: 100%;
+  max-width: 620px;
   padding: 10px 18px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -175,6 +177,15 @@ button {
   font-weight: 700;
   color: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(12px);
+  flex-wrap: wrap;
+}
+
+.hero__badge-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .hero__badge-text {
@@ -185,11 +196,16 @@ button {
 .hero__badge-timezone {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 6px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: none;
-  color: rgba(255, 255, 255, 0.72);
+  margin-left: auto;
+  flex: 1 1 220px;
+  min-width: 0;
+  color: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: right;
 }
 
 .hero__badge-timezone::before {

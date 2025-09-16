@@ -332,8 +332,10 @@ export default function Home() {
         }
       >
         <span className="hero__badge">
-          <span className="hero__pulse" aria-hidden />
-          <span className="hero__badge-text">живой календарь уик-эндов</span>
+          <span className="hero__badge-heading">
+            <span className="hero__pulse" aria-hidden />
+            <span className="hero__badge-text">живой календарь уик-эндов</span>
+          </span>
           <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
         </span>
         <h1 className="hero__title">
