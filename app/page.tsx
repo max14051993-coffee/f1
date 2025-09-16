@@ -285,9 +285,11 @@ export default function Home() {
   const activeSeries = (Object.entries(visibleSeries) as [SeriesId, boolean][])
     .filter(([, active]) => active)
     .map(([series]) => series);
-  const activeSeriesLabel = activeSeries.length
-    ? activeSeries.map(series => SERIES_DEFINITIONS[series].label).join(' · ')
-    : 'Нет';
+  const activeSeriesNames = activeSeries.map(series => SERIES_DEFINITIONS[series].label);
+  const hasActiveSeries = activeSeriesNames.length > 0;
+  const activeSeriesSelection = hasActiveSeries
+    ? `Выбрано: ${activeSeriesNames.join(' · ')}`
+    : 'Все серии скрыты';
   const selectedPeriodLabel =
     PERIOD_OPTIONS.find(opt => opt.value === hours)?.label ?? '30 дней';
   const nextEvent = filtered[0];
@@ -336,100 +338,107 @@ export default function Home() {
           Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте
           горизонтом просмотра и следите за временем старта в собственном часовом поясе.
         </p>
-        <div className="hero__stats">
-          <div className="hero__stat">
-            <span className="hero__stat-label">Активные серии</span>
-            <span className="hero__stat-value">{activeSeriesLabel}</span>
-            <span className="hero__stat-meta">переключите ниже</span>
-          </div>
-          <div className="hero__stat hero__stat--accent">
-            <span className="hero__stat-label">Ближайший старт</span>
-            {nextEvent && nextLocal ? (
-              <>
-                <span className="hero__stat-value">{nextLocal.toFormat('dd LLL • HH:mm')}</span>
-                <span className="hero__stat-meta">
-                  {nextSeriesLabel} · {nextDescriptor}
-                </span>
-                {nextCountdown && (
-                  <span className="hero__stat-meta hero__stat-meta--highlight">
-                    {nextCountdown}
-                  </span>
-                )}
-              </>
-            ) : (
-              <>
-                <span className="hero__stat-value">Нет событий</span>
-                <span className="hero__stat-meta">Попробуйте расширить период</span>
-              </>
-            )}
-          </div>
-          <div className="hero__stat">
-            <span className="hero__stat-label">Событий в окне</span>
-            <span className="hero__stat-value">{filtered.length}</span>
-            <span className="hero__stat-meta">{selectedPeriodLabel}</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="control-panel">
-        <div className="hero__controls">
-          <div className="control-panel__group">
-            <span className="control-panel__label">Серии</span>
-            <div className="series-chips">
-              {SERIES_IDS.map(series => {
-                const definition = SERIES_DEFINITIONS[series];
-                return (
-                  <label
-                    key={series}
-                    className="series-chip"
-                    data-active={visibleSeries[series]}
-                    style={
-                      {
-                        '--chip-color': definition.accentColor,
-                        '--chip-rgb': definition.accentRgb,
-                      } as CSSProperties
-                    }
-                  >
-                    <input
-                      type="checkbox"
-                      checked={visibleSeries[series]}
-                      onChange={() =>
-                        setVisibleSeries(prev => ({
-                          ...prev,
-                          [series]: !prev[series],
-                        }))
-                      }
-                    />
-                    <span className="series-chip__indicator" aria-hidden />
-                    <span>{definition.label}</span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="control-panel__group">
-            <span className="control-panel__label">Период обзора</span>
-            <div className="period-buttons">
-              {PERIOD_OPTIONS.map(opt => (
-                <button
-                  key={opt.label}
-                  type="button"
-                  className="period-button"
-                  data-active={hours === opt.value}
-                  onClick={() => setHours(opt.value)}
+        <div className="hero__footer">
+          <div className="hero__footer-column hero__footer-column--series">
+            <div className="control-panel__group control-panel__group--series">
+              <div className="control-panel__group-header">
+                <span className="control-panel__label">Серии</span>
+                <span
+                  className="control-panel__selection"
+                  aria-live="polite"
+                  data-empty={!hasActiveSeries}
                 >
-                  {opt.label}
-                </button>
-              ))}
+                  {activeSeriesSelection}
+                </span>
+              </div>
+              <div className="series-chips">
+                {SERIES_IDS.map(series => {
+                  const definition = SERIES_DEFINITIONS[series];
+                  return (
+                    <label
+                      key={series}
+                      className="series-chip"
+                      data-active={visibleSeries[series]}
+                      style={
+                        {
+                          '--chip-color': definition.accentColor,
+                          '--chip-rgb': definition.accentRgb,
+                        } as CSSProperties
+                      }
+                    >
+                      <input
+                        type="checkbox"
+                        checked={visibleSeries[series]}
+                        onChange={() =>
+                          setVisibleSeries(prev => ({
+                            ...prev,
+                            [series]: !prev[series],
+                          }))
+                        }
+                      />
+                      <span className="series-chip__indicator" aria-hidden />
+                      <span>{definition.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          <div className="control-panel__group">
-            <span className="control-panel__label">Часовой пояс</span>
-            <div className="timezone-chip">
-              <span className="timezone-chip__dot" aria-hidden />
-              <span>{userTz}</span>
+          <div className="hero__footer-column hero__footer-column--stat">
+            <div className="hero__stat hero__stat--accent">
+              <span className="hero__stat-label">Ближайший старт</span>
+              {nextEvent && nextLocal ? (
+                <>
+                  <span className="hero__stat-value">{nextLocal.toFormat('dd LLL • HH:mm')}</span>
+                  <span className="hero__stat-meta">
+                    {nextSeriesLabel} · {nextDescriptor}
+                  </span>
+                  {nextCountdown && (
+                    <span className="hero__stat-meta hero__stat-meta--highlight">
+                      {nextCountdown}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span className="hero__stat-value">Нет событий</span>
+                  <span className="hero__stat-meta">Попробуйте расширить период</span>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="hero__footer-column hero__footer-column--period">
+            <div className="control-panel__group">
+              <span className="control-panel__label">Период обзора</span>
+              <div className="period-buttons">
+                {PERIOD_OPTIONS.map(opt => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    className="period-button"
+                    data-active={hours === opt.value}
+                    onClick={() => setHours(opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="hero__footer-meta">
+              <div className="hero__event-summary">
+                <span className="hero__event-summary-label">Событий в окне</span>
+                <span className="hero__event-summary-value">{filtered.length}</span>
+                <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
+              </div>
+              <div className="hero__timezone">
+                <span className="control-panel__label">Часовой пояс</span>
+                <div className="timezone-chip">
+                  <span className="timezone-chip__dot" aria-hidden />
+                  <span>{userTz}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
