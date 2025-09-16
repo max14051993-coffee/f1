@@ -82,6 +82,129 @@ type Row = {
   startsAtUtc: string; // ISO
 };
 
+type LanguageCode = 'en' | 'ru';
+
+type TranslationBundle = {
+  heroBadge: string;
+  heroTitle: (seriesTitle: string) => string;
+  heroSubtitle: string;
+  seriesLabel: string;
+  activeSelection: (names: string[]) => string;
+  allSeriesHidden: string;
+  reviewPeriodLabel: string;
+  eventsInWindowLabel: string;
+  nextStartLabel: string;
+  noEvents: string;
+  extendPeriodHint: string;
+  countdownStart: (relative: string) => string;
+  countdownFinish: (relative: string) => string;
+  countdownScheduled: string;
+  trackLayoutLabel: (parts: string[]) => string;
+  languageLabel: string;
+  seriesLogoAria: (series: string) => string;
+  upcomingEventDescriptorFallback: string;
+};
+
+type LanguageDefinition = {
+  code: LanguageCode;
+  name: string;
+  locale: string;
+  periodOptions: { label: string; value?: number }[];
+  sessionLabels: Record<Row['session'], string>;
+  texts: TranslationBundle;
+};
+
+const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
+  ru: {
+    code: 'ru',
+    name: 'Русский',
+    locale: 'ru',
+    periodOptions: [
+      { label: '24 часа', value: 24 },
+      { label: '48 часов', value: 48 },
+      { label: '72 часа', value: 72 },
+      { label: '7 дней', value: 168 },
+      { label: '30 дней' },
+    ],
+    sessionLabels: {
+      Qualifying: 'Квалификация',
+      Race: 'Гонка',
+      Sprint: 'Спринт',
+    },
+    texts: {
+      heroBadge: 'живой календарь уик-эндов',
+      heroTitle: seriesTitle =>
+        `Ближайшие квалификации и гонки — ${seriesTitle || 'F1 / F2 / F3 / MotoGP'}`,
+      heroSubtitle:
+        'Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте горизонтом просмотра и следите за временем старта в собственном часовом поясе.',
+      seriesLabel: 'Серии',
+      activeSelection: names => `Выбрано: ${names.join(' · ')}`,
+      allSeriesHidden: 'Все серии скрыты',
+      reviewPeriodLabel: 'Период обзора',
+      eventsInWindowLabel: 'Событий в окне',
+      nextStartLabel: 'Ближайший старт',
+      noEvents: 'Нет событий',
+      extendPeriodHint: 'Попробуйте расширить период',
+      countdownStart: relative => `Старт ${relative}`,
+      countdownFinish: relative => `Финиш ${relative}`,
+      countdownScheduled: 'По расписанию',
+      trackLayoutLabel: parts =>
+        parts.length ? `Схема автодрома: ${parts.join(' — ')}` : 'Схема автодрома',
+      languageLabel: 'Язык',
+      seriesLogoAria: series => `Логотип ${series}`,
+      upcomingEventDescriptorFallback: 'Нет событий',
+    },
+  },
+  en: {
+    code: 'en',
+    name: 'English',
+    locale: 'en',
+    periodOptions: [
+      { label: '24 hours', value: 24 },
+      { label: '48 hours', value: 48 },
+      { label: '72 hours', value: 72 },
+      { label: '7 days', value: 168 },
+      { label: '30 days' },
+    ],
+    sessionLabels: {
+      Qualifying: 'Qualifying',
+      Race: 'Race',
+      Sprint: 'Sprint',
+    },
+    texts: {
+      heroBadge: 'live weekend calendar',
+      heroTitle: seriesTitle =>
+        `Upcoming qualifying & races — ${seriesTitle || 'F1 / F2 / F3 / MotoGP'}`,
+      heroSubtitle:
+        'Stay in sync with race weekends: filter the series, adjust the viewing window, and track session times in your own timezone.',
+      seriesLabel: 'Series',
+      activeSelection: names => `Selected: ${names.join(' · ')}`,
+      allSeriesHidden: 'All series hidden',
+      reviewPeriodLabel: 'Viewing window',
+      eventsInWindowLabel: 'Events in window',
+      nextStartLabel: 'Next session',
+      noEvents: 'No events',
+      extendPeriodHint: 'Try expanding the window',
+      countdownStart: relative => `Starts ${relative}`,
+      countdownFinish: relative => `Finished ${relative}`,
+      countdownScheduled: 'On schedule',
+      trackLayoutLabel: parts =>
+        parts.length ? `Circuit layout: ${parts.join(' — ')}` : 'Circuit layout',
+      languageLabel: 'Language',
+      seriesLogoAria: series => `${series} logo`,
+      upcomingEventDescriptorFallback: 'No events',
+    },
+  },
+} as const;
+
+const LANGUAGE_CODES = Object.keys(LANGUAGE_DEFINITIONS) as LanguageCode[];
+const DEFAULT_LANGUAGE: LanguageCode = 'ru';
+const LANGUAGE_STORAGE_KEY = 'schedule-language';
+
+function isLanguageCode(value: string): value is LanguageCode {
+  return Object.prototype.hasOwnProperty.call(LANGUAGE_DEFINITIONS, value);
+}
+
 function normalizeSession(raw: string): Row['session'] | undefined {
   const trimmed = raw.trim();
   if (!trimmed.length) return undefined;
@@ -243,10 +366,11 @@ function parseICS(ics: string): Row[] {
   return events;
 }
 
-function SeriesLogo({ series }: { series: SeriesId }) {
+function SeriesLogo({ series, ariaLabel }: { series: SeriesId; ariaLabel?: string }) {
   const definition = SERIES_DEFINITIONS[series];
   const { label, logoBackground, logoAsset, accentColor } = definition;
   const resolvedLogoAsset = useMemo(() => prefixAssetPath(logoAsset), [logoAsset]);
+  const accessibleLabel = ariaLabel ?? `${label} logo`;
 
   const defaultText = (
     <text
@@ -269,7 +393,7 @@ function SeriesLogo({ series }: { series: SeriesId }) {
       height={24}
       viewBox="0 0 56 24"
       role="img"
-      aria-label={`${label} logo`}
+      aria-label={accessibleLabel}
       style={{ display: 'block' }}
     >
       <rect x={0} y={0} width={56} height={24} rx={6} fill={logoBackground} />
@@ -292,14 +416,6 @@ function SeriesLogo({ series }: { series: SeriesId }) {
 
 const SERIES_TITLE = SERIES_IDS.map(series => SERIES_DEFINITIONS[series].label).join(' / ');
 
-const PERIOD_OPTIONS: { label: string; value?: number }[] = [
-  { label: '24 часа', value: 24 },
-  { label: '48 часов', value: 48 },
-  { label: '72 часа', value: 72 },
-  { label: '7 дней', value: 168 },
-  { label: '30 дней', value: undefined },
-];
-
 export default function Home() {
   const [rows, setRows] = useState<Row[]>([]);
   const [visibleSeries, setVisibleSeries] = useState<Record<SeriesId, boolean>>(() =>
@@ -307,6 +423,7 @@ export default function Home() {
   );
   const [hours, setHours] = useState<number | undefined>(undefined);
   const [userTz, setUserTz] = useState<string>('UTC');
+  const [language, setLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
 
   useEffect(() => {
     async function load() {
@@ -317,6 +434,35 @@ export default function Home() {
     load().catch(console.error);
     setUserTz(DateTime.local().zoneName);
   }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (stored && isLanguageCode(stored)) {
+      setLanguage(stored);
+      return;
+    }
+
+    const browserLanguage =
+      (typeof navigator !== 'undefined' && navigator.languages && navigator.languages[0]) ||
+      (typeof navigator !== 'undefined' ? navigator.language : undefined);
+    if (!browserLanguage) return;
+
+    const base = browserLanguage.split('-')[0]?.toLowerCase();
+    if (!base) return;
+
+    if (isLanguageCode(base)) {
+      setLanguage(base);
+    } else {
+      setLanguage('en');
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+  }, [language]);
+
+  const languageDefinition = LANGUAGE_DEFINITIONS[language];
+  const { texts, periodOptions, sessionLabels, locale } = languageDefinition;
 
   const filtered = useMemo(() => {
     let arr = rows.filter(r => visibleSeries[r.series]);
@@ -333,7 +479,7 @@ export default function Home() {
       .sort((a, b) => Date.parse(a.startsAtUtc) - Date.parse(b.startsAtUtc));
   }, [rows, visibleSeries, hours]);
 
-  const nowLocal = DateTime.local().setZone(userTz);
+  const nowLocal = DateTime.local().setZone(userTz).setLocale(locale);
   const timezoneOffset = nowLocal.toFormat('ZZ');
   const timezoneBadgeLabel = userTz?.trim().length
     ? `${userTz} (UTC${timezoneOffset})`
@@ -344,30 +490,30 @@ export default function Home() {
   const activeSeriesNames = activeSeries.map(series => SERIES_DEFINITIONS[series].label);
   const hasActiveSeries = activeSeriesNames.length > 0;
   const activeSeriesSelection = hasActiveSeries
-    ? `Выбрано: ${activeSeriesNames.join(' · ')}`
-    : 'Все серии скрыты';
+    ? texts.activeSelection(activeSeriesNames)
+    : texts.allSeriesHidden;
   const selectedPeriodLabel =
-    PERIOD_OPTIONS.find(opt => opt.value === hours)?.label ?? '30 дней';
+    periodOptions.find(opt => opt.value === hours)?.label ?? periodOptions[periodOptions.length - 1]?.label ?? '';
   const nextEvent = filtered[0];
   const nextSeriesDefinition = nextEvent ? SERIES_DEFINITIONS[nextEvent.series] : undefined;
   const nextSeriesLabel = nextSeriesDefinition?.label ?? nextEvent?.series ?? '';
   const nextLocal = nextEvent
     ? DateTime.fromISO(nextEvent.startsAtUtc, { zone: 'utc' })
         .setZone(userTz)
-        .setLocale('ru')
+        .setLocale(locale)
     : null;
   const nextRelative = nextLocal
-    ? nextLocal.toRelative({ base: nowLocal, locale: 'ru', style: 'long' })
+    ? nextLocal.toRelative({ base: nowLocal, locale, style: 'long' })
     : null;
   const nextCountdown =
     nextLocal && nextRelative
       ? nextLocal > nowLocal
-        ? `Старт ${nextRelative}`
-        : `Финиш ${nextRelative}`
+        ? texts.countdownStart(nextRelative)
+        : texts.countdownFinish(nextRelative)
       : null;
   const nextDescriptor = nextEvent
     ? `${nextEvent.round}${nextEvent.country ? ` • ${nextEvent.country}` : ''}`
-    : 'Нет событий';
+    : texts.upcomingEventDescriptorFallback;
   const heroSeriesDefinition = nextSeriesDefinition ?? FALLBACK_SERIES_DEFINITION;
   const heroAccentColor = heroSeriesDefinition?.accentColor ?? '#e10600';
   const heroAccentRgb = heroSeriesDefinition?.accentRgb ?? '225, 6, 0';
@@ -385,23 +531,46 @@ export default function Home() {
       >
         <div className="hero__intro">
           <span className="hero__badge">
-            <span className="hero__badge-text">живой календарь уик-эндов</span>
+            <span className="hero__badge-text">{texts.heroBadge}</span>
             <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
           </span>
           <h1 className="hero__title">
-            Ближайшие квалификации и гонки — {SERIES_TITLE || 'F1 / F2 / F3'}
+            {texts.heroTitle(SERIES_TITLE || 'F1 / F2 / F3 / MotoGP')}
           </h1>
-          <p className="hero__subtitle">
-            Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте
-            горизонтом просмотра и следите за временем старта в собственном часовом поясе.
-          </p>
+          <p className="hero__subtitle">{texts.heroSubtitle}</p>
         </div>
         <div className="hero__layout">
           <div className="hero__column">
             <div className="hero-card">
               <div className="hero-card__section">
                 <div className="hero-card__section-header">
-                  <span className="control-panel__label">Серии</span>
+                  <label className="control-panel__label" htmlFor="language-select">
+                    {texts.languageLabel}
+                  </label>
+                </div>
+                <div className="language-select">
+                  <select
+                    id="language-select"
+                    className="language-select__dropdown"
+                    value={language}
+                    onChange={event => {
+                      const value = event.target.value;
+                      if (isLanguageCode(value)) {
+                        setLanguage(value);
+                      }
+                    }}
+                  >
+                    {LANGUAGE_CODES.map(code => (
+                      <option key={code} value={code}>
+                        {LANGUAGE_DEFINITIONS[code].name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="hero-card__section">
+                <div className="hero-card__section-header">
+                  <span className="control-panel__label">{texts.seriesLabel}</span>
                   <span
                     className="control-panel__selection"
                     aria-live="polite"
@@ -444,10 +613,10 @@ export default function Home() {
               </div>
               <div className="hero-card__section">
                 <div className="hero-card__section-header">
-                  <span className="control-panel__label">Период обзора</span>
+                  <span className="control-panel__label">{texts.reviewPeriodLabel}</span>
                 </div>
                 <div className="period-buttons">
-                  {PERIOD_OPTIONS.map(opt => (
+                  {periodOptions.map(opt => (
                     <button
                       key={opt.label}
                       type="button"
@@ -460,7 +629,7 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="hero__event-summary">
-                  <span className="hero__event-summary-label">Событий в окне</span>
+                  <span className="hero__event-summary-label">{texts.eventsInWindowLabel}</span>
                   <span className="hero__event-summary-value">{filtered.length}</span>
                   <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
                 </div>
@@ -469,7 +638,7 @@ export default function Home() {
           </div>
           <div className="hero__column">
             <div className="hero-card hero-card--summary">
-              <span className="hero-card__label">Ближайший старт</span>
+              <span className="hero-card__label">{texts.nextStartLabel}</span>
               {nextEvent && nextLocal ? (
                 <>
                   <span className="hero-card__value">{nextLocal.toFormat('dd LLL • HH:mm')}</span>
@@ -483,9 +652,9 @@ export default function Home() {
                 </>
               ) : (
                 <>
-                  <span className="hero-card__value">Нет событий</span>
+                  <span className="hero-card__value">{texts.noEvents}</span>
                   <span className="hero-card__meta hero-card__meta--muted">
-                    Попробуйте расширить период
+                    {texts.extendPeriodHint}
                   </span>
                 </>
               )}
@@ -500,17 +669,17 @@ export default function Home() {
           const accentColor = definition.accentColor;
           const accentRgb = definition.accentRgb;
           const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(userTz);
-          const localized = local.setLocale('ru');
+          const localized = local.setLocale(locale);
           const isoLocal = local.toISO();
           const timeLabel = localized.toFormat('HH:mm');
           const dayLabel = localized.toFormat('ccc');
           const dateLabel = localized.toFormat('dd LLL');
-          const relative = localized.toRelative({ base: nowLocal, locale: 'ru', style: 'long' });
+          const relative = localized.toRelative({ base: nowLocal, locale, style: 'long' });
           const countdown = relative
             ? localized > nowLocal
-              ? `Старт ${relative}`
-              : `Финиш ${relative}`
-            : 'По расписанию';
+              ? texts.countdownStart(relative)
+              : texts.countdownFinish(relative)
+            : texts.countdownScheduled;
           const track = getTrackLayout(r.circuit, r.round);
           const trackLabelParts = Array.from(
             new Set(
@@ -519,9 +688,8 @@ export default function Home() {
               )
             )
           );
-          const trackLabel = trackLabelParts.length
-            ? `Схема автодрома: ${trackLabelParts.join(' — ')}`
-            : 'Схема автодрома';
+          const trackLabel = texts.trackLayoutLabel(trackLabelParts);
+          const sessionLabel = sessionLabels[r.session] ?? r.session;
 
           return (
             <li
@@ -538,7 +706,10 @@ export default function Home() {
                 <div className="event-card__top">
                   <div className="event-card__series">
                     <div className="event-card__logo">
-                      <SeriesLogo series={r.series} />
+                      <SeriesLogo
+                        series={r.series}
+                        ariaLabel={texts.seriesLogoAria(definition.label)}
+                      />
                     </div>
                     <span className="event-card__series-pill">{definition.label}</span>
                   </div>
@@ -555,7 +726,7 @@ export default function Home() {
                 </div>
                 <div className="event-card__meta">
                   {r.circuit ? <span>{r.circuit}</span> : null}
-                  <span>{r.session}</span>
+                  <span>{sessionLabel}</span>
                 </div>
                 {track ? (
                   <div className="event-card__track">
