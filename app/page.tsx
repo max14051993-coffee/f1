@@ -81,6 +81,27 @@ const SERIES_DEFINITIONS = {
       </>
     ),
   },
+  MotoGP: {
+    label: 'MotoGP',
+    accentColor: '#ff1801',
+    accentRgb: '255, 24, 1',
+    logoBackground: '#ff1801',
+    logoAccent: '#fff',
+    renderLogoContent: ({ label }) => (
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#fff"
+        fontFamily="var(--font-display, 'Manrope')"
+        fontSize={13}
+        letterSpacing={1}
+      >
+        {label}
+      </text>
+    ),
+  },
 } as const satisfies Record<string, SeriesDefinition>;
 
 type SeriesId = keyof typeof SERIES_DEFINITIONS;
@@ -113,13 +134,18 @@ type Row = {
 };
 
 function normalizeSession(raw: string): Row['session'] | undefined {
-  const s = raw.toLowerCase();
-  if (s.includes('sprint')) {
-    if (s.includes('qual')) return 'Qualifying';
+  const trimmed = raw.trim();
+  if (!trimmed.length) return undefined;
+
+  const lower = trimmed.toLowerCase();
+  const upper = trimmed.toUpperCase();
+
+  if (lower.includes('sprint') || upper === 'SPR') {
+    if (lower.includes('qual')) return 'Qualifying';
     return 'Sprint';
   }
-  if (s.includes('qual')) return 'Qualifying';
-  if (s.includes('race')) return 'Race';
+  if (lower.includes('qual') || /^Q\d+$/.test(upper)) return 'Qualifying';
+  if (lower.includes('race') || upper === 'RAC' || lower === 'grand prix' || upper === 'GP') return 'Race';
   return undefined;
 }
 
@@ -134,6 +160,12 @@ function parseICS(ics: string): Row[] {
       const summary = current.SUMMARY;
       const dtstart = current.DTSTART;
       if (summary && dtstart) {
+        const categories = current.CATEGORIES
+          ? current.CATEGORIES.split(',').map(part => part.trim()).filter(Boolean)
+          : [];
+        const isMotoGpEvent =
+          categories.some(cat => cat.toLowerCase() === 'motogp') || /^MotoGP\b/i.test(summary);
+
         if (summary.includes('|')) {
           const parts = summary.split('|').map(part => part.trim());
           if (parts.length >= 5) {
@@ -146,8 +178,8 @@ function parseICS(ics: string): Row[] {
               dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss", { zone: tz });
             }
             if (dt.isValid) {
-              const sessionCandidate = sessionRaw.trim();
-              if (!['Qualifying', 'Race', 'Sprint'].includes(sessionCandidate)) continue;
+              const session = normalizeSession(sessionRaw);
+              if (!session) continue;
 
               const round = roundRaw.trim();
               const country = countryRaw.trim();
@@ -158,10 +190,67 @@ function parseICS(ics: string): Row[] {
                 round,
                 country: country.length ? country : undefined,
                 circuit: circuit.length ? circuit : undefined,
-                session: sessionCandidate as Row['session'],
+                session,
                 startsAtUtc: dt.toUTC().toISO()!,
               });
             }
+          }
+        } else if (isMotoGpEvent) {
+          let dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' });
+          if (!dt.isValid) {
+            const tz = current.DTSTART_TZID || 'utc';
+            dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss", { zone: tz });
+          }
+          if (dt.isValid) {
+            const [rawDetails, rawRoundCandidate] = summary.split(/\s+[–-]\s+/);
+            const detailPart = rawDetails ?? summary;
+            const sessionCode = detailPart.replace(/^MotoGP\s*/i, '').trim();
+            const session = normalizeSession(sessionCode);
+            if (!session) continue;
+
+            const roundCandidate = rawRoundCandidate?.trim() ?? '';
+            const location = current.LOCATION
+              ?.replace(/\\,/g, ',')
+              .replace(/\\\\/g, '\\');
+            const locationParts = location
+              ? location.split(',').map(part => part.trim()).filter(Boolean)
+              : [];
+            const circuit = locationParts[0];
+            const country = locationParts.length > 1 ? locationParts.slice(1).join(', ') : undefined;
+
+            const descriptionLines = current.DESCRIPTION
+              ? current.DESCRIPTION.split('\\n').map(line => line.trim()).filter(Boolean)
+              : [];
+            let round = roundCandidate;
+            if (!round.length) {
+              const fallbackLine =
+                descriptionLines.find(line => /grand prix/i.test(line)) ?? descriptionLines[0];
+              if (fallbackLine) {
+                round = fallbackLine
+                  .replace(/^MotoGP\s*/i, '')
+                  .replace(/^PT\s+/i, '')
+                  .trim();
+              } else if (country) {
+                round = `${country} MotoGP`;
+              } else if (circuit) {
+                round = circuit;
+              } else {
+                round = 'MotoGP';
+              }
+            }
+            round = round.replace(/\s+/g, ' ').trim();
+            if (!round.length) round = 'MotoGP';
+
+            const series: SeriesId = 'MotoGP';
+
+            events.push({
+              series,
+              round,
+              country: country && country.length ? country : undefined,
+              circuit: circuit && circuit.length ? circuit : undefined,
+              session,
+              startsAtUtc: dt.toUTC().toISO()!,
+            });
           }
         } else {
           const [rawEvent, rawSession] = summary.split(' - ');
