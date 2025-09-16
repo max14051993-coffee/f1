@@ -384,6 +384,35 @@ button {
   gap: 12px;
 }
 
+.language-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.language-select__dropdown {
+  min-width: 140px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 18, 30, 0.6);
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.language-select__dropdown:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.language-select__dropdown:focus-visible {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
 .series-chip {
   position: relative;
   display: inline-flex;
