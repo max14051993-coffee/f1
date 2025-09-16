@@ -433,13 +433,6 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-                <div className="hero__timezone">
-                  <span className="control-panel__label">Часовой пояс</span>
-                  <div className="timezone-chip">
-                    <span className="timezone-chip__dot" aria-hidden />
-                    <span>{userTz}</span>
-                  </div>
-                </div>
               </div>
               <div className="hero__event-summary">
                 <span className="hero__event-summary-label">Событий в окне</span>
