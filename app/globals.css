@@ -268,7 +268,7 @@ button {
   min-width: 0;
 }
 
-.hero__event-summary {
+.hero__period-card {
   padding: 18px 20px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -276,7 +276,26 @@ button {
   backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 18px;
+}
+
+.hero__period-card-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero__event-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hero__event-summary-values {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 16px;
 }
 
 .hero__event-summary-label {

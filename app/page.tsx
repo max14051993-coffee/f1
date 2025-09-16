@@ -410,34 +410,36 @@ export default function Home() {
           </div>
 
           <div className="hero__footer-column hero__footer-column--period">
-            <div className="control-panel__group">
-              <span className="control-panel__label">Период обзора</span>
-              <div className="period-buttons">
-                {PERIOD_OPTIONS.map(opt => (
-                  <button
-                    key={opt.label}
-                    type="button"
-                    className="period-button"
-                    data-active={hours === opt.value}
-                    onClick={() => setHours(opt.value)}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+            <div className="hero__period-card">
+              <div className="hero__period-card-controls">
+                <span className="control-panel__label">Период обзора</span>
+                <div className="period-buttons">
+                  {PERIOD_OPTIONS.map(opt => (
+                    <button
+                      key={opt.label}
+                      type="button"
+                      className="period-button"
+                      data-active={hours === opt.value}
+                      onClick={() => setHours(opt.value)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="hero__footer-meta">
               <div className="hero__event-summary">
                 <span className="hero__event-summary-label">Событий в окне</span>
-                <span className="hero__event-summary-value">{filtered.length}</span>
-                <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
-              </div>
-              <div className="hero__timezone">
-                <span className="control-panel__label">Часовой пояс</span>
-                <div className="timezone-chip">
-                  <span className="timezone-chip__dot" aria-hidden />
-                  <span>{userTz}</span>
+                <div className="hero__event-summary-values">
+                  <span className="hero__event-summary-value">{filtered.length}</span>
+                  <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
                 </div>
+              </div>
+            </div>
+            <div className="hero__timezone">
+              <span className="control-panel__label">Часовой пояс</span>
+              <div className="timezone-chip">
+                <span className="timezone-chip__dot" aria-hidden />
+                <span>{userTz}</span>
               </div>
             </div>
           </div>
