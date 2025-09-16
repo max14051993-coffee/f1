@@ -493,7 +493,6 @@ export default function Home() {
           const timeLabel = localized.toFormat('HH:mm');
           const dayLabel = localized.toFormat('ccc');
           const dateLabel = localized.toFormat('dd LLL');
-          const tzLabel = localized.toFormat('ZZZZ');
           const relative = localized.toRelative({ base: nowLocal, locale: 'ru', style: 'long' });
           const countdown = relative
             ? localized > nowLocal
@@ -536,7 +535,6 @@ export default function Home() {
                     <span className="event-card__date">
                       {dayLabel}, {dateLabel}
                     </span>
-                    <span className="event-card__tz">{tzLabel}</span>
                   </time>
                 </div>
                 <div className="event-card__title">

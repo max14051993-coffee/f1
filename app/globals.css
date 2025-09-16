@@ -569,11 +569,6 @@ button {
   font-size: 0.85rem;
 }
 
-.event-card__tz {
-  font-size: 0.75rem;
-  opacity: 0.7;
-}
-
 .event-card__title {
   display: flex;
   flex-wrap: wrap;
