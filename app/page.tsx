@@ -282,6 +282,10 @@ export default function Home() {
   }, [rows, visibleSeries, hours]);
 
   const nowLocal = DateTime.local().setZone(userTz);
+  const timezoneOffset = nowLocal.toFormat('ZZ');
+  const timezoneBadgeLabel = userTz?.trim().length
+    ? `${userTz} (UTC${timezoneOffset})`
+    : `UTC${timezoneOffset}`;
   const activeSeries = (Object.entries(visibleSeries) as [SeriesId, boolean][])
     .filter(([, active]) => active)
     .map(([series]) => series);
@@ -329,7 +333,8 @@ export default function Home() {
       >
         <span className="hero__badge">
           <span className="hero__pulse" aria-hidden />
-          живой календарь уик-эндов
+          <span className="hero__badge-text">живой календарь уик-эндов</span>
+          <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
         </span>
         <h1 className="hero__title">
           Ближайшие квалификации и гонки — {SERIES_TITLE || 'F1 / F2 / F3'}

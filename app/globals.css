@@ -177,6 +177,29 @@ button {
   backdrop-filter: blur(12px);
 }
 
+.hero__badge-text {
+  display: inline-flex;
+  align-items: center;
+}
+
+.hero__badge-timezone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.hero__badge-timezone::before {
+  content: '•';
+  font-size: 0.9em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.56);
+  letter-spacing: normal;
+}
+
 .hero__pulse {
   width: 10px;
   height: 10px;
