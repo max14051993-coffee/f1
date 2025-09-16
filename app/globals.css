@@ -652,13 +652,13 @@ button {
 
 .event-card__track-outline {
   stroke: rgba(255, 255, 255, 0.2);
-  stroke-width: 70;
+  stroke-width: 48;
   opacity: 0.65;
 }
 
 .event-card__track-path {
   stroke: rgba(var(--accent-rgb), 0.85);
-  stroke-width: 38;
+  stroke-width: 26;
   filter: drop-shadow(0 24px 60px rgba(var(--accent-rgb), 0.45));
 }
 
