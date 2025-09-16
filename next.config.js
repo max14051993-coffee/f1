@@ -6,10 +6,15 @@ const repoName = parts[1] || '';
 const isUserSite = repoName === `${owner}.github.io`;
 const basePath = isUserSite ? '' : (repoName ? `/${repoName}` : '');
 
+const assetPrefix = basePath || '';
+
 module.exports = {
   output: 'export',
   basePath,
-  assetPrefix: basePath || '',
+  assetPrefix,
   images: { unoptimized: true },
   trailingSlash: true,
+  env: {
+    NEXT_PUBLIC_ASSET_PREFIX: assetPrefix,
+  },
 };
