@@ -136,6 +136,7 @@ type TranslationBundle = {
   countdownFinish: (relative: string) => string;
   countdownScheduled: string;
   trackLayoutLabel: (parts: string[]) => string;
+  trackLayoutUnavailable: string;
   languageLabel: string;
   seriesLogoAria: (series: string) => string;
   upcomingEventDescriptorFallback: string;
@@ -206,6 +207,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'По расписанию',
       trackLayoutLabel: parts =>
         parts.length ? `Схема автодрома: ${parts.join(' — ')}` : 'Схема автодрома',
+      trackLayoutUnavailable: 'Схема трассы появится позже',
       languageLabel: 'Язык',
       seriesLogoAria: series => `Логотип ${series}`,
       upcomingEventDescriptorFallback: 'Нет событий',
@@ -332,6 +334,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'On schedule',
       trackLayoutLabel: parts =>
         parts.length ? `Circuit layout: ${parts.join(' — ')}` : 'Circuit layout',
+      trackLayoutUnavailable: 'Layout preview coming soon',
       languageLabel: 'Language',
       seriesLogoAria: series => `${series} logo`,
       upcomingEventDescriptorFallback: 'No events',
@@ -458,6 +461,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'Según lo previsto',
       trackLayoutLabel: parts =>
         parts.length ? `Trazado del circuito: ${parts.join(' — ')}` : 'Trazado del circuito',
+      trackLayoutUnavailable: 'Trazado del circuito disponible pronto',
       languageLabel: 'Idioma',
       seriesLogoAria: series => `Logotipo de ${series}`,
       upcomingEventDescriptorFallback: 'Sin eventos',
@@ -584,6 +588,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'Selon le programme',
       trackLayoutLabel: parts =>
         parts.length ? `Tracé du circuit : ${parts.join(' — ')}` : 'Tracé du circuit',
+      trackLayoutUnavailable: 'Tracé du circuit bientôt disponible',
       languageLabel: 'Langue',
       seriesLogoAria: series => `Logo ${series}`,
       upcomingEventDescriptorFallback: 'Aucun événement',
@@ -710,6 +715,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'Planmäßig',
       trackLayoutLabel: parts =>
         parts.length ? `Streckenlayout: ${parts.join(' — ')}` : 'Streckenlayout',
+      trackLayoutUnavailable: 'Streckenlayout folgt in Kürze',
       languageLabel: 'Sprache',
       seriesLogoAria: series => `${series}-Logo`,
       upcomingEventDescriptorFallback: 'Keine Events',
@@ -836,6 +842,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: '按计划进行',
       trackLayoutLabel: parts =>
         parts.length ? `赛道布局：${parts.join(' — ')}` : '赛道布局',
+      trackLayoutUnavailable: '赛道布局稍后提供',
       languageLabel: '语言',
       seriesLogoAria: series => `${series} 标志`,
       upcomingEventDescriptorFallback: '暂无赛事',
@@ -1518,6 +1525,7 @@ export default function Home() {
                     <div className="event-card__countdown">
                       <span className="event-card__countdown-dot" aria-hidden />
                       <span>{countdown}</span>
+
                     </div>
                   </div>
                 </li>
