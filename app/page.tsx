@@ -416,9 +416,7 @@ export default function Home() {
 
   const nowLocal = DateTime.local().setZone(userTz).setLocale(locale);
   const timezoneOffset = nowLocal.toFormat('ZZ');
-  const timezoneBadgeLabel = userTz?.trim().length
-    ? `${userTz} (UTC${timezoneOffset})`
-    : `UTC${timezoneOffset}`;
+  const timezoneBadgeLabel = userTz?.trim().length ? userTz : `UTC${timezoneOffset}`;
   const activeSeries = (Object.entries(visibleSeries) as [SeriesId, boolean][])
     .filter(([, active]) => active)
     .map(([series]) => series);
