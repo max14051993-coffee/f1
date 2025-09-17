@@ -84,6 +84,42 @@ type Row = {
 
 type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de' | 'zh';
 
+type FeatureDescriptor = {
+  title: string;
+  description: string;
+};
+
+type InsightDescriptor = {
+  title: string;
+  description: string;
+};
+
+type FaqItem = {
+  question: string;
+  answer: string;
+};
+
+type FooterLink = {
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
+type FooterCopy = {
+  tagline: string;
+  productHeading: string;
+  resourcesHeading: string;
+  communityHeading: string;
+  supportHeading: string;
+  contactEmailLabel: string;
+  contactEmail: string;
+  legal: string;
+  productLinks: FooterLink[];
+  resourcesLinks: FooterLink[];
+  communityLinks: FooterLink[];
+  supportLinks: FooterLink[];
+};
+
 type TranslationBundle = {
   heroBadge: string;
   heroTitle: (seriesTitle: string) => string;
@@ -104,6 +140,26 @@ type TranslationBundle = {
   languageLabel: string;
   seriesLogoAria: (series: string) => string;
   upcomingEventDescriptorFallback: string;
+  brandName: string;
+  navSchedule: string;
+  navFeatures: string;
+  navFaq: string;
+  heroCta: string;
+  scheduleTitle: string;
+  scheduleSubtitle: string;
+  featuresTitle: string;
+  featuresSubtitle: string;
+  features: FeatureDescriptor[];
+  insightsTitle: string;
+  insightsSubtitle: string;
+  insightsSteps: InsightDescriptor[];
+  faqTitle: string;
+  faqSubtitle: string;
+  faqItems: FaqItem[];
+  ctaTitle: string;
+  ctaSubtitle: string;
+  ctaButton: string;
+  footer: FooterCopy;
 };
 
 type LanguageDefinition = {
@@ -155,6 +211,92 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       languageLabel: 'Язык',
       seriesLogoAria: series => `Логотип ${series}`,
       upcomingEventDescriptorFallback: 'Нет событий',
+      brandName: 'RaceSync',
+      navSchedule: 'Расписание',
+      navFeatures: 'Возможности',
+      navFaq: 'Вопросы',
+      heroCta: 'К событиям',
+      scheduleTitle: 'Лента уик-эндов',
+      scheduleSubtitle: 'Онлайн-обновление стартов с учётом вашего часового пояса.',
+      featuresTitle: 'Сила оперативного календаря',
+      featuresSubtitle: 'Всё, чтобы не пропустить старт.',
+      features: [
+        {
+          title: 'Локальное время без вычислений',
+          description: 'Все сессии автоматически отображаются в вашем часовом поясе, без ручного пересчёта.',
+        },
+        {
+          title: 'Гибкая фильтрация серий',
+          description: 'Выберите только интересующие чемпионаты и сосредоточьтесь на нужных событиях.',
+        },
+        {
+          title: 'Схемы трасс с деталями',
+          description: 'Каждый этап сопровождается контуром автодрома и кратким контекстом.',
+        },
+      ],
+      insightsTitle: 'Как это работает',
+      insightsSubtitle: 'Три шага до полной картины гоночного уик-энда.',
+      insightsSteps: [
+        {
+          title: 'Выберите интересующие серии',
+          description: 'Оставьте F1, F2, F3 или MotoGP — всё под контролем в один клик.',
+        },
+        {
+          title: 'Настройте период обзора',
+          description: 'Расширьте окно до 30 дней или сфокусируйтесь на ближайших 24 часах.',
+        },
+        {
+          title: 'Следите за обратным отсчётом',
+          description: 'Живые подсказки покажут, сколько осталось до старта или финиша.',
+        },
+      ],
+      faqTitle: 'Частые вопросы',
+      faqSubtitle: 'Быстрые ответы на популярные запросы сообщества.',
+      faqItems: [
+        {
+          question: 'Откуда берутся данные?',
+          answer:
+            'Мы синхронизируемся с официальными календарями чемпионатов и обновляем расписание автоматически.',
+        },
+        {
+          question: 'Можно ли пользоваться на телефоне?',
+          answer: 'Да, интерфейс адаптирован под мобильные устройства и сохраняет фильтры.',
+        },
+        {
+          question: 'Не вижу нужное событие — что делать?',
+          answer: 'Убедитесь, что серия включена, и расширьте период обзора до 30 дней.',
+        },
+      ],
+      ctaTitle: 'Готовы к старту?',
+      ctaSubtitle: 'Откройте живой календарь и держите расписание всегда под рукой.',
+      ctaButton: 'Открыть календарь',
+      footer: {
+        tagline: 'RaceSync помогает болельщикам синхронизироваться с гоночными уик-эндами.',
+        productHeading: 'Продукт',
+        resourcesHeading: 'Ресурсы',
+        communityHeading: 'Сообщество',
+        supportHeading: 'Поддержка',
+        contactEmailLabel: 'Почта команды',
+        contactEmail: 'hello@racesync.app',
+        legal: '© {year} RaceSync. Все права защищены.',
+        productLinks: [
+          { label: 'Расписание', href: '#schedule' },
+          { label: 'Возможности', href: '#features' },
+          { label: 'Как это работает', href: '#insights' },
+        ],
+        resourcesLinks: [
+          { label: 'Частые вопросы', href: '#faq' },
+          { label: 'Календарь .ics', href: './schedule.ics' },
+        ],
+        communityLinks: [
+          { label: 'Канал в Telegram', href: 'https://t.me/racesync', external: true },
+          { label: 'Новости в X', href: 'https://x.com/racesync', external: true },
+        ],
+        supportLinks: [
+          { label: 'Написать нам', href: 'mailto:hello@racesync.app' },
+          { label: 'Политика конфиденциальности', href: '#privacy' },
+        ],
+      },
     },
   },
   en: {
@@ -196,6 +338,92 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       languageLabel: 'Language',
       seriesLogoAria: series => `${series} logo`,
       upcomingEventDescriptorFallback: 'No events',
+      brandName: 'RaceSync',
+      navSchedule: 'Schedule',
+      navFeatures: 'Features',
+      navFaq: 'FAQ',
+      heroCta: 'Browse schedule',
+      scheduleTitle: 'Weekend feed',
+      scheduleSubtitle: 'Live-updated start times aligned with your timezone.',
+      featuresTitle: 'Why fans choose RaceSync',
+      featuresSubtitle: 'Purpose-built utilities for race weekend planning.',
+      features: [
+        {
+          title: 'Local time awareness',
+          description: 'Every session converts to your device timezone automatically — no manual math required.',
+        },
+        {
+          title: 'Multi-series control',
+          description: 'Toggle F1, F2, F3, or MotoGP with a tap and focus on the championships you follow.',
+        },
+        {
+          title: 'Track visuals included',
+          description: 'Instant circuit outlines add context to every round on the calendar.',
+        },
+      ],
+      insightsTitle: 'How it works',
+      insightsSubtitle: 'Three simple steps to stay ahead of lights out.',
+      insightsSteps: [
+        {
+          title: 'Select your series',
+          description: 'Keep the championships you care about visible and hide the rest.',
+        },
+        {
+          title: 'Adjust the window',
+          description: 'Expand the viewing horizon up to 30 days or zoom into the next 24 hours.',
+        },
+        {
+          title: 'Watch the countdown',
+          description: 'Live relative timers surface how soon each qualifying or race begins.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faqSubtitle: 'Quick answers to the most common topics from our community.',
+      faqItems: [
+        {
+          question: 'Where does the data come from?',
+          answer:
+            'We ingest official championship calendars and refresh the live feed automatically as schedules update.',
+        },
+        {
+          question: 'Is it mobile friendly?',
+          answer: 'Yes. The layout adapts to phones and keeps your preferences in local storage.',
+        },
+        {
+          question: 'Why can’t I see an event?',
+          answer: 'Make sure the series is active and expand the viewing window if you need more coverage.',
+        },
+      ],
+      ctaTitle: 'Ready for lights out?',
+      ctaSubtitle: 'Open the live calendar, set your filters, and never miss a session.',
+      ctaButton: 'Launch the calendar',
+      footer: {
+        tagline: 'RaceSync keeps global fans aligned with every race weekend.',
+        productHeading: 'Product',
+        resourcesHeading: 'Resources',
+        communityHeading: 'Community',
+        supportHeading: 'Support',
+        contactEmailLabel: 'Team email',
+        contactEmail: 'hello@racesync.app',
+        legal: '© {year} RaceSync. All rights reserved.',
+        productLinks: [
+          { label: 'Schedule', href: '#schedule' },
+          { label: 'Features', href: '#features' },
+          { label: 'How it works', href: '#insights' },
+        ],
+        resourcesLinks: [
+          { label: 'FAQ', href: '#faq' },
+          { label: 'Download .ics', href: './schedule.ics' },
+        ],
+        communityLinks: [
+          { label: 'Join on Telegram', href: 'https://t.me/racesync', external: true },
+          { label: 'Updates on X', href: 'https://x.com/racesync', external: true },
+        ],
+        supportLinks: [
+          { label: 'Email support', href: 'mailto:hello@racesync.app' },
+          { label: 'Privacy policy', href: '#privacy' },
+        ],
+      },
     },
   },
   es: {
@@ -237,6 +465,92 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       languageLabel: 'Idioma',
       seriesLogoAria: series => `Logotipo de ${series}`,
       upcomingEventDescriptorFallback: 'Sin eventos',
+      brandName: 'RaceSync',
+      navSchedule: 'Calendario',
+      navFeatures: 'Funciones',
+      navFaq: 'Preguntas',
+      heroCta: 'Ver calendario',
+      scheduleTitle: 'Flujo de fines de semana',
+      scheduleSubtitle: 'Horarios actualizados en vivo según tu zona horaria.',
+      featuresTitle: 'Por qué elegir RaceSync',
+      featuresSubtitle: 'Herramientas creadas para planificar cada sesión.',
+      features: [
+        {
+          title: 'Horas locales automáticas',
+          description: 'Cada sesión se convierte automáticamente a tu zona horaria. Olvídate de los cálculos manuales.',
+        },
+        {
+          title: 'Control multiserie',
+          description: 'Activa o oculta F1, F2, F3 o MotoGP y céntrate en los campeonatos que sigues.',
+        },
+        {
+          title: 'Diseños de circuitos',
+          description: 'Obtén el trazado de cada circuito para tener contexto inmediato de la carrera.',
+        },
+      ],
+      insightsTitle: 'Cómo funciona',
+      insightsSubtitle: 'Tres pasos para adelantarte a la próxima largada.',
+      insightsSteps: [
+        {
+          title: 'Elige tus series',
+          description: 'Mantén visibles los campeonatos que sigues y oculta el resto.',
+        },
+        {
+          title: 'Ajusta la ventana',
+          description: 'Amplía el horizonte hasta 30 días o concéntrate en las próximas 24 horas.',
+        },
+        {
+          title: 'Sigue la cuenta regresiva',
+          description: 'Los temporizadores en vivo muestran cuánto falta para cada sesión.',
+        },
+      ],
+      faqTitle: 'Preguntas frecuentes',
+      faqSubtitle: 'Resolvemos las dudas más comunes de la comunidad.',
+      faqItems: [
+        {
+          question: '¿De dónde provienen los datos?',
+          answer:
+            'Nos sincronizamos con los calendarios oficiales de los campeonatos y actualizamos el feed automáticamente.',
+        },
+        {
+          question: '¿Funciona bien en el móvil?',
+          answer: 'Sí, el diseño es adaptable y guarda tus preferencias en el dispositivo.',
+        },
+        {
+          question: 'No veo un evento, ¿qué hago?',
+          answer: 'Activa la serie correspondiente y amplía la ventana de visualización para encontrarlo.',
+        },
+      ],
+      ctaTitle: '¿Listo para la largada?',
+      ctaSubtitle: 'Abre el calendario en vivo y configura tus preferencias en segundos.',
+      ctaButton: 'Abrir calendario',
+      footer: {
+        tagline: 'RaceSync mantiene a los fans sincronizados con cada fin de semana de carreras.',
+        productHeading: 'Producto',
+        resourcesHeading: 'Recursos',
+        communityHeading: 'Comunidad',
+        supportHeading: 'Soporte',
+        contactEmailLabel: 'Correo del equipo',
+        contactEmail: 'hello@racesync.app',
+        legal: '© {year} RaceSync. Todos los derechos reservados.',
+        productLinks: [
+          { label: 'Calendario', href: '#schedule' },
+          { label: 'Funciones', href: '#features' },
+          { label: 'Cómo funciona', href: '#insights' },
+        ],
+        resourcesLinks: [
+          { label: 'Preguntas frecuentes', href: '#faq' },
+          { label: 'Descargar .ics', href: './schedule.ics' },
+        ],
+        communityLinks: [
+          { label: 'Comunidad en Telegram', href: 'https://t.me/racesync', external: true },
+          { label: 'Actualizaciones en X', href: 'https://x.com/racesync', external: true },
+        ],
+        supportLinks: [
+          { label: 'Escríbenos', href: 'mailto:hello@racesync.app' },
+          { label: 'Política de privacidad', href: '#privacy' },
+        ],
+      },
     },
   },
   fr: {
@@ -278,6 +592,92 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       languageLabel: 'Langue',
       seriesLogoAria: series => `Logo ${series}`,
       upcomingEventDescriptorFallback: 'Aucun événement',
+      brandName: 'RaceSync',
+      navSchedule: 'Calendrier',
+      navFeatures: 'Fonctionnalités',
+      navFaq: 'FAQ',
+      heroCta: 'Consulter le calendrier',
+      scheduleTitle: 'Flux des week-ends',
+      scheduleSubtitle: 'Heures de départ mises à jour en direct dans votre fuseau horaire.',
+      featuresTitle: 'Pourquoi choisir RaceSync',
+      featuresSubtitle: 'Des outils pensés pour organiser chaque session.',
+      features: [
+        {
+          title: 'Horaires locaux automatiques',
+          description: 'Chaque session est instantanément convertie dans votre fuseau horaire.',
+        },
+        {
+          title: 'Contrôle multi-séries',
+          description: 'Activez ou masquez F1, F2, F3 ou MotoGP pour vous concentrer sur vos championnats.',
+        },
+        {
+          title: 'Tracés de circuit inclus',
+          description: 'Accédez au plan de chaque circuit et à son contexte en un coup d’œil.',
+        },
+      ],
+      insightsTitle: 'Comment ça marche',
+      insightsSubtitle: 'Trois étapes pour anticiper chaque départ.',
+      insightsSteps: [
+        {
+          title: 'Choisissez vos séries',
+          description: 'Gardez sous les yeux les championnats qui vous intéressent et masquez les autres.',
+        },
+        {
+          title: 'Réglez la fenêtre',
+          description: 'Élargissez l’horizon jusqu’à 30 jours ou focalisez-vous sur les 24 prochaines heures.',
+        },
+        {
+          title: 'Surveillez le compte à rebours',
+          description: 'Des minuteries en direct indiquent l’approche de chaque qualification ou course.',
+        },
+      ],
+      faqTitle: 'Questions fréquentes',
+      faqSubtitle: 'Les réponses aux demandes les plus courantes de la communauté.',
+      faqItems: [
+        {
+          question: 'D’où proviennent les données ?',
+          answer:
+            'Nous nous synchronisons avec les calendriers officiels des championnats et mettons à jour le flux automatiquement.',
+        },
+        {
+          question: 'Est-ce adapté au mobile ?',
+          answer: 'Oui, l’interface s’adapte aux smartphones et conserve vos préférences locales.',
+        },
+        {
+          question: 'Pourquoi un événement est-il absent ?',
+          answer: 'Vérifiez que la série est active et élargissez la fenêtre d’affichage pour le retrouver.',
+        },
+      ],
+      ctaTitle: 'Prêt pour le départ ?',
+      ctaSubtitle: 'Ouvrez le calendrier en direct et gardez vos filtres toujours à portée de main.',
+      ctaButton: 'Ouvrir le calendrier',
+      footer: {
+        tagline: 'RaceSync aide les fans du monde entier à suivre chaque week-end de course.',
+        productHeading: 'Produit',
+        resourcesHeading: 'Ressources',
+        communityHeading: 'Communauté',
+        supportHeading: 'Support',
+        contactEmailLabel: 'E-mail de l’équipe',
+        contactEmail: 'hello@racesync.app',
+        legal: '© {year} RaceSync. Tous droits réservés.',
+        productLinks: [
+          { label: 'Calendrier', href: '#schedule' },
+          { label: 'Fonctionnalités', href: '#features' },
+          { label: 'Comment ça marche', href: '#insights' },
+        ],
+        resourcesLinks: [
+          { label: 'Questions fréquentes', href: '#faq' },
+          { label: 'Télécharger le .ics', href: './schedule.ics' },
+        ],
+        communityLinks: [
+          { label: 'Communauté Telegram', href: 'https://t.me/racesync', external: true },
+          { label: 'Actualités sur X', href: 'https://x.com/racesync', external: true },
+        ],
+        supportLinks: [
+          { label: 'Nous écrire', href: 'mailto:hello@racesync.app' },
+          { label: 'Politique de confidentialité', href: '#privacy' },
+        ],
+      },
     },
   },
   de: {
@@ -319,6 +719,92 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       languageLabel: 'Sprache',
       seriesLogoAria: series => `${series}-Logo`,
       upcomingEventDescriptorFallback: 'Keine Events',
+      brandName: 'RaceSync',
+      navSchedule: 'Kalender',
+      navFeatures: 'Funktionen',
+      navFaq: 'FAQ',
+      heroCta: 'Zum Kalender',
+      scheduleTitle: 'Wochenend-Feed',
+      scheduleSubtitle: 'Live aktualisierte Startzeiten in deiner Zeitzone.',
+      featuresTitle: 'Darum RaceSync',
+      featuresSubtitle: 'Durchdachte Werkzeuge für deine Rennplanung.',
+      features: [
+        {
+          title: 'Lokale Zeiten automatisch',
+          description: 'Alle Sessions erscheinen direkt in deiner Zeitzone – keine Umrechnung mehr.',
+        },
+        {
+          title: 'Serien flexibel steuern',
+          description: 'Blende F1, F2, F3 oder MotoGP nach Bedarf ein oder aus.',
+        },
+        {
+          title: 'Streckenansichten inklusive',
+          description: 'Jedes Event zeigt den Kursverlauf und liefert zusätzlichen Kontext.',
+        },
+      ],
+      insightsTitle: 'So funktioniert es',
+      insightsSubtitle: 'Drei Schritte, um keine Session zu verpassen.',
+      insightsSteps: [
+        {
+          title: 'Wähle deine Serien',
+          description: 'Lass nur die Meisterschaften sichtbar, die dich interessieren.',
+        },
+        {
+          title: 'Passe den Zeitraum an',
+          description: 'Erweitere den Blick auf 30 Tage oder konzentriere dich auf die nächsten 24 Stunden.',
+        },
+        {
+          title: 'Behalte den Countdown im Blick',
+          description: 'Live-Timer zeigen, wie lange es bis zu Qualifying oder Rennen dauert.',
+        },
+      ],
+      faqTitle: 'Häufige Fragen',
+      faqSubtitle: 'Antworten auf die wichtigsten Themen aus der Community.',
+      faqItems: [
+        {
+          question: 'Woher stammen die Daten?',
+          answer:
+            'Wir nutzen die offiziellen Meisterschaftskalender und aktualisieren den Feed automatisch.',
+        },
+        {
+          question: 'Funktioniert das auf dem Smartphone?',
+          answer: 'Ja, das Layout ist mobilfreundlich und speichert deine Einstellungen lokal.',
+        },
+        {
+          question: 'Warum sehe ich ein Event nicht?',
+          answer: 'Aktiviere die passende Serie und vergrößere bei Bedarf den Betrachtungszeitraum.',
+        },
+      ],
+      ctaTitle: 'Bereit für das Startsignal?',
+      ctaSubtitle: 'Öffne den Live-Kalender, stelle deine Filter ein und bleib immer informiert.',
+      ctaButton: 'Kalender öffnen',
+      footer: {
+        tagline: 'RaceSync hält Fans weltweit mit jedem Rennwochenende synchron.',
+        productHeading: 'Produkt',
+        resourcesHeading: 'Ressourcen',
+        communityHeading: 'Community',
+        supportHeading: 'Support',
+        contactEmailLabel: 'Team-E-Mail',
+        contactEmail: 'hello@racesync.app',
+        legal: '© {year} RaceSync. Alle Rechte vorbehalten.',
+        productLinks: [
+          { label: 'Kalender', href: '#schedule' },
+          { label: 'Funktionen', href: '#features' },
+          { label: 'So funktioniert es', href: '#insights' },
+        ],
+        resourcesLinks: [
+          { label: 'Häufige Fragen', href: '#faq' },
+          { label: '.ics herunterladen', href: './schedule.ics' },
+        ],
+        communityLinks: [
+          { label: 'Telegram-Community', href: 'https://t.me/racesync', external: true },
+          { label: 'Updates auf X', href: 'https://x.com/racesync', external: true },
+        ],
+        supportLinks: [
+          { label: 'Kontakt per E-Mail', href: 'mailto:hello@racesync.app' },
+          { label: 'Datenschutz', href: '#privacy' },
+        ],
+      },
     },
   },
   zh: {
@@ -360,6 +846,91 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       languageLabel: '语言',
       seriesLogoAria: series => `${series} 标志`,
       upcomingEventDescriptorFallback: '暂无赛事',
+      brandName: 'RaceSync',
+      navSchedule: '赛程',
+      navFeatures: '功能',
+      navFaq: '常见问题',
+      heroCta: '查看赛程',
+      scheduleTitle: '周末赛程流',
+      scheduleSubtitle: '开赛时间实时更新并匹配你的时区。',
+      featuresTitle: '为什么选择 RaceSync',
+      featuresSubtitle: '为赛车周末而生的实用功能。',
+      features: [
+        {
+          title: '自动换算本地时间',
+          description: '所有赛程都会自动转换到你的设备时区，无需再手动换算。',
+        },
+        {
+          title: '多系列一键切换',
+          description: '自由切换 F1、F2、F3 或 MotoGP，只保留你真正关心的比赛。',
+        },
+        {
+          title: '赛道示意随时可见',
+          description: '每一站都附带赛道轮廓与关键信息，帮助你迅速了解赛况。',
+        },
+      ],
+      insightsTitle: '如何使用',
+      insightsSubtitle: '三步即可掌握整个赛道周末。',
+      insightsSteps: [
+        {
+          title: '选择关注的系列',
+          description: '只保留你追随的锦标赛，其他全部隐藏。',
+        },
+        {
+          title: '调整查看窗口',
+          description: '最长可延展至 30 天，也可以聚焦未来 24 小时。',
+        },
+        {
+          title: '关注倒计时提示',
+          description: '动态倒计时会提醒你距离起跑或结束还有多久。',
+        },
+      ],
+      faqTitle: '常见问题',
+      faqSubtitle: '快速解答社区里最常提到的疑问。',
+      faqItems: [
+        {
+          question: '数据来源是什么？',
+          answer: '我们同步各系列的官方日历，并在更新后自动刷新页面内容。',
+        },
+        {
+          question: '手机上体验如何？',
+          answer: '界面针对移动端优化，并会在本地保存语言和筛选设置。',
+        },
+        {
+          question: '为什么找不到某个赛事？',
+          answer: '请确认对应系列已启用，并适当延长查看窗口即可找到。',
+        },
+      ],
+      ctaTitle: '准备好出发了吗？',
+      ctaSubtitle: '打开实时日历，设定你的偏好，抢先锁定每一次灯灭。',
+      ctaButton: '立即打开',
+      footer: {
+        tagline: 'RaceSync 让全球车迷在同一节奏下迎接每个赛道周末。',
+        productHeading: '产品',
+        resourcesHeading: '资源',
+        communityHeading: '社区',
+        supportHeading: '支持',
+        contactEmailLabel: '团队邮箱',
+        contactEmail: 'hello@racesync.app',
+        legal: '© {year} RaceSync。保留所有权利。',
+        productLinks: [
+          { label: '赛程', href: '#schedule' },
+          { label: '功能', href: '#features' },
+          { label: '如何使用', href: '#insights' },
+        ],
+        resourcesLinks: [
+          { label: '常见问题', href: '#faq' },
+          { label: '下载 .ics', href: './schedule.ics' },
+        ],
+        communityLinks: [
+          { label: 'Telegram 社区', href: 'https://t.me/racesync', external: true },
+          { label: 'X 平台更新', href: 'https://x.com/racesync', external: true },
+        ],
+        supportLinks: [
+          { label: '邮件联系', href: 'mailto:hello@racesync.app' },
+          { label: '隐私政策', href: '#privacy' },
+        ],
+      },
     },
   },
 } as const;
@@ -684,19 +1255,52 @@ export default function Home() {
   const heroSeriesDefinition = nextSeriesDefinition ?? FALLBACK_SERIES_DEFINITION;
   const heroAccentColor = heroSeriesDefinition?.accentColor ?? '#e10600';
   const heroAccentRgb = heroSeriesDefinition?.accentRgb ?? '225, 6, 0';
+  const features = texts.features;
+  const insightSteps = texts.insightsSteps;
+  const faqItems = texts.faqItems;
+  const footer = texts.footer;
+  const currentYear = new Date().getFullYear();
+  const footerLegal = footer.legal.replace('{year}', currentYear.toString());
 
   return (
-    <main className="page-shell">
-      <section
-        className="hero"
-        style={
-          {
-            '--hero-accent': heroAccentColor,
-            '--hero-accent-rgb': heroAccentRgb,
-          } as CSSProperties
-        }
-      >
-        <div className="hero__intro">
+    <div className="site" id="top">
+      <header className="site-header">
+        <div className="site-header__inner">
+          <a className="site-header__brand" href="#top">
+            <span className="site-header__brand-mark" aria-hidden>
+              🏁
+            </span>
+            <span className="site-header__brand-text">{texts.brandName}</span>
+          </a>
+          <nav className="site-header__nav" aria-label={texts.brandName}>
+            <a className="site-header__link" href="#schedule">
+              {texts.navSchedule}
+            </a>
+            <a className="site-header__link" href="#features">
+              {texts.navFeatures}
+            </a>
+            <a className="site-header__link" href="#faq">
+              {texts.navFaq}
+            </a>
+          </nav>
+          <a className="site-header__cta" href="#schedule">
+            {texts.heroCta}
+          </a>
+        </div>
+      </header>
+
+      <main className="page-shell">
+        <section
+          className="hero"
+          id="schedule"
+          style={
+            {
+              '--hero-accent': heroAccentColor,
+              '--hero-accent-rgb': heroAccentRgb,
+            } as CSSProperties
+          }
+        >
+          <div className="hero__intro">
           <div className="hero__top-row">
             <div className="hero__badge-wrapper">
               <span className="hero__badge hero__capsule">
@@ -830,109 +1434,260 @@ export default function Home() {
               )}
             </div>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
+        <section className="events-section" aria-labelledby="schedule-heading">
+          <div className="section-heading">
+            <h2 id="schedule-heading" className="section-heading__title">
+              {texts.scheduleTitle}
+            </h2>
+            <p className="section-heading__description">{texts.scheduleSubtitle}</p>
+          </div>
+          <ul className="events-grid">
+            {filtered.map((r, index) => {
+              const definition = SERIES_DEFINITIONS[r.series];
+              const accentColor = definition.accentColor;
+              const accentRgb = definition.accentRgb;
+              const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(userTz);
+              const localized = local.setLocale(locale);
+              const isoLocal = local.toISO();
+              const timeLabel = localized.toFormat('HH:mm');
+              const dayLabel = localized.toFormat('ccc');
+              const dateLabel = localized.toFormat('dd LLL');
+              const relative = localized.toRelative({ base: nowLocal, locale, style: 'long' });
+              const countdown = relative
+                ? localized > nowLocal
+                  ? texts.countdownStart(relative)
+                  : texts.countdownFinish(relative)
+                : texts.countdownScheduled;
+              const track = getTrackLayout(r.circuit, r.round);
+              const trackLabelParts = Array.from(
+                new Set(
+                  [r.circuit, r.round].filter(
+                    (part): part is string => !!part && part.trim().length > 0
+                  )
+                )
+              );
+              const trackLabel = texts.trackLayoutLabel(trackLabelParts);
+              const sessionLabel = sessionLabels[r.session] ?? r.session;
 
-      <ul className="events-grid">
-        {filtered.map((r, index) => {
-          const definition = SERIES_DEFINITIONS[r.series];
-          const accentColor = definition.accentColor;
-          const accentRgb = definition.accentRgb;
-          const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(userTz);
-          const localized = local.setLocale(locale);
-          const isoLocal = local.toISO();
-          const timeLabel = localized.toFormat('HH:mm');
-          const dayLabel = localized.toFormat('ccc');
-          const dateLabel = localized.toFormat('dd LLL');
-          const relative = localized.toRelative({ base: nowLocal, locale, style: 'long' });
-          const countdown = relative
-            ? localized > nowLocal
-              ? texts.countdownStart(relative)
-              : texts.countdownFinish(relative)
-            : texts.countdownScheduled;
-          const track = getTrackLayout(r.circuit, r.round);
-          const trackLabelParts = Array.from(
-            new Set(
-              [r.circuit, r.round].filter(
-                (part): part is string => !!part && part.trim().length > 0
-              )
-            )
-          );
-          const trackLabel = texts.trackLayoutLabel(trackLabelParts);
-          const hasTrack = Boolean(track);
-          const sessionLabel = sessionLabels[r.session] ?? r.session;
-
-          return (
-            <li
-              key={`${r.startsAtUtc}-${index}`}
-              className="event-card"
-              style={
-                {
-                  '--accent-color': accentColor,
-                  '--accent-rgb': accentRgb,
-                } as CSSProperties
-              }
-            >
-              <div className="event-card__inner">
-                <div className="event-card__top">
-                  <div className="event-card__series">
-                    <div className="event-card__logo">
-                      <SeriesLogo
-                        series={r.series}
-                        ariaLabel={texts.seriesLogoAria(definition.label)}
-                      />
-                    </div>
-                    <span className="event-card__series-pill">{definition.label}</span>
-                  </div>
-                  <time className="event-card__datetime" dateTime={isoLocal ?? undefined}>
-                    <span className="event-card__time">{timeLabel}</span>
-                    <span className="event-card__date">
-                      {dayLabel}, {dateLabel}
-                    </span>
-                  </time>
-                </div>
-                <div className="event-card__title">
-                  <span>{r.round}</span>
-                  {r.country ? <span className="event-card__country">{r.country}</span> : null}
-                </div>
-                <div className="event-card__meta">
-                  {r.circuit ? <span>{r.circuit}</span> : null}
-                  <span>{sessionLabel}</span>
-                </div>
-                <div
-                  className={`event-card__track${hasTrack ? '' : ' event-card__track--placeholder'}`}
-                  role={hasTrack ? undefined : 'img'}
-                  aria-label={hasTrack ? undefined : trackLabel}
+              return (
+                <li
+                  key={`${r.startsAtUtc}-${index}`}
+                  className="event-card"
+                  style={
+                    {
+                      '--accent-color': accentColor,
+                      '--accent-rgb': accentRgb,
+                    } as CSSProperties
+                  }
                 >
-                  {hasTrack && track ? (
-                    <svg
-                      viewBox={track.layout.viewBox}
-                      role="img"
-                      aria-label={trackLabel}
-                      focusable="false"
-                    >
-                      <path className="event-card__track-shadow" d={track.layout.path} />
-                      <path className="event-card__track-outline" d={track.layout.path} />
-                      <path className="event-card__track-highlight" d={track.layout.path} />
-                    </svg>
-                  ) : (
-                    <div className="event-card__track-placeholder" aria-hidden>
-                      <span className="event-card__track-placeholder-title">{trackLabel}</span>
-                      <span className="event-card__track-placeholder-meta">
-                        {texts.trackLayoutUnavailable}
-                      </span>
+                  <div className="event-card__inner">
+                    <div className="event-card__top">
+                      <div className="event-card__series">
+                        <div className="event-card__logo">
+                          <SeriesLogo
+                            series={r.series}
+                            ariaLabel={texts.seriesLogoAria(definition.label)}
+                          />
+                        </div>
+                        <span className="event-card__series-pill">{definition.label}</span>
+                      </div>
+                      <time className="event-card__datetime" dateTime={isoLocal ?? undefined}>
+                        <span className="event-card__time">{timeLabel}</span>
+                        <span className="event-card__date">
+                          {dayLabel}, {dateLabel}
+                        </span>
+                      </time>
                     </div>
-                  )}
+                    <div className="event-card__title">
+                      <span>{r.round}</span>
+                      {r.country ? <span className="event-card__country">{r.country}</span> : null}
+                    </div>
+                    <div className="event-card__meta">
+                      {r.circuit ? <span>{r.circuit}</span> : null}
+                      <span>{sessionLabel}</span>
+                    </div>
+                    {track ? (
+                      <div className="event-card__track">
+                        <svg
+                          viewBox={track.layout.viewBox}
+                          role="img"
+                          aria-label={trackLabel}
+                          focusable="false"
+                        >
+                          <path className="event-card__track-shadow" d={track.layout.path} />
+                          <path className="event-card__track-outline" d={track.layout.path} />
+                          <path className="event-card__track-highlight" d={track.layout.path} />
+                        </svg>
+                      </div>
+                    ) : null}
+                    <div className="event-card__countdown">
+                      <span className="event-card__countdown-dot" aria-hidden />
+                      <span>{countdown}</span>
+
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        <section id="features" className="features-section" aria-labelledby="features-heading">
+          <div className="section-heading">
+            <h2 id="features-heading" className="section-heading__title">
+              {texts.featuresTitle}
+            </h2>
+            <p className="section-heading__description">{texts.featuresSubtitle}</p>
+          </div>
+          <div className="feature-grid">
+            {features.map((feature, index) => (
+              <article key={`${feature.title}-${index}`} className="feature-card" data-index={index}>
+                <div className="feature-card__icon" aria-hidden>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
                 </div>
-                <div className="event-card__countdown">
-                  <span className="event-card__countdown-dot" aria-hidden />
-                  <span>{countdown}</span>
+                <h3 className="feature-card__title">{feature.title}</h3>
+                <p className="feature-card__description">{feature.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="insights" className="insights-section" aria-labelledby="insights-heading">
+          <div className="section-heading">
+            <h2 id="insights-heading" className="section-heading__title">
+              {texts.insightsTitle}
+            </h2>
+            <p className="section-heading__description">{texts.insightsSubtitle}</p>
+          </div>
+          <ol className="insights-list">
+            {insightSteps.map((step, index) => (
+              <li key={`${step.title}-${index}`} className="insights-item">
+                <span className="insights-item__number">{String(index + 1).padStart(2, '0')}</span>
+                <div className="insights-item__content">
+                  <h3>{step.title}</h3>
+                  <p>{step.description}</p>
                 </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </main>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section id="faq" className="faq-section" aria-labelledby="faq-heading">
+          <div className="section-heading">
+            <h2 id="faq-heading" className="section-heading__title">
+              {texts.faqTitle}
+            </h2>
+            <p className="section-heading__description">{texts.faqSubtitle}</p>
+          </div>
+          <div className="faq-list">
+            {faqItems.map((item, index) => (
+              <details key={`${item.question}-${index}`} className="faq-item">
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="cta" className="cta-section" aria-labelledby="cta-heading">
+          <div className="cta-section__inner">
+            <div className="cta-section__content">
+              <h2 id="cta-heading">{texts.ctaTitle}</h2>
+              <p>{texts.ctaSubtitle}</p>
+            </div>
+            <a className="cta-section__button" href="#schedule">
+              {texts.ctaButton}
+            </a>
+          </div>
+        </section>
+      </main>
+
+      <footer className="site-footer" id="footer">
+        <div className="site-footer__inner">
+          <div className="site-footer__brand-block">
+            <a className="site-footer__brand" href="#top">
+              <span className="site-footer__brand-mark" aria-hidden>
+                🏁
+              </span>
+              <span className="site-footer__brand-text">{texts.brandName}</span>
+            </a>
+            <p className="site-footer__tagline">{footer.tagline}</p>
+            <div className="site-footer__contact">
+              <span className="site-footer__contact-label">{footer.contactEmailLabel}</span>
+              <a className="site-footer__contact-link" href={`mailto:${footer.contactEmail}`}>
+                {footer.contactEmail}
+              </a>
+            </div>
+          </div>
+          <div className="site-footer__columns">
+            <div className="site-footer__column">
+              <h3 className="site-footer__heading">{footer.productHeading}</h3>
+              <ul className="site-footer__list">
+                {footer.productLinks.map(link => (
+                  <li key={`${link.href}-${link.label}`} className="site-footer__list-item">
+                    <a
+                      href={link.href}
+                      {...(link.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="site-footer__column">
+              <h3 className="site-footer__heading">{footer.resourcesHeading}</h3>
+              <ul className="site-footer__list">
+                {footer.resourcesLinks.map(link => (
+                  <li key={`${link.href}-${link.label}`} className="site-footer__list-item">
+                    <a
+                      href={link.href}
+                      {...(link.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="site-footer__column">
+              <h3 className="site-footer__heading">{footer.communityHeading}</h3>
+              <ul className="site-footer__list">
+                {footer.communityLinks.map(link => (
+                  <li key={`${link.href}-${link.label}`} className="site-footer__list-item">
+                    <a
+                      href={link.href}
+                      {...(link.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="site-footer__column">
+              <h3 className="site-footer__heading">{footer.supportHeading}</h3>
+              <ul className="site-footer__list">
+                {footer.supportLinks.map(link => (
+                  <li key={`${link.href}-${link.label}`} className="site-footer__list-item">
+                    <a
+                      href={link.href}
+                      {...(link.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="site-footer__legal" id="privacy">
+          <span>{footerLegal}</span>
+        </div>
+      </footer>
+    </div>
   );
 }
