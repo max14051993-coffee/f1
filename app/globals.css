@@ -219,12 +219,6 @@ button {
   flex: 0 1 auto;
 }
 
-.site-header__meta-portion--timezone {
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
 .site-header__meta-label {
   font-size: 0.62rem;
   letter-spacing: 0.24em;
