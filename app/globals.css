@@ -154,14 +154,16 @@ button {
 
 .hero__top-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 12px 18px;
+  overflow-x: auto;
 }
 
 .hero__badge-wrapper {
   display: flex;
-  flex: 1 1 320px;
+  flex: 0 1 auto;
+  min-width: max-content;
 }
 
 .hero__language {
@@ -191,14 +193,17 @@ button {
 .hero__badge {
   display: flex;
   align-self: flex-start;
-  width: 100%;
-  max-width: 620px;
-  flex-wrap: wrap;
+  width: auto;
+  max-width: none;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  min-width: max-content;
 }
 
 .hero__badge-text {
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .hero__language-control {
@@ -267,13 +272,14 @@ button {
   justify-content: flex-end;
   gap: 6px;
   margin-left: auto;
-  flex: 1 1 220px;
-  min-width: 0;
+  flex: 0 0 auto;
+  min-width: max-content;
   color: inherit;
   font-weight: inherit;
   letter-spacing: inherit;
   text-transform: inherit;
   text-align: right;
+  white-space: nowrap;
 }
 
 .hero__badge-timezone::before {
