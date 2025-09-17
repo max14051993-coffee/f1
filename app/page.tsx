@@ -1527,13 +1527,15 @@ export default function Home() {
                         </span>
                       </time>
                     </div>
-                    <div className="event-card__title">
-                      <span>{r.round}</span>
-                      {r.country ? <span className="event-card__country">{r.country}</span> : null}
-                    </div>
-                    <div className="event-card__meta">
-                      {r.circuit ? <span>{r.circuit}</span> : null}
-                      <span>{sessionLabel}</span>
+                    <div className="event-card__info">
+                      <span className="event-card__title">{r.round}</span>
+                      {r.country ? (
+                        <span className="event-card__country">{r.country}</span>
+                      ) : null}
+                      {r.circuit ? (
+                        <span className="event-card__meta-line">{r.circuit}</span>
+                      ) : null}
+                      <span className="event-card__meta-line event-card__session">{sessionLabel}</span>
                     </div>
                     {track ? (
                       <div className="event-card__track">
