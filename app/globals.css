@@ -185,7 +185,8 @@ button {
   align-items: center;
   gap: clamp(16px, 4vw, 28px);
   margin-left: clamp(16px, 4vw, 32px);
-  flex-shrink: 0;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .site-header__meta-group {
@@ -197,6 +198,8 @@ button {
   backdrop-filter: blur(12px);
   box-shadow: 0 18px 45px -32px rgba(0, 0, 0, 0.8);
   overflow: visible;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .site-header__meta-portion {
@@ -204,12 +207,15 @@ button {
   align-items: center;
   gap: 12px;
   padding: 12px 20px;
-  min-width: max-content;
+  min-width: 0;
   position: relative;
+  flex: 0 1 auto;
 }
 
 .site-header__meta-portion--timezone {
   border-right: 1px solid rgba(255, 255, 255, 0.08);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .site-header__meta-label {
@@ -229,9 +235,18 @@ button {
   color: rgba(255, 255, 255, 0.88);
 }
 
+.site-header__meta-value {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .site-header__language {
   position: relative;
   min-width: max-content;
+  flex: 0 0 auto;
 }
 
 .site-header__language-toggle {
