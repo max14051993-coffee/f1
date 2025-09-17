@@ -486,9 +486,6 @@ export default function Home() {
               <span className="site-header__brand-text">{texts.brandName}</span>
             </a>
             <nav className="site-header__nav" aria-label={texts.brandName}>
-              <a className="site-header__link" href="#schedule">
-                {texts.navSchedule}
-              </a>
               <a className="site-header__link" href="#features">
                 {texts.navFeatures}
               </a>
