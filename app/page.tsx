@@ -82,7 +82,7 @@ type Row = {
   startsAtUtc: string; // ISO
 };
 
-type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de';
+type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de' | 'zh';
 
 type TranslationBundle = {
   heroBadge: string;
@@ -313,6 +313,46 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       languageLabel: 'Sprache',
       seriesLogoAria: series => `${series}-Logo`,
       upcomingEventDescriptorFallback: 'Keine Events',
+    },
+  },
+  zh: {
+    code: 'zh',
+    name: '中文',
+    locale: 'zh',
+    periodOptions: [
+      { label: '24 小时', value: 24 },
+      { label: '48 小时', value: 48 },
+      { label: '72 小时', value: 72 },
+      { label: '7 天', value: 168 },
+      { label: '30 天' },
+    ],
+    sessionLabels: {
+      Qualifying: '排位赛',
+      Race: '正赛',
+      Sprint: '冲刺赛',
+    },
+    texts: {
+      heroBadge: '周末赛事实时日历',
+      heroTitle: seriesTitle =>
+        `即将到来的排位赛与正赛 — ${seriesTitle || 'F1 / F2 / F3 / MotoGP'}`,
+      heroSubtitle:
+        '掌握赛周节奏：筛选系列、调整查看窗口，并在本地时区追踪各场次开始时间。',
+      seriesLabel: '系列',
+      activeSelection: names => `已选择：${names.join(' · ')}`,
+      allSeriesHidden: '所有系列已隐藏',
+      reviewPeriodLabel: '查看窗口',
+      eventsInWindowLabel: '窗口内的赛事',
+      nextStartLabel: '下一场次',
+      noEvents: '暂无赛事',
+      extendPeriodHint: '试着延长查看窗口',
+      countdownStart: relative => `将于 ${relative} 开始`,
+      countdownFinish: relative => `已于 ${relative} 结束`,
+      countdownScheduled: '按计划进行',
+      trackLayoutLabel: parts =>
+        parts.length ? `赛道布局：${parts.join(' — ')}` : '赛道布局',
+      languageLabel: '语言',
+      seriesLogoAria: series => `${series} 标志`,
+      upcomingEventDescriptorFallback: '暂无赛事',
     },
   },
 } as const;
