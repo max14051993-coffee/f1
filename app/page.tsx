@@ -1274,7 +1274,6 @@ export default function Home() {
             </a>
             <div className="site-header__meta-group">
               <div className="site-header__meta-portion site-header__meta-portion--timezone">
-                <span className="site-header__meta-label">{texts.heroBadge}</span>
                 <span className="site-header__meta-value">{timezoneBadgeLabel}</span>
               </div>
               <div
@@ -1290,7 +1289,6 @@ export default function Home() {
                   aria-controls="language-select-menu"
                   onClick={() => setLanguageMenuOpen(prev => !prev)}
                 >
-                  <span className="site-header__meta-label">{texts.languageLabel}</span>
                   <span className="site-header__language-value">{languageDefinition.name}</span>
                 </button>
                 {isLanguageMenuOpen ? (
