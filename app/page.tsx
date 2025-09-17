@@ -1265,72 +1265,13 @@ export default function Home() {
     <div className="site" id="top">
       <header className="site-header">
         <div className="site-header__inner">
-          <div className="site-header__row site-header__row--top">
+          <div className="site-header__row site-header__row--main">
             <a className="site-header__brand" href="#top">
               <span className="site-header__brand-mark" aria-hidden>
                 🏁
               </span>
               <span className="site-header__brand-text">{texts.brandName}</span>
             </a>
-            <div className="site-header__meta-group">
-              <div className="site-header__meta-portion site-header__meta-portion--timezone">
-                <span className="site-header__meta-value">{timezoneBadgeLabel}</span>
-              </div>
-              <div
-                className="site-header__meta-portion site-header__language"
-                ref={languageControlRef}
-              >
-                <button
-                  type="button"
-                  id="language-select"
-                  className="site-header__language-toggle"
-                  aria-haspopup="listbox"
-                  aria-expanded={isLanguageMenuOpen}
-                  aria-controls="language-select-menu"
-                  onClick={() => setLanguageMenuOpen(prev => !prev)}
-                >
-                  <span className="site-header__language-value">{languageDefinition.name}</span>
-                </button>
-                {isLanguageMenuOpen ? (
-                  <ul
-                    className="site-header__language-menu"
-                    role="listbox"
-                    id="language-select-menu"
-                    aria-labelledby="language-select"
-                  >
-                    {LANGUAGE_CODES.map(code => {
-                      const definition = LANGUAGE_DEFINITIONS[code];
-                      const isSelected = code === language;
-                      return (
-                        <li
-                          key={code}
-                          className="site-header__language-option"
-                          role="option"
-                          aria-selected={isSelected}
-                        >
-                          <button
-                            type="button"
-                            className="site-header__language-option-button"
-                            data-active={isSelected}
-                            onClick={() => {
-                              setLanguage(code);
-                              setLanguageMenuOpen(false);
-                            }}
-                          >
-                            <span className="site-header__language-option-name">
-                              {definition.name}
-                            </span>
-                            {isSelected && <span className="site-header__language-option-check">✓</span>}
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ) : null}
-              </div>
-            </div>
-          </div>
-          <div className="site-header__row site-header__row--bottom">
             <nav className="site-header__nav" aria-label={texts.brandName}>
               <a className="site-header__link" href="#schedule">
                 {texts.navSchedule}
@@ -1342,9 +1283,68 @@ export default function Home() {
                 {texts.navFaq}
               </a>
             </nav>
-            <a className="site-header__cta" href="#schedule">
-              {texts.heroCta}
-            </a>
+            <div className="site-header__actions">
+              <div className="site-header__meta-group">
+                <div className="site-header__meta-portion site-header__meta-portion--timezone">
+                  <span className="site-header__meta-value">{timezoneBadgeLabel}</span>
+                </div>
+                <div
+                  className="site-header__meta-portion site-header__language"
+                  ref={languageControlRef}
+                >
+                  <button
+                    type="button"
+                    id="language-select"
+                    className="site-header__language-toggle"
+                    aria-haspopup="listbox"
+                    aria-expanded={isLanguageMenuOpen}
+                    aria-controls="language-select-menu"
+                    onClick={() => setLanguageMenuOpen(prev => !prev)}
+                  >
+                    <span className="site-header__language-value">{languageDefinition.name}</span>
+                  </button>
+                  {isLanguageMenuOpen ? (
+                    <ul
+                      className="site-header__language-menu"
+                      role="listbox"
+                      id="language-select-menu"
+                      aria-labelledby="language-select"
+                    >
+                      {LANGUAGE_CODES.map(code => {
+                        const definition = LANGUAGE_DEFINITIONS[code];
+                        const isSelected = code === language;
+                        return (
+                          <li
+                            key={code}
+                            className="site-header__language-option"
+                            role="option"
+                            aria-selected={isSelected}
+                          >
+                            <button
+                              type="button"
+                              className="site-header__language-option-button"
+                              data-active={isSelected}
+                              onClick={() => {
+                                setLanguage(code);
+                                setLanguageMenuOpen(false);
+                              }}
+                            >
+                              <span className="site-header__language-option-name">
+                                {definition.name}
+                              </span>
+                              {isSelected && <span className="site-header__language-option-check">✓</span>}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : null}
+                </div>
+              </div>
+              <a className="site-header__cta" href="#schedule">
+                {texts.heroCta}
+              </a>
+            </div>
           </div>
         </div>
       </header>
