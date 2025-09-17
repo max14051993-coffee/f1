@@ -99,7 +99,8 @@ function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
   return target.toRelative(options);
 }
 
-type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de' | 'zh';
+export type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de' | 'zh';
+
 
 type FeatureDescriptor = {
   title: string;
@@ -177,7 +178,7 @@ type TranslationBundle = {
   footer: FooterCopy;
 };
 
-type LanguageDefinition = {
+export type LanguageDefinition = {
   code: LanguageCode;
   name: string;
   locale: string;
@@ -186,7 +187,7 @@ type LanguageDefinition = {
   texts: TranslationBundle;
 };
 
-const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
+export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   ru: {
     code: 'ru',
     name: 'Русский',
@@ -920,8 +921,8 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   },
 } as const;
 
-const LANGUAGE_CODES = Object.keys(LANGUAGE_DEFINITIONS) as LanguageCode[];
-const DEFAULT_LANGUAGE: LanguageCode = 'ru';
+export const LANGUAGE_CODES = Object.keys(LANGUAGE_DEFINITIONS) as LanguageCode[];
+export const DEFAULT_LANGUAGE: LanguageCode = 'ru';
 const LANGUAGE_STORAGE_KEY = 'schedule-language';
 
 function isLanguageCode(value: string): value is LanguageCode {
