@@ -33,7 +33,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250315T070000
 URL:https://racingnews365.com
 LOCATION:Albert Park\, melbourne
-SUMMARY:RN365 Australian - Qualification
+SUMMARY:F1 | Australian Grand Prix | Australia | Albert Park Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -52,7 +52,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250316T070000
 URL:https://racingnews365.com
 LOCATION:Albert Park\, melbourne
-SUMMARY:RN365 Australian - Race
+SUMMARY:F1 | Australian Grand Prix | Australia | Albert Park Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -71,7 +71,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250321T091400
 URL:https://racingnews365.com
 LOCATION:Shanghai International Circuit\, shanghai
-SUMMARY:RN365 Chinese - Sprint qualifying
+SUMMARY:F1 | Chinese Grand Prix | China | Shanghai International Circuit | Sprint qualifying
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -90,7 +90,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250322T050000
 URL:https://racingnews365.com
 LOCATION:Shanghai International Circuit\, shanghai
-SUMMARY:RN365 Chinese - Sprint race
+SUMMARY:F1 | Chinese Grand Prix | China | Shanghai International Circuit | Sprint race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -109,7 +109,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250322T090000
 URL:https://racingnews365.com
 LOCATION:Shanghai International Circuit\, shanghai
-SUMMARY:RN365 Chinese - Qualification
+SUMMARY:F1 | Chinese Grand Prix | China | Shanghai International Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -128,7 +128,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250323T100000
 URL:https://racingnews365.com
 LOCATION:Shanghai International Circuit\, shanghai
-SUMMARY:RN365 Chinese - Race
+SUMMARY:F1 | Chinese Grand Prix | China | Shanghai International Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -147,7 +147,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250405T090000
 URL:https://racingnews365.com
 LOCATION:Suzuka Circuit\, suzuka
-SUMMARY:RN365 Japanese - Qualification
+SUMMARY:F1 | Japanese Grand Prix | Japan | Suzuka International Racing Course | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -166,7 +166,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250406T090000
 URL:https://racingnews365.com
 LOCATION:Suzuka Circuit\, suzuka
-SUMMARY:RN365 Japanese - Race
+SUMMARY:F1 | Japanese Grand Prix | Japan | Suzuka International Racing Course | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -185,7 +185,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250412T190000
 URL:https://racingnews365.com
 LOCATION:Bahrain International Circuit\, sakhir
-SUMMARY:RN365 Bahrain - Qualification
+SUMMARY:F1 | Bahrain Grand Prix | Bahrain | Bahrain International Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -204,7 +204,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250413T190000
 URL:https://racingnews365.com
 LOCATION:Bahrain International Circuit\, sakhir
-SUMMARY:RN365 Bahrain - Race
+SUMMARY:F1 | Bahrain Grand Prix | Bahrain | Bahrain International Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -223,7 +223,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250419T200000
 URL:https://racingnews365.com
 LOCATION:Jeddah Street Circuit\, jeddah
-SUMMARY:RN365 Saudi Arabian - Qualification
+SUMMARY:F1 | Saudi Arabian Grand Prix | Saudi Arabia | Jeddah Corniche Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -242,7 +242,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250420T210000
 URL:https://racingnews365.com
 LOCATION:Jeddah Street Circuit\, jeddah
-SUMMARY:RN365 Saudi Arabian - Race
+SUMMARY:F1 | Saudi Arabian Grand Prix | Saudi Arabia | Jeddah Corniche Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -261,7 +261,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250502T231459
 URL:https://racingnews365.com
 LOCATION:Miami International Autodrome\, miami
-SUMMARY:RN365 Miami - Sprint qualifying
+SUMMARY:F1 | Miami Grand Prix | United States | Miami International Autodrome | Sprint qualifying
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -280,7 +280,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250503T190000
 URL:https://racingnews365.com
 LOCATION:Miami International Autodrome\, miami
-SUMMARY:RN365 Miami - Sprint race
+SUMMARY:F1 | Miami Grand Prix | United States | Miami International Autodrome | Sprint race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -299,7 +299,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250503T231500
 URL:https://racingnews365.com
 LOCATION:Miami International Autodrome\, miami
-SUMMARY:RN365 Miami - Qualification
+SUMMARY:F1 | Miami Grand Prix | United States | Miami International Autodrome | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -318,7 +318,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250504T235900
 URL:https://racingnews365.com
 LOCATION:Miami International Autodrome\, miami
-SUMMARY:RN365 Miami - Race
+SUMMARY:F1 | Miami Grand Prix | United States | Miami International Autodrome | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094141Z
@@ -337,7 +337,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250517T170000
 URL:https://racingnews365.com
 LOCATION:Autodromo Enzo e Dino Ferrari\, imola
-SUMMARY:RN365 Emilia Romagna - Qualification
+SUMMARY:F1 | Emilia Romagna Grand Prix | Italy | Autodromo Enzo e Dino Ferrari | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -356,7 +356,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250518T170000
 URL:https://racingnews365.com
 LOCATION:Autodromo Enzo e Dino Ferrari\, imola
-SUMMARY:RN365 Emilia Romagna - Race
+SUMMARY:F1 | Emilia Romagna Grand Prix | Italy | Autodromo Enzo e Dino Ferrari | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -375,7 +375,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250524T170000
 URL:https://racingnews365.com
 LOCATION:Circuit de Monaco\, monte-carlo
-SUMMARY:RN365 Monaco - Qualification
+SUMMARY:F1 | Monaco Grand Prix | Monaco | Circuit de Monaco | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -394,7 +394,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250525T170000
 URL:https://racingnews365.com
 LOCATION:Circuit de Monaco\, monte-carlo
-SUMMARY:RN365 Monaco - Race
+SUMMARY:F1 | Monaco Grand Prix | Monaco | Circuit de Monaco | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -413,7 +413,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250531T170000
 URL:https://racingnews365.com
 LOCATION:Circuit de Catalunya\, barcelona
-SUMMARY:RN365 Spanish - Qualification
+SUMMARY:F1 | Spanish Grand Prix | Spain | Circuit de Barcelona-Catalunya | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -432,7 +432,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250601T170000
 URL:https://racingnews365.com
 LOCATION:Circuit de Catalunya\, barcelona
-SUMMARY:RN365 Spanish - Race
+SUMMARY:F1 | Spanish Grand Prix | Spain | Circuit de Barcelona-Catalunya | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -451,7 +451,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250614T230000
 URL:https://racingnews365.com
 LOCATION:Circuit Gilles Villeneuve\, montreal
-SUMMARY:RN365 Canadian - Qualification
+SUMMARY:F1 | Canadian Grand Prix | Canada | Circuit Gilles Villeneuve | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -470,7 +470,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250615T220000
 URL:https://racingnews365.com
 LOCATION:Circuit Gilles Villeneuve\, montreal
-SUMMARY:RN365 Canadian - Race
+SUMMARY:F1 | Canadian Grand Prix | Canada | Circuit Gilles Villeneuve | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -489,7 +489,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250628T170000
 URL:https://racingnews365.com
 LOCATION:Red Bull Ring\, spielberg
-SUMMARY:RN365 Austrian - Qualification
+SUMMARY:F1 | Austrian Grand Prix | Austria | Red Bull Ring | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -508,7 +508,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250629T170000
 URL:https://racingnews365.com
 LOCATION:Red Bull Ring\, spielberg
-SUMMARY:RN365 Austrian - Race
+SUMMARY:F1 | Austrian Grand Prix | Austria | Red Bull Ring | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -527,7 +527,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250705T170000
 URL:https://racingnews365.com
 LOCATION:Circuit Silverstone\, silverstone
-SUMMARY:RN365 British - Qualification
+SUMMARY:F1 | British Grand Prix | United Kingdom | Silverstone Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -546,7 +546,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250706T180000
 URL:https://racingnews365.com
 LOCATION:Circuit Silverstone\, silverstone
-SUMMARY:RN365 British - Race
+SUMMARY:F1 | British Grand Prix | United Kingdom | Silverstone Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -565,7 +565,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250725T171400
 URL:https://racingnews365.com
 LOCATION:Spa-Francorchamps\, francochamps
-SUMMARY:RN365 Belgian - Sprint qualifying
+SUMMARY:F1 | Belgian Grand Prix | Belgium | Spa-Francorchamps | Sprint qualifying
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -584,7 +584,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250726T130000
 URL:https://racingnews365.com
 LOCATION:Spa-Francorchamps\, francochamps
-SUMMARY:RN365 Belgian - Sprint race
+SUMMARY:F1 | Belgian Grand Prix | Belgium | Spa-Francorchamps | Sprint race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -603,7 +603,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250726T170000
 URL:https://racingnews365.com
 LOCATION:Spa-Francorchamps\, francochamps
-SUMMARY:RN365 Belgian - Qualification
+SUMMARY:F1 | Belgian Grand Prix | Belgium | Spa-Francorchamps | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -622,7 +622,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250727T170000
 URL:https://racingnews365.com
 LOCATION:Spa-Francorchamps\, francochamps
-SUMMARY:RN365 Belgian - Race
+SUMMARY:F1 | Belgian Grand Prix | Belgium | Spa-Francorchamps | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -641,7 +641,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250802T170000
 URL:https://racingnews365.com
 LOCATION:Hungaroring\, budapest
-SUMMARY:RN365 Hungarian - Qualification
+SUMMARY:F1 | Hungarian Grand Prix | Hungary | Hungaroring | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -660,7 +660,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250803T170000
 URL:https://racingnews365.com
 LOCATION:Hungaroring\, budapest
-SUMMARY:RN365 Hungarian - Race
+SUMMARY:F1 | Hungarian Grand Prix | Hungary | Hungaroring | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -679,7 +679,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250830T160000
 URL:https://racingnews365.com
 LOCATION:Circuit Zandvoort\, zandvoort
-SUMMARY:RN365 Dutch - Qualification
+SUMMARY:F1 | Dutch Grand Prix | Netherlands | Circuit Zandvoort | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -698,7 +698,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250831T170000
 URL:https://racingnews365.com
 LOCATION:Circuit Zandvoort\, zandvoort
-SUMMARY:RN365 Dutch - Race
+SUMMARY:F1 | Dutch Grand Prix | Netherlands | Circuit Zandvoort | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -717,7 +717,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250906T170000
 URL:https://racingnews365.com
 LOCATION:Autodromo Nazionale Monza\, monza
-SUMMARY:RN365 Italian - Qualification
+SUMMARY:F1 | Italian Grand Prix | Italy | Autodromo Nazionale Monza | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -736,7 +736,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250907T170000
 URL:https://racingnews365.com
 LOCATION:Autodromo Nazionale Monza\, monza
-SUMMARY:RN365 Italian - Race
+SUMMARY:F1 | Italian Grand Prix | Italy | Autodromo Nazionale Monza | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -755,7 +755,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250920T150000
 URL:https://racingnews365.com
 LOCATION:Baku City Circuit\, baku
-SUMMARY:RN365 Azerbaijan - Qualification
+SUMMARY:F1 | Azerbaijan Grand Prix | Azerbaijan | Baku City Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -774,7 +774,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20250921T150000
 URL:https://racingnews365.com
 LOCATION:Baku City Circuit\, baku
-SUMMARY:RN365 Azerbaijan - Race
+SUMMARY:F1 | Azerbaijan Grand Prix | Azerbaijan | Baku City Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -793,7 +793,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251004T160000
 URL:https://racingnews365.com
 LOCATION:Marina Bay Street Circuit\, singapore
-SUMMARY:RN365 Singapore - Qualification
+SUMMARY:F1 | Singapore Grand Prix | Singapore | Marina Bay Street Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -812,7 +812,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251005T160000
 URL:https://racingnews365.com
 LOCATION:Marina Bay Street Circuit\, singapore
-SUMMARY:RN365 Singapore - Race
+SUMMARY:F1 | Singapore Grand Prix | Singapore | Marina Bay Street Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -831,7 +831,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251018T001400
 URL:https://racingnews365.com
 LOCATION:Circuit of the Americas\, austin
-SUMMARY:RN365 United States - Sprint qualifying
+SUMMARY:F1 | United States Grand Prix | United States | Circuit of the Americas | Sprint qualifying
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -850,7 +850,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251018T200000
 URL:https://racingnews365.com
 LOCATION:Circuit of the Americas\, austin
-SUMMARY:RN365 United States - Sprint race
+SUMMARY:F1 | United States Grand Prix | United States | Circuit of the Americas | Sprint race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -869,7 +869,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251018T235959
 URL:https://racingnews365.com
 LOCATION:Circuit of the Americas\, austin
-SUMMARY:RN365 United States - Qualification
+SUMMARY:F1 | United States Grand Prix | United States | Circuit of the Americas | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -888,7 +888,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251019T230000
 URL:https://racingnews365.com
 LOCATION:Circuit of the Americas\, austin
-SUMMARY:RN365 United States - Race
+SUMMARY:F1 | United States Grand Prix | United States | Circuit of the Americas | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -907,7 +907,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251025T235959
 URL:https://racingnews365.com
 LOCATION:Autodromo Hermanos Rodriguez\, mexico-city
-SUMMARY:RN365 Mexican - Qualification
+SUMMARY:F1 | Mexico City Grand Prix | Mexico | Autódromo Hermanos Rodríguez | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -926,7 +926,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251026T230000
 URL:https://racingnews365.com
 LOCATION:Autodromo Hermanos Rodriguez\, mexico-city
-SUMMARY:RN365 Mexican - Race
+SUMMARY:F1 | Mexico City Grand Prix | Mexico | Autódromo Hermanos Rodríguez | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -945,7 +945,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251107T201400
 URL:https://racingnews365.com
 LOCATION:Autodromo Jose Carlos Pace Interlagos\, sao-paulo
-SUMMARY:RN365 Brazilian - Sprint qualifying
+SUMMARY:F1 | Brazilian Grand Prix | Brazil | Autódromo José Carlos Pace | Sprint qualifying
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -964,7 +964,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251108T160000
 URL:https://racingnews365.com
 LOCATION:Autodromo Jose Carlos Pace Interlagos\, sao-paulo
-SUMMARY:RN365 Brazilian - Sprint race
+SUMMARY:F1 | Brazilian Grand Prix | Brazil | Autódromo José Carlos Pace | Sprint race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -983,7 +983,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251108T200000
 URL:https://racingnews365.com
 LOCATION:Autodromo Jose Carlos Pace Interlagos\, sao-paulo
-SUMMARY:RN365 Brazilian - Qualification
+SUMMARY:F1 | Brazilian Grand Prix | Brazil | Autódromo José Carlos Pace | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1002,7 +1002,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251109T200000
 URL:https://racingnews365.com
 LOCATION:Autodromo Jose Carlos Pace Interlagos\, sao-paulo
-SUMMARY:RN365 Brazilian - Race
+SUMMARY:F1 | Brazilian Grand Prix | Brazil | Autódromo José Carlos Pace | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1021,7 +1021,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251122T060000
 URL:https://racingnews365.com
 LOCATION:Las Vegas Street Circuit\, las-vegas
-SUMMARY:RN365 Las Vegas - Qualification
+SUMMARY:F1 | Las Vegas Grand Prix | United States | Las Vegas Street Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1040,7 +1040,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251123T070000
 URL:https://racingnews365.com
 LOCATION:Las Vegas Street Circuit\, las-vegas
-SUMMARY:RN365 Las Vegas - Race
+SUMMARY:F1 | Las Vegas Grand Prix | United States | Las Vegas Street Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1059,7 +1059,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251128T191400
 URL:https://racingnews365.com
 LOCATION:Losail International Circuit\, lusail
-SUMMARY:RN365 Qatar - Sprint qualifying
+SUMMARY:F1 | Qatar Grand Prix | Qatar | Losail International Circuit | Sprint qualifying
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1078,7 +1078,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251129T160000
 URL:https://racingnews365.com
 LOCATION:Losail International Circuit\, lusail
-SUMMARY:RN365 Qatar - Sprint race
+SUMMARY:F1 | Qatar Grand Prix | Qatar | Losail International Circuit | Sprint race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1097,7 +1097,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251129T200000
 URL:https://racingnews365.com
 LOCATION:Losail International Circuit\, lusail
-SUMMARY:RN365 Qatar - Qualification
+SUMMARY:F1 | Qatar Grand Prix | Qatar | Losail International Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1116,7 +1116,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251130T190000
 URL:https://racingnews365.com
 LOCATION:Losail International Circuit\, lusail
-SUMMARY:RN365 Qatar - Race
+SUMMARY:F1 | Qatar Grand Prix | Qatar | Losail International Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1135,7 +1135,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251206T160000
 URL:https://racingnews365.com
 LOCATION:Yas Marina Circuit\, abu-dhabi
-SUMMARY:RN365 Abu Dhabi - Qualification
+SUMMARY:F1 | Abu Dhabi Grand Prix | United Arab Emirates | Yas Marina Circuit | Qualification
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
@@ -1154,7 +1154,7 @@ TRANSP:OPAQUE
 DTEND;TZID=Europe/Amsterdam:20251207T160000
 URL:https://racingnews365.com
 LOCATION:Yas Marina Circuit\, abu-dhabi
-SUMMARY:RN365 Abu Dhabi - Race
+SUMMARY:F1 | Abu Dhabi Grand Prix | United Arab Emirates | Yas Marina Circuit | Race
 CLASS:PUBLIC
 DTSTAMP:20250914T000202Z
 CREATED:20241217T094142Z
