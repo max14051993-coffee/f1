@@ -530,10 +530,41 @@ export default function Home() {
         }
       >
         <div className="hero__intro">
-          <span className="hero__badge">
-            <span className="hero__badge-text">{texts.heroBadge}</span>
-            <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
-          </span>
+          <div className="hero__top-row">
+            <div className="hero__badge-wrapper">
+              <span className="hero__badge">
+                <span className="hero__badge-text">{texts.heroBadge}</span>
+                <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
+              </span>
+            </div>
+            <div className="hero__language">
+              <label
+                className="hero__language-label control-panel__label"
+                htmlFor="language-select"
+              >
+                {texts.languageLabel}
+              </label>
+              <div className="language-select">
+                <select
+                  id="language-select"
+                  className="language-select__dropdown"
+                  value={language}
+                  onChange={event => {
+                    const value = event.target.value;
+                    if (isLanguageCode(value)) {
+                      setLanguage(value);
+                    }
+                  }}
+                >
+                  {LANGUAGE_CODES.map(code => (
+                    <option key={code} value={code}>
+                      {LANGUAGE_DEFINITIONS[code].name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
           <h1 className="hero__title">
             {texts.heroTitle(SERIES_TITLE || 'F1 / F2 / F3 / MotoGP')}
           </h1>
@@ -542,32 +573,6 @@ export default function Home() {
         <div className="hero__layout">
           <div className="hero__column">
             <div className="hero-card">
-              <div className="hero-card__section">
-                <div className="hero-card__section-header">
-                  <label className="control-panel__label" htmlFor="language-select">
-                    {texts.languageLabel}
-                  </label>
-                </div>
-                <div className="language-select">
-                  <select
-                    id="language-select"
-                    className="language-select__dropdown"
-                    value={language}
-                    onChange={event => {
-                      const value = event.target.value;
-                      if (isLanguageCode(value)) {
-                        setLanguage(value);
-                      }
-                    }}
-                  >
-                    {LANGUAGE_CODES.map(code => (
-                      <option key={code} value={code}>
-                        {LANGUAGE_DEFINITIONS[code].name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
               <div className="hero-card__section">
                 <div className="hero-card__section-header">
                   <span className="control-panel__label">{texts.seriesLabel}</span>
