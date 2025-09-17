@@ -37,6 +37,21 @@ type FooterCopy = {
   supportLinks: FooterLink[];
 };
 
+type PrivacyPolicySection = {
+  title: string;
+  paragraphs: string[];
+  list?: string[];
+};
+
+type PrivacyPolicyCopy = {
+  title: string;
+  lastUpdated: string;
+  intro: string[];
+  sections: PrivacyPolicySection[];
+  conclusion: string;
+  closeLabel: string;
+};
+
 type TranslationBundle = {
   heroBadge: string;
   heroTitle: (seriesTitle: string) => string;
@@ -76,6 +91,7 @@ type TranslationBundle = {
   ctaSubtitle: string;
   ctaButton: string;
   footer: FooterCopy;
+  privacyPolicy: PrivacyPolicyCopy;
 };
 
 export type LanguageDefinition = {
@@ -207,6 +223,53 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
           { label: 'Политика конфиденциальности', href: '#privacy' },
         ],
       },
+      privacyPolicy: {
+        title: 'Политика конфиденциальности',
+        lastUpdated: 'Обновлено: 20 марта 2024 г.',
+        intro: [
+          'RaceSync создан, чтобы помогать болельщикам следить за расписанием гонок и при этом собирать минимум данных. В этом документе описано, какую информацию мы обрабатываем, когда вы пользуетесь сайтом или календарями.',
+        ],
+        sections: [
+          {
+            title: 'Какие данные мы собираем',
+            paragraphs: [
+              'Мы стремимся получать только те сведения, которые необходимы для работы сервиса.',
+            ],
+            list: [
+              'Контактные данные, которые вы добровольно отправляете на hello@racesync.app.',
+              'Обезличенную аналитику о посещениях страниц и том, какие функции используются.',
+              'Технические журналы, автоматически формируемые для защиты сайта от сбоев и злоупотреблений.',
+            ],
+          },
+          {
+            title: 'Как мы используем данные',
+            paragraphs: [
+              'Полученная информация помогает улучшать RaceSync и поддерживать стабильную работу сервиса.',
+            ],
+            list: [
+              'Отвечать на обращения и вопросы, которые вы отправляете по электронной почте.',
+              'Понимать, какие разделы и возможности востребованы у пользователей.',
+              'Выявлять технические проблемы и обеспечивать безопасность инфраструктуры.',
+            ],
+          },
+          {
+            title: 'Хранение и безопасность',
+            paragraphs: [
+              'Доступ к данным ограничен небольшой командой RaceSync. Аналитика хранится в агрегированном виде и не позволяет идентифицировать отдельных пользователей.',
+              'Контактные сообщения хранятся столько, сколько нужно для решения вашего запроса, после чего удаляются из активных систем.',
+            ],
+          },
+          {
+            title: 'Ваш выбор',
+            paragraphs: [
+              'Вы можете ограничить сбор обезличенной аналитики с помощью настроек браузера или расширений блокировки. Если хотите удалить ранее переданные данные, напишите нам — мы обработаем запрос в разумный срок.',
+            ],
+          },
+        ],
+        conclusion:
+          'Если у вас остались вопросы о защите данных в RaceSync, напишите на hello@racesync.app — мы ответим в кратчайшие сроки.',
+        closeLabel: 'Закрыть',
+      },
     },
   },
   en: {
@@ -327,6 +390,53 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
           { label: 'Email support', href: 'mailto:hello@racesync.app' },
           { label: 'Privacy policy', href: '#privacy' },
         ],
+      },
+      privacyPolicy: {
+        title: 'Privacy policy',
+        lastUpdated: 'Last updated: 20 March 2024',
+        intro: [
+          'RaceSync exists to help fans track motorsport schedules while collecting as little personal data as possible. This policy explains what information we process when you visit the website or subscribe to our calendars.',
+        ],
+        sections: [
+          {
+            title: 'Information we collect',
+            paragraphs: [
+              'We only gather the details that allow us to operate and improve the service.',
+            ],
+            list: [
+              'Contact information you voluntarily share when emailing hello@racesync.app.',
+              'Anonymous analytics about page visits and feature usage.',
+              'Technical logs generated automatically to keep the site secure and reliable.',
+            ],
+          },
+          {
+            title: 'How we use information',
+            paragraphs: [
+              'The collected data supports the ongoing development of RaceSync and ensures the experience stays stable for everyone.',
+            ],
+            list: [
+              'Responding to questions or feedback you send by email.',
+              'Understanding which sections and capabilities fans use most.',
+              'Detecting technical issues and protecting the infrastructure from abuse.',
+            ],
+          },
+          {
+            title: 'Retention and security',
+            paragraphs: [
+              'Access to data is limited to the small RaceSync team. Analytics are stored in aggregate form so they cannot identify individual visitors.',
+              'Messages you send are kept only as long as needed to resolve your request and are removed from active systems afterwards.',
+            ],
+          },
+          {
+            title: 'Your choices',
+            paragraphs: [
+              'You can limit anonymous analytics through your browser or blocking extensions. Contact us if you want to remove previously shared information and we will process the request promptly.',
+            ],
+          },
+        ],
+        conclusion:
+          'Questions about privacy at RaceSync? Email hello@racesync.app and we will get back to you as soon as possible.',
+        closeLabel: 'Close',
       },
     },
   },
@@ -449,6 +559,53 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
           { label: 'Política de privacidad', href: '#privacy' },
         ],
       },
+      privacyPolicy: {
+        title: 'Política de privacidad',
+        lastUpdated: 'Última actualización: 20 de marzo de 2024',
+        intro: [
+          'RaceSync existe para que los aficionados sigan los calendarios del automovilismo recopilando la menor cantidad posible de datos personales. Esta política describe la información que tratamos cuando visitas la web o utilizas nuestros calendarios.',
+        ],
+        sections: [
+          {
+            title: 'Qué datos recopilamos',
+            paragraphs: [
+              'Solo reunimos la información necesaria para operar y mejorar el servicio.',
+            ],
+            list: [
+              'Datos de contacto que compartes voluntariamente al escribir a hello@racesync.app.',
+              'Analíticas anónimas sobre visitas a páginas y uso de funciones.',
+              'Registros técnicos generados automáticamente para mantener el sitio seguro y estable.',
+            ],
+          },
+          {
+            title: 'Cómo usamos la información',
+            paragraphs: [
+              'Los datos recopilados nos permiten mejorar RaceSync y garantizar una experiencia estable para toda la comunidad.',
+            ],
+            list: [
+              'Responder a las preguntas o comentarios que envías por correo.',
+              'Comprender qué secciones y herramientas son más útiles para los fans.',
+              'Detectar incidencias técnicas y proteger la infraestructura frente a abusos.',
+            ],
+          },
+          {
+            title: 'Conservación y seguridad',
+            paragraphs: [
+              'El acceso a los datos está limitado al pequeño equipo de RaceSync. Las analíticas se guardan de forma agregada, por lo que no identifican a visitantes individuales.',
+              'Los mensajes que envías se conservan únicamente el tiempo necesario para resolver tu solicitud y después se eliminan de los sistemas activos.',
+            ],
+          },
+          {
+            title: 'Tus opciones',
+            paragraphs: [
+              'Puedes limitar la analítica anónima mediante la configuración de tu navegador o extensiones de bloqueo. Si deseas eliminar información que compartiste anteriormente, contáctanos y atenderemos la solicitud lo antes posible.',
+            ],
+          },
+        ],
+        conclusion:
+          'Si tienes preguntas sobre privacidad en RaceSync, escribe a hello@racesync.app y te responderemos a la brevedad.',
+        closeLabel: 'Cerrar',
+      },
     },
   },
   fr: {
@@ -569,6 +726,53 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
           { label: 'Nous écrire', href: 'mailto:hello@racesync.app' },
           { label: 'Politique de confidentialité', href: '#privacy' },
         ],
+      },
+      privacyPolicy: {
+        title: 'Politique de confidentialité',
+        lastUpdated: 'Dernière mise à jour : 20 mars 2024',
+        intro: [
+          'RaceSync aide les fans à suivre les calendriers de sport automobile tout en collectant le minimum de données personnelles. Cette politique décrit les informations que nous traitons lorsque vous visitez le site ou utilisez nos calendriers.',
+        ],
+        sections: [
+          {
+            title: 'Données que nous collectons',
+            paragraphs: [
+              'Nous ne recueillons que les éléments indispensables au fonctionnement et à l’amélioration du service.',
+            ],
+            list: [
+              'Les coordonnées que vous partagez volontairement en écrivant à hello@racesync.app.',
+              'Des statistiques anonymes sur la fréquentation des pages et l’usage des fonctionnalités.',
+              'Des journaux techniques générés automatiquement pour maintenir la sécurité et la stabilité du site.',
+            ],
+          },
+          {
+            title: 'Comment nous utilisons ces données',
+            paragraphs: [
+              'Les informations collectées nous aident à développer RaceSync et à garantir une expérience fiable pour tous.',
+            ],
+            list: [
+              'Répondre aux questions ou retours envoyés par courriel.',
+              'Comprendre quelles sections et fonctionnalités sont les plus utiles aux fans.',
+              'Détecter les problèmes techniques et protéger notre infrastructure contre les abus.',
+            ],
+          },
+          {
+            title: 'Conservation et sécurité',
+            paragraphs: [
+              'L’accès aux données est limité à la petite équipe RaceSync. Les statistiques sont stockées sous forme agrégée et ne permettent pas d’identifier un visiteur.',
+              'Les messages reçus sont conservés uniquement le temps nécessaire pour traiter votre demande puis supprimés des systèmes actifs.',
+            ],
+          },
+          {
+            title: 'Vos choix',
+            paragraphs: [
+              'Vous pouvez limiter les statistiques anonymes via votre navigateur ou des extensions de blocage. Si vous souhaitez supprimer des informations précédemment partagées, contactez-nous et nous traiterons la demande rapidement.',
+            ],
+          },
+        ],
+        conclusion:
+          'Pour toute question relative à la confidentialité chez RaceSync, écrivez à hello@racesync.app et nous vous répondrons au plus vite.',
+        closeLabel: 'Fermer',
       },
     },
   },
@@ -691,6 +895,53 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
           { label: 'Datenschutz', href: '#privacy' },
         ],
       },
+      privacyPolicy: {
+        title: 'Datenschutzerklärung',
+        lastUpdated: 'Zuletzt aktualisiert: 20. März 2024',
+        intro: [
+          'RaceSync hilft Fans, Motorsport-Kalender zu verfolgen und erhebt dabei so wenige personenbezogene Daten wie möglich. Diese Erklärung erläutert, welche Informationen wir verarbeiten, wenn du die Website besuchst oder unsere Kalender nutzt.',
+        ],
+        sections: [
+          {
+            title: 'Welche Daten wir erfassen',
+            paragraphs: [
+              'Wir sammeln nur die Angaben, die für den Betrieb und die Verbesserung des Dienstes erforderlich sind.',
+            ],
+            list: [
+              'Kontaktdaten, die du freiwillig an hello@racesync.app sendest.',
+              'Anonymisierte Nutzungsstatistiken zu Seitenaufrufen und Funktionen.',
+              'Technische Protokolle, die automatisch zur Sicherung und Stabilität der Website erstellt werden.',
+            ],
+          },
+          {
+            title: 'Wie wir die Daten nutzen',
+            paragraphs: [
+              'Die gesammelten Informationen helfen uns, RaceSync weiterzuentwickeln und eine stabile Erfahrung für alle sicherzustellen.',
+            ],
+            list: [
+              'Antworten auf Fragen oder Feedback, das du per E-Mail sendest.',
+              'Verstehen, welche Bereiche und Funktionen für Fans am wichtigsten sind.',
+              'Technische Probleme erkennen und die Infrastruktur vor Missbrauch schützen.',
+            ],
+          },
+          {
+            title: 'Aufbewahrung und Sicherheit',
+            paragraphs: [
+              'Der Zugriff auf Daten ist auf das kleine RaceSync-Team beschränkt. Analysen werden nur in aggregierter Form gespeichert und lassen keine Rückschlüsse auf einzelne Besucher zu.',
+              'Nachrichten werden nur so lange aufbewahrt, wie es zur Bearbeitung deiner Anfrage nötig ist, und anschließend aus aktiven Systemen gelöscht.',
+            ],
+          },
+          {
+            title: 'Deine Optionen',
+            paragraphs: [
+              'Du kannst anonyme Analysen über deinen Browser oder Blocker einschränken. Wenn du zuvor übermittelte Informationen entfernen lassen möchtest, kontaktiere uns und wir kümmern uns zeitnah darum.',
+            ],
+          },
+        ],
+        conclusion:
+          'Du hast Fragen zum Datenschutz bei RaceSync? Schreib an hello@racesync.app und wir melden uns schnellstmöglich.',
+        closeLabel: 'Schließen',
+      },
     },
   },
   zh: {
@@ -810,6 +1061,53 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
           { label: '邮件联系', href: 'mailto:hello@racesync.app' },
           { label: '隐私政策', href: '#privacy' },
         ],
+      },
+      privacyPolicy: {
+        title: '隐私政策',
+        lastUpdated: '最后更新：2024 年 3 月 20 日',
+        intro: [
+          'RaceSync 致力于帮助车迷跟踪赛车日程，并尽可能少地收集个人数据。本政策说明当你访问我们的网站或订阅日历时会处理哪些信息。',
+        ],
+        sections: [
+          {
+            title: '我们收集哪些数据',
+            paragraphs: [
+              '我们仅收集维持和改进服务所必需的信息。',
+            ],
+            list: [
+              '你主动发送至 hello@racesync.app 的联系信息。',
+              '关于页面访问和功能使用情况的匿名分析数据。',
+              '为保障网站安全稳定而自动生成的技术日志。',
+            ],
+          },
+          {
+            title: '我们如何使用这些信息',
+            paragraphs: [
+              '这些数据帮助我们不断优化 RaceSync，并为所有用户保持稳定体验。',
+            ],
+            list: [
+              '回复你通过电子邮件提交的问题或反馈。',
+              '了解车迷最常使用的版块和功能。',
+              '排查技术问题并防止对基础设施的滥用。',
+            ],
+          },
+          {
+            title: '数据保留与安全',
+            paragraphs: [
+              '只有少量 RaceSync 团队成员可以访问这些数据。分析数据以聚合方式保存，不会识别个人访客。',
+              '你的邮件仅会在处理需求所需的时间内保留，之后会从活跃系统中删除。',
+            ],
+          },
+          {
+            title: '你的选择',
+            paragraphs: [
+              '你可以通过浏览器或拦截扩展限制匿名分析。如果希望删除之前提供的信息，请与我们联系，我们会尽快处理。',
+            ],
+          },
+        ],
+        conclusion:
+          '若对 RaceSync 的隐私保护有任何疑问，请发送邮件至 hello@racesync.app，我们会尽快回复。',
+        closeLabel: '关闭',
       },
     },
   },

@@ -329,8 +329,10 @@ export default function Home() {
   const [userTz, setUserTz] = useState<string>('UTC');
   const [language, setLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
   const [isLanguageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const [isPrivacyPolicyOpen, setPrivacyPolicyOpen] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
+  const privacyPolicyDialogRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -429,6 +431,37 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    if (!isPrivacyPolicyOpen) {
+      return;
+    }
+
+    const previousActive = document.activeElement as HTMLElement | null;
+    const dialog = privacyPolicyDialogRef.current;
+    dialog?.focus({ preventScroll: true });
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setPrivacyPolicyOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previousActive?.focus?.();
+    };
+  }, [isPrivacyPolicyOpen]);
+
+  useEffect(() => {
     if (!isLanguageMenuOpen) return;
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -514,8 +547,10 @@ export default function Home() {
   const insightSteps = texts.insightsSteps;
   const faqItems = texts.faqItems;
   const footer = texts.footer;
+  const privacyPolicy = texts.privacyPolicy;
   const currentYear = new Date().getFullYear();
   const footerLegal = footer.legal.replace('{year}', currentYear.toString());
+  const privacyPolicyTitleId = 'privacy-policy-title';
 
   return (
     <div className="site" id="top">
@@ -950,16 +985,29 @@ export default function Home() {
             <div className="site-footer__column">
               <h3 className="site-footer__heading">{footer.supportHeading}</h3>
               <ul className="site-footer__list">
-                {footer.supportLinks.map(link => (
-                  <li key={`${link.href}-${link.label}`} className="site-footer__list-item">
-                    <a
-                      href={link.href}
-                      {...(link.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
+                {footer.supportLinks.map(link => {
+                  const isPrivacyLink = link.href === '#privacy' && privacyPolicy;
+                  return (
+                    <li key={`${link.href}-${link.label}`} className="site-footer__list-item">
+                      {isPrivacyLink ? (
+                        <button
+                          type="button"
+                          className="site-footer__list-button"
+                          onClick={() => setPrivacyPolicyOpen(true)}
+                        >
+                          {link.label}
+                        </button>
+                      ) : (
+                        <a
+                          href={link.href}
+                          {...(link.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
+                        >
+                          {link.label}
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>
@@ -968,6 +1016,63 @@ export default function Home() {
           <span>{footerLegal}</span>
         </div>
       </footer>
+      {privacyPolicy && isPrivacyPolicyOpen ? (
+        <div className="modal" role="dialog" aria-modal="true" aria-labelledby={privacyPolicyTitleId}>
+          <div className="modal__backdrop" onClick={() => setPrivacyPolicyOpen(false)} />
+          <div
+            className="modal__dialog"
+            role="document"
+            ref={privacyPolicyDialogRef}
+            tabIndex={-1}
+          >
+            <div className="modal__header">
+              <div className="modal__headline">
+                <h2 className="modal__title" id={privacyPolicyTitleId}>
+                  {privacyPolicy.title}
+                </h2>
+                <p className="privacy-policy__meta">{privacyPolicy.lastUpdated}</p>
+              </div>
+              <button
+                type="button"
+                className="modal__close"
+                onClick={() => setPrivacyPolicyOpen(false)}
+              >
+                {privacyPolicy.closeLabel}
+              </button>
+            </div>
+            <div className="modal__content">
+              {privacyPolicy.intro.map((paragraph, index) => (
+                <p key={`privacy-intro-${index}`} className="privacy-policy__paragraph">
+                  {paragraph}
+                </p>
+              ))}
+              {privacyPolicy.sections.map((section, sectionIndex) => (
+                <section className="privacy-policy__section" key={`privacy-section-${sectionIndex}`}>
+                  <h3 className="privacy-policy__section-title">{section.title}</h3>
+                  {section.paragraphs.map((paragraph, paragraphIndex) => (
+                    <p
+                      key={`privacy-section-${sectionIndex}-paragraph-${paragraphIndex}`}
+                      className="privacy-policy__paragraph"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                  {section.list ? (
+                    <ul className="privacy-policy__list">
+                      {section.list.map((item, itemIndex) => (
+                        <li key={`privacy-section-${sectionIndex}-item-${itemIndex}`}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </section>
+              ))}
+              <p className="privacy-policy__paragraph privacy-policy__conclusion">
+                {privacyPolicy.conclusion}
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
