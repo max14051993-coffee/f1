@@ -126,9 +126,24 @@ button {
   margin: 0 auto;
   padding: clamp(16px, 4vw, 28px) clamp(18px, 6vw, 54px);
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: clamp(14px, 3.4vw, 24px);
+}
+
+.site-header__row {
+  display: flex;
   align-items: center;
-  gap: clamp(12px, 4vw, 32px);
+  gap: clamp(12px, 3.2vw, 28px);
   flex-wrap: wrap;
+}
+
+.site-header__row--top {
+  justify-content: space-between;
+}
+
+.site-header__row--bottom {
+  justify-content: flex-start;
 }
 
 .site-header__brand {
@@ -161,17 +176,7 @@ button {
   display: flex;
   align-items: center;
   gap: clamp(16px, 4vw, 28px);
-  margin-left: clamp(16px, 8vw, 80px);
-  margin-right: auto;
   flex: 1 1 auto;
-  flex-wrap: wrap;
-}
-
-.site-header__controls {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: clamp(10px, 3vw, 18px);
   flex-wrap: wrap;
 }
 
@@ -184,6 +189,7 @@ button {
   backdrop-filter: blur(12px);
   box-shadow: 0 18px 45px -32px rgba(0, 0, 0, 0.8);
   overflow: visible;
+  margin-left: auto;
 }
 
 .site-header__meta-portion {
@@ -363,6 +369,7 @@ button {
   text-transform: uppercase;
   box-shadow: 0 24px 60px -32px rgba(225, 6, 0, 0.85);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-left: auto;
 }
 
 .site-header__cta:hover,
