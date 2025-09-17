@@ -1283,9 +1283,40 @@ export default function Home() {
               {texts.navFaq}
             </a>
           </nav>
-          <a className="site-header__cta" href="#schedule">
-            {texts.heroCta}
-          </a>
+          <div className="site-header__controls">
+            <div className="site-header__timezone">
+              <span className="hero__badge hero__capsule">
+                <span className="hero__badge-text">{texts.heroBadge}</span>
+                <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
+              </span>
+            </div>
+            <label
+              className="hero__language-control hero__capsule site-header__language"
+              htmlFor="language-select"
+            >
+              <span className="hero__language-caption">{texts.languageLabel}</span>
+              <select
+                id="language-select"
+                className="hero__language-dropdown"
+                value={language}
+                onChange={event => {
+                  const value = event.target.value;
+                  if (isLanguageCode(value)) {
+                    setLanguage(value);
+                  }
+                }}
+              >
+                {LANGUAGE_CODES.map(code => (
+                  <option key={code} value={code}>
+                    {LANGUAGE_DEFINITIONS[code].name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <a className="site-header__cta" href="#schedule">
+              {texts.heroCta}
+            </a>
+          </div>
         </div>
       </header>
 
@@ -1301,44 +1332,11 @@ export default function Home() {
           }
         >
           <div className="hero__intro">
-          <div className="hero__top-row">
-            <div className="hero__badge-wrapper">
-              <span className="hero__badge hero__capsule">
-                <span className="hero__badge-text">{texts.heroBadge}</span>
-                <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
-              </span>
-            </div>
-            <div className="hero__language">
-              <label
-                className="hero__language-control hero__capsule"
-                htmlFor="language-select"
-              >
-                <span className="hero__language-caption">{texts.languageLabel}</span>
-                <select
-                  id="language-select"
-                  className="hero__language-dropdown"
-                  value={language}
-                  onChange={event => {
-                    const value = event.target.value;
-                    if (isLanguageCode(value)) {
-                      setLanguage(value);
-                    }
-                  }}
-                >
-                  {LANGUAGE_CODES.map(code => (
-                    <option key={code} value={code}>
-                      {LANGUAGE_DEFINITIONS[code].name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
+            <h1 className="hero__title">
+              {texts.heroTitle(SERIES_TITLE || 'F1 / F2 / F3 / MotoGP')}
+            </h1>
+            <p className="hero__subtitle">{texts.heroSubtitle}</p>
           </div>
-          <h1 className="hero__title">
-            {texts.heroTitle(SERIES_TITLE || 'F1 / F2 / F3 / MotoGP')}
-          </h1>
-          <p className="hero__subtitle">{texts.heroSubtitle}</p>
-        </div>
         <div className="hero__layout">
           <div className="hero__column">
             <div className="hero-card">

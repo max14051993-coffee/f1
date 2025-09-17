@@ -167,6 +167,24 @@ button {
   flex-wrap: wrap;
 }
 
+.site-header__controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(10px, 3vw, 18px);
+  flex-wrap: wrap;
+}
+
+.site-header__timezone {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: max-content;
+}
+
+.site-header__language {
+  flex: 0 0 auto;
+}
+
 .site-header__link {
   position: relative;
   font-size: 0.82rem;
