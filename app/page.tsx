@@ -398,6 +398,7 @@ export default function Home() {
       removeEventListener: (type: 'resize', listener: () => void) => void;
     } | null;
 
+
     const updateOffset = () => {
       const height = header.getBoundingClientRect().height;
       const offset = Math.ceil(height + 24);
@@ -407,6 +408,7 @@ export default function Home() {
     updateOffset();
 
     if (typeof ResizeObserver !== 'undefined') {
+
       const observer = new ResizeObserver(() => {
         updateOffset();
       });
@@ -460,8 +462,6 @@ export default function Home() {
   }, [rows, visibleSeries, hours]);
 
   const nowLocal = DateTime.local().setZone(userTz).setLocale(locale);
-  const timezoneOffset = nowLocal.toFormat('ZZ');
-  const timezoneBadgeLabel = userTz?.trim().length ? userTz : `UTC${timezoneOffset}`;
   const activeSeries = (Object.entries(visibleSeries) as [SeriesId, boolean][])
     .filter(([, active]) => active)
     .map(([series]) => series);
@@ -538,9 +538,6 @@ export default function Home() {
             </nav>
             <div className="site-header__actions">
               <div className="site-header__meta-group">
-                <div className="site-header__meta-portion site-header__meta-portion--timezone">
-                  <span className="site-header__meta-value">{timezoneBadgeLabel}</span>
-                </div>
                 <div
                   className="site-header__meta-portion site-header__language"
                   ref={languageControlRef}
