@@ -537,6 +537,9 @@ export default function Home() {
               </a>
             </nav>
             <div className="site-header__actions">
+              <a className="site-header__cta" href="#schedule">
+                {texts.heroCta}
+              </a>
               <div className="site-header__meta-group">
                 <div
                   className="site-header__meta-portion site-header__language"
@@ -591,9 +594,6 @@ export default function Home() {
                   ) : null}
                 </div>
               </div>
-              <a className="site-header__cta" href="#schedule">
-                {texts.heroCta}
-              </a>
             </div>
           </div>
         </div>
