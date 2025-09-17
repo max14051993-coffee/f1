@@ -1265,24 +1265,13 @@ export default function Home() {
     <div className="site" id="top">
       <header className="site-header">
         <div className="site-header__inner">
-          <a className="site-header__brand" href="#top">
-            <span className="site-header__brand-mark" aria-hidden>
-              🏁
-            </span>
-            <span className="site-header__brand-text">{texts.brandName}</span>
-          </a>
-          <nav className="site-header__nav" aria-label={texts.brandName}>
-            <a className="site-header__link" href="#schedule">
-              {texts.navSchedule}
+          <div className="site-header__row site-header__row--top">
+            <a className="site-header__brand" href="#top">
+              <span className="site-header__brand-mark" aria-hidden>
+                🏁
+              </span>
+              <span className="site-header__brand-text">{texts.brandName}</span>
             </a>
-            <a className="site-header__link" href="#features">
-              {texts.navFeatures}
-            </a>
-            <a className="site-header__link" href="#faq">
-              {texts.navFaq}
-            </a>
-          </nav>
-          <div className="site-header__controls">
             <div className="site-header__meta-group">
               <div className="site-header__meta-portion site-header__meta-portion--timezone">
                 <span className="site-header__meta-label">{texts.heroBadge}</span>
@@ -1342,6 +1331,19 @@ export default function Home() {
                 ) : null}
               </div>
             </div>
+          </div>
+          <div className="site-header__row site-header__row--bottom">
+            <nav className="site-header__nav" aria-label={texts.brandName}>
+              <a className="site-header__link" href="#schedule">
+                {texts.navSchedule}
+              </a>
+              <a className="site-header__link" href="#features">
+                {texts.navFeatures}
+              </a>
+              <a className="site-header__link" href="#faq">
+                {texts.navFaq}
+              </a>
+            </nav>
             <a className="site-header__cta" href="#schedule">
               {texts.heroCta}
             </a>
