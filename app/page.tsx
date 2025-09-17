@@ -1,6 +1,6 @@
 'use client';
 
-import { CSSProperties, useEffect, useMemo, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import { getTrackLayout } from '../lib/track-layouts';
 
@@ -1130,6 +1130,8 @@ export default function Home() {
   const [hours, setHours] = useState<number | undefined>(undefined);
   const [userTz, setUserTz] = useState<string>('UTC');
   const [language, setLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
+  const [isLanguageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const languageControlRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -1166,6 +1168,35 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
   }, [language]);
+
+  useEffect(() => {
+    function handlePointerDown(event: PointerEvent) {
+      if (languageControlRef.current?.contains(event.target as Node)) {
+        return;
+      }
+      setLanguageMenuOpen(false);
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isLanguageMenuOpen) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setLanguageMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isLanguageMenuOpen]);
 
   const languageDefinition = LANGUAGE_DEFINITIONS[language];
   const { texts, periodOptions, sessionLabels, locale } = languageDefinition;
@@ -1252,35 +1283,65 @@ export default function Home() {
             </a>
           </nav>
           <div className="site-header__controls">
-            <div className="site-header__timezone">
-              <span className="hero__badge hero__capsule">
-                <span className="hero__badge-text">{texts.heroBadge}</span>
-                <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
-              </span>
-            </div>
-            <label
-              className="hero__language-control hero__capsule site-header__language"
-              htmlFor="language-select"
-            >
-              <span className="hero__language-caption">{texts.languageLabel}</span>
-              <select
-                id="language-select"
-                className="hero__language-dropdown"
-                value={language}
-                onChange={event => {
-                  const value = event.target.value;
-                  if (isLanguageCode(value)) {
-                    setLanguage(value);
-                  }
-                }}
+            <div className="site-header__meta-group">
+              <div className="site-header__meta-portion site-header__meta-portion--timezone">
+                <span className="site-header__meta-label">{texts.heroBadge}</span>
+                <span className="site-header__meta-value">{timezoneBadgeLabel}</span>
+              </div>
+              <div
+                className="site-header__meta-portion site-header__language"
+                ref={languageControlRef}
               >
-                {LANGUAGE_CODES.map(code => (
-                  <option key={code} value={code}>
-                    {LANGUAGE_DEFINITIONS[code].name}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <button
+                  type="button"
+                  id="language-select"
+                  className="site-header__language-toggle"
+                  aria-haspopup="listbox"
+                  aria-expanded={isLanguageMenuOpen}
+                  aria-controls="language-select-menu"
+                  onClick={() => setLanguageMenuOpen(prev => !prev)}
+                >
+                  <span className="site-header__meta-label">{texts.languageLabel}</span>
+                  <span className="site-header__language-value">{languageDefinition.name}</span>
+                </button>
+                {isLanguageMenuOpen ? (
+                  <ul
+                    className="site-header__language-menu"
+                    role="listbox"
+                    id="language-select-menu"
+                    aria-labelledby="language-select"
+                  >
+                    {LANGUAGE_CODES.map(code => {
+                      const definition = LANGUAGE_DEFINITIONS[code];
+                      const isSelected = code === language;
+                      return (
+                        <li
+                          key={code}
+                          className="site-header__language-option"
+                          role="option"
+                          aria-selected={isSelected}
+                        >
+                          <button
+                            type="button"
+                            className="site-header__language-option-button"
+                            data-active={isSelected}
+                            onClick={() => {
+                              setLanguage(code);
+                              setLanguageMenuOpen(false);
+                            }}
+                          >
+                            <span className="site-header__language-option-name">
+                              {definition.name}
+                            </span>
+                            {isSelected && <span className="site-header__language-option-check">✓</span>}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
+              </div>
+            </div>
             <a className="site-header__cta" href="#schedule">
               {texts.heroCta}
             </a>
