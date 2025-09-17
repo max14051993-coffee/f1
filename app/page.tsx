@@ -1251,6 +1251,23 @@ export default function Home() {
   const nextDescriptor = nextEvent
     ? `${nextEvent.round}${nextEvent.country ? ` • ${nextEvent.country}` : ''}`
     : texts.upcomingEventDescriptorFallback;
+  const nextSessionLabel = nextEvent ? sessionLabels[nextEvent.session] ?? nextEvent.session : null;
+  const nextLocationParts = nextEvent
+    ? [nextEvent.circuit, nextEvent.country]
+        .map(part => part?.trim())
+        .filter((part): part is string => !!part && part.length > 0)
+    : [];
+  const nextLocationLabel =
+    nextLocationParts.length > 0
+      ? nextLocationParts.join(' • ')
+      : nextEvent?.country ?? '';
+  const nextDetailsLabel = nextEvent
+    ? nextLocationLabel.length > 0
+      ? nextLocationLabel
+      : nextDescriptor === nextEvent.round
+        ? ''
+        : nextDescriptor
+    : nextDescriptor;
   const heroSeriesDefinition = nextSeriesDefinition ?? FALLBACK_SERIES_DEFINITION;
   const heroAccentColor = heroSeriesDefinition?.accentColor ?? '#e10600';
   const heroAccentRgb = heroSeriesDefinition?.accentRgb ?? '225, 6, 0';
@@ -1441,16 +1458,32 @@ export default function Home() {
             <div className="hero-card hero-card--summary">
               <span className="hero-card__label">{texts.nextStartLabel}</span>
               {nextEvent && nextLocal ? (
-                <>
-                  <span className="hero-card__value">{nextLocal.toFormat('dd LLL • HH:mm')}</span>
-                  <span className="hero-card__meta">{nextSeriesLabel}</span>
-                  <span className="hero-card__meta hero-card__meta--muted">{nextDescriptor}</span>
+                <div className="hero-card__summary">
+                  <div className="hero-card__summary-header">
+                    <span className="hero-card__value">{nextLocal.toFormat('dd LLL • HH:mm')}</span>
+                    {nextSeriesLabel || nextSessionLabel ? (
+                      <div className="hero-card__summary-tags">
+                        {nextSeriesLabel ? (
+                          <span className="hero-card__tag hero-card__tag--accent">{nextSeriesLabel}</span>
+                        ) : null}
+                        {nextSessionLabel ? (
+                          <span className="hero-card__tag hero-card__tag--muted">{nextSessionLabel}</span>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="hero-card__summary-body">
+                    <span className="hero-card__meta hero-card__meta--title">{nextEvent.round}</span>
+                    {nextDetailsLabel ? (
+                      <span className="hero-card__meta hero-card__meta--muted">
+                        {nextDetailsLabel}
+                      </span>
+                    ) : null}
+                  </div>
                   {nextCountdown ? (
-                    <span className="hero-card__meta hero-card__meta--accent">
-                      {nextCountdown}
-                    </span>
+                    <span className="hero-card__meta hero-card__meta--accent">{nextCountdown}</span>
                   ) : null}
-                </>
+                </div>
               ) : (
                 <>
                   <span className="hero-card__value">{texts.noEvents}</span>
