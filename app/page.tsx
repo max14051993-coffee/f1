@@ -652,22 +652,20 @@ export default function Home() {
         <div className="hero__intro">
           <div className="hero__top-row">
             <div className="hero__badge-wrapper">
-              <span className="hero__badge">
+              <span className="hero__badge hero__capsule">
                 <span className="hero__badge-text">{texts.heroBadge}</span>
                 <span className="hero__badge-timezone">{timezoneBadgeLabel}</span>
               </span>
             </div>
             <div className="hero__language">
               <label
-                className="hero__language-label control-panel__label"
+                className="hero__language-control hero__capsule"
                 htmlFor="language-select"
               >
-                {texts.languageLabel}
-              </label>
-              <div className="language-select">
+                <span className="hero__language-caption">{texts.languageLabel}</span>
                 <select
                   id="language-select"
-                  className="language-select__dropdown"
+                  className="hero__language-dropdown"
                   value={language}
                   onChange={event => {
                     const value = event.target.value;
@@ -682,7 +680,7 @@ export default function Home() {
                     </option>
                   ))}
                 </select>
-              </div>
+              </label>
             </div>
           </div>
           <h1 className="hero__title">

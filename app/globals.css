@@ -167,30 +167,15 @@ button {
 .hero__language {
   margin-left: auto;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
   flex: 0 0 auto;
 }
 
-.hero__language-label {
-  align-self: flex-end;
-  text-align: right;
-}
-
-.hero__language .language-select {
-  justify-content: flex-end;
-}
-
-.hero__badge {
+.hero__capsule {
   position: relative;
   z-index: 1;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 12px;
-  align-self: flex-start;
-  width: 100%;
-  max-width: 620px;
   padding: 10px 18px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -201,12 +186,79 @@ button {
   font-weight: 700;
   color: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(12px);
+}
+
+.hero__badge {
+  display: flex;
+  align-self: flex-start;
+  width: 100%;
+  max-width: 620px;
   flex-wrap: wrap;
 }
 
 .hero__badge-text {
   display: inline-flex;
   align-items: center;
+}
+
+.hero__language-control {
+  align-items: center;
+  gap: 18px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero__language-control::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-1px) rotate(45deg);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.hero__language-control:hover {
+  border-color: rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 18px 45px -32px rgba(0, 0, 0, 0.8);
+}
+
+.hero__language-control:focus-within {
+  border-color: rgba(255, 255, 255, 0.36);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+}
+
+.hero__language-caption {
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.hero__language-dropdown {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  padding: 0 18px 0 4px;
+  min-width: 150px;
+  cursor: pointer;
+}
+
+.hero__language-dropdown:focus {
+  outline: none;
+}
+
+.hero__language-dropdown option {
+  color: #0f111a;
 }
 
 .hero__badge-timezone {
@@ -412,35 +464,6 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-}
-
-.language-select {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.language-select__dropdown {
-  min-width: 140px;
-  padding: 10px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(14, 18, 30, 0.6);
-  color: #ffffff;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.language-select__dropdown:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.language-select__dropdown:focus-visible {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
 .series-chip {
