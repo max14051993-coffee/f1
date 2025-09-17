@@ -329,6 +329,7 @@ export default function Home() {
   const [userTz, setUserTz] = useState<string>('UTC');
   const [language, setLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
   const [isLanguageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -378,6 +379,42 @@ export default function Home() {
     document.addEventListener('pointerdown', handlePointerDown);
     return () => {
       document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
+    const header = headerRef.current;
+    if (!header) {
+      return;
+    }
+
+    const root = document.documentElement;
+
+    const updateOffset = () => {
+      const height = header.getBoundingClientRect().height;
+      const offset = Math.ceil(height + 24);
+      root.style.setProperty('--site-header-offset', `${offset}px`);
+    };
+
+    updateOffset();
+
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(() => {
+        updateOffset();
+      });
+      observer.observe(header);
+      return () => {
+        observer.disconnect();
+      };
+    }
+
+    window.addEventListener('resize', updateOffset);
+    return () => {
+      window.removeEventListener('resize', updateOffset);
     };
   }, []);
 
@@ -474,7 +511,7 @@ export default function Home() {
 
   return (
     <div className="site" id="top">
-      <header className="site-header">
+      <header className="site-header" ref={headerRef}>
         <div className="site-header__inner">
           <div className="site-header__row site-header__row--main">
             <a className="site-header__brand" href="#top">

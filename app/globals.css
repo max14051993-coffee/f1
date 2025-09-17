@@ -11,6 +11,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  scroll-padding-top: var(--site-header-offset, 120px);
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
