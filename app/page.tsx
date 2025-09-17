@@ -99,7 +99,7 @@ function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
   return target.toRelative(options);
 }
 
-export type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de' | 'zh';
+type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de' | 'zh';
 
 
 type FeatureDescriptor = {
