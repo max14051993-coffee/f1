@@ -1224,6 +1224,7 @@ button {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .event-card__series {
@@ -1261,6 +1262,7 @@ button {
   letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.62);
   font-size: 0.78rem;
+  margin-left: auto;
 }
 
 .event-card__time {
