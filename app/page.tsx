@@ -383,7 +383,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
+    if (typeof document === 'undefined') {
       return;
     }
 
@@ -393,6 +393,11 @@ export default function Home() {
     }
 
     const root = document.documentElement;
+    const resizeTarget = document.defaultView as unknown as {
+      addEventListener: (type: 'resize', listener: () => void) => void;
+      removeEventListener: (type: 'resize', listener: () => void) => void;
+    } | null;
+
 
     const updateOffset = () => {
       const height = header.getBoundingClientRect().height;
@@ -402,7 +407,8 @@ export default function Home() {
 
     updateOffset();
 
-    if ('ResizeObserver' in window) {
+    if (typeof ResizeObserver !== 'undefined') {
+
       const observer = new ResizeObserver(() => {
         updateOffset();
       });
@@ -412,9 +418,13 @@ export default function Home() {
       };
     }
 
-    window.addEventListener('resize', updateOffset);
+    if (!resizeTarget) {
+      return;
+    }
+
+    resizeTarget.addEventListener('resize', updateOffset);
     return () => {
-      window.removeEventListener('resize', updateOffset);
+      resizeTarget.removeEventListener('resize', updateOffset);
     };
   }, []);
 
