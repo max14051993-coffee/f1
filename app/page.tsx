@@ -109,14 +109,12 @@ type FooterCopy = {
   tagline: string;
   productHeading: string;
   resourcesHeading: string;
-  communityHeading: string;
   supportHeading: string;
   contactEmailLabel: string;
   contactEmail: string;
   legal: string;
   productLinks: FooterLink[];
   resourcesLinks: FooterLink[];
-  communityLinks: FooterLink[];
   supportLinks: FooterLink[];
 };
 
@@ -274,7 +272,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         tagline: 'RaceSync помогает болельщикам синхронизироваться с гоночными уик-эндами.',
         productHeading: 'Продукт',
         resourcesHeading: 'Ресурсы',
-        communityHeading: 'Сообщество',
         supportHeading: 'Поддержка',
         contactEmailLabel: 'Почта команды',
         contactEmail: 'hello@racesync.app',
@@ -287,10 +284,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         resourcesLinks: [
           { label: 'Частые вопросы', href: '#faq' },
           { label: 'Календарь .ics', href: './schedule.ics' },
-        ],
-        communityLinks: [
-          { label: 'Канал в Telegram', href: 'https://t.me/racesync', external: true },
-          { label: 'Новости в X', href: 'https://x.com/racesync', external: true },
         ],
         supportLinks: [
           { label: 'Написать нам', href: 'mailto:hello@racesync.app' },
@@ -401,7 +394,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         tagline: 'RaceSync keeps global fans aligned with every race weekend.',
         productHeading: 'Product',
         resourcesHeading: 'Resources',
-        communityHeading: 'Community',
         supportHeading: 'Support',
         contactEmailLabel: 'Team email',
         contactEmail: 'hello@racesync.app',
@@ -414,10 +406,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         resourcesLinks: [
           { label: 'FAQ', href: '#faq' },
           { label: 'Download .ics', href: './schedule.ics' },
-        ],
-        communityLinks: [
-          { label: 'Join on Telegram', href: 'https://t.me/racesync', external: true },
-          { label: 'Updates on X', href: 'https://x.com/racesync', external: true },
         ],
         supportLinks: [
           { label: 'Email support', href: 'mailto:hello@racesync.app' },
@@ -528,7 +516,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         tagline: 'RaceSync mantiene a los fans sincronizados con cada fin de semana de carreras.',
         productHeading: 'Producto',
         resourcesHeading: 'Recursos',
-        communityHeading: 'Comunidad',
         supportHeading: 'Soporte',
         contactEmailLabel: 'Correo del equipo',
         contactEmail: 'hello@racesync.app',
@@ -541,10 +528,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         resourcesLinks: [
           { label: 'Preguntas frecuentes', href: '#faq' },
           { label: 'Descargar .ics', href: './schedule.ics' },
-        ],
-        communityLinks: [
-          { label: 'Comunidad en Telegram', href: 'https://t.me/racesync', external: true },
-          { label: 'Actualizaciones en X', href: 'https://x.com/racesync', external: true },
         ],
         supportLinks: [
           { label: 'Escríbenos', href: 'mailto:hello@racesync.app' },
@@ -655,7 +638,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         tagline: 'RaceSync aide les fans du monde entier à suivre chaque week-end de course.',
         productHeading: 'Produit',
         resourcesHeading: 'Ressources',
-        communityHeading: 'Communauté',
         supportHeading: 'Support',
         contactEmailLabel: 'E-mail de l’équipe',
         contactEmail: 'hello@racesync.app',
@@ -668,10 +650,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         resourcesLinks: [
           { label: 'Questions fréquentes', href: '#faq' },
           { label: 'Télécharger le .ics', href: './schedule.ics' },
-        ],
-        communityLinks: [
-          { label: 'Communauté Telegram', href: 'https://t.me/racesync', external: true },
-          { label: 'Actualités sur X', href: 'https://x.com/racesync', external: true },
         ],
         supportLinks: [
           { label: 'Nous écrire', href: 'mailto:hello@racesync.app' },
@@ -782,7 +760,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         tagline: 'RaceSync hält Fans weltweit mit jedem Rennwochenende synchron.',
         productHeading: 'Produkt',
         resourcesHeading: 'Ressourcen',
-        communityHeading: 'Community',
         supportHeading: 'Support',
         contactEmailLabel: 'Team-E-Mail',
         contactEmail: 'hello@racesync.app',
@@ -795,10 +772,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         resourcesLinks: [
           { label: 'Häufige Fragen', href: '#faq' },
           { label: '.ics herunterladen', href: './schedule.ics' },
-        ],
-        communityLinks: [
-          { label: 'Telegram-Community', href: 'https://t.me/racesync', external: true },
-          { label: 'Updates auf X', href: 'https://x.com/racesync', external: true },
         ],
         supportLinks: [
           { label: 'Kontakt per E-Mail', href: 'mailto:hello@racesync.app' },
@@ -908,7 +881,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         tagline: 'RaceSync 让全球车迷在同一节奏下迎接每个赛道周末。',
         productHeading: '产品',
         resourcesHeading: '资源',
-        communityHeading: '社区',
         supportHeading: '支持',
         contactEmailLabel: '团队邮箱',
         contactEmail: 'hello@racesync.app',
@@ -921,10 +893,6 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         resourcesLinks: [
           { label: '常见问题', href: '#faq' },
           { label: '下载 .ics', href: './schedule.ics' },
-        ],
-        communityLinks: [
-          { label: 'Telegram 社区', href: 'https://t.me/racesync', external: true },
-          { label: 'X 平台更新', href: 'https://x.com/racesync', external: true },
         ],
         supportLinks: [
           { label: '邮件联系', href: 'mailto:hello@racesync.app' },
@@ -1641,21 +1609,6 @@ export default function Home() {
               <h3 className="site-footer__heading">{footer.resourcesHeading}</h3>
               <ul className="site-footer__list">
                 {footer.resourcesLinks.map(link => (
-                  <li key={`${link.href}-${link.label}`} className="site-footer__list-item">
-                    <a
-                      href={link.href}
-                      {...(link.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="site-footer__column">
-              <h3 className="site-footer__heading">{footer.communityHeading}</h3>
-              <ul className="site-footer__list">
-                {footer.communityLinks.map(link => (
                   <li key={`${link.href}-${link.label}`} className="site-footer__list-item">
                     <a
                       href={link.href}
