@@ -30,3 +30,7 @@ npm run build
 ## Заметки
 - GitHub Pages не поддерживает SSR и API-роуты Next.js, проект собран в режиме `output: 'export'`.
 - Расписание хранится в формате iCalendar (`.ics`).
+
+## Лицензии
+- Код распространяется по лицензии [MIT](./LICENSE).
+- Контент (включая файлы в каталоге `public/`) распространяется по лицензии [Creative Commons Attribution 4.0 International](./LICENSE-CONTENT).
