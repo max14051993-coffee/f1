@@ -1345,10 +1345,15 @@ button {
   font-size: 0.85rem;
 }
 
-.event-card__title {
+.event-card__info {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.event-card__title {
+  display: block;
   font-size: clamp(1.05rem, 2.6vw, 1.28rem);
   font-weight: 700;
   line-height: 1.35;
@@ -1367,19 +1372,15 @@ button {
   color: rgba(var(--accent-rgb), 0.95);
 }
 
-.event-card__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 12px;
+.event-card__meta-line {
   font-size: 0.88rem;
   color: rgba(255, 255, 255, 0.68);
   letter-spacing: 0.04em;
 }
 
-.event-card__meta span + span::before {
-  content: '•';
-  margin-right: 8px;
-  color: rgba(255, 255, 255, 0.32);
+.event-card__session {
+  color: rgba(var(--accent-rgb), 0.88);
+  font-weight: 600;
 }
 
 .event-card__track {
