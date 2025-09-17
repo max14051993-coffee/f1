@@ -58,7 +58,6 @@ type TranslationBundle = {
   seriesLogoAria: (series: string) => string;
   upcomingEventDescriptorFallback: string;
   brandName: string;
-  navSchedule: string;
   navFeatures: string;
   navFaq: string;
   heroCta: string;
@@ -129,7 +128,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       seriesLogoAria: series => `Логотип ${series}`,
       upcomingEventDescriptorFallback: 'Нет событий',
       brandName: 'RaceSync',
-      navSchedule: 'Расписание',
       navFeatures: 'Возможности',
       navFaq: 'Вопросы',
       heroCta: 'К событиям',
@@ -251,7 +249,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       seriesLogoAria: series => `${series} logo`,
       upcomingEventDescriptorFallback: 'No events',
       brandName: 'RaceSync',
-      navSchedule: 'Schedule',
       navFeatures: 'Features',
       navFaq: 'FAQ',
       heroCta: 'Browse schedule',
@@ -373,7 +370,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       seriesLogoAria: series => `Logotipo de ${series}`,
       upcomingEventDescriptorFallback: 'Sin eventos',
       brandName: 'RaceSync',
-      navSchedule: 'Calendario',
       navFeatures: 'Funciones',
       navFaq: 'Preguntas',
       heroCta: 'Ver calendario',
@@ -495,7 +491,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       seriesLogoAria: series => `Logo ${series}`,
       upcomingEventDescriptorFallback: 'Aucun événement',
       brandName: 'RaceSync',
-      navSchedule: 'Calendrier',
       navFeatures: 'Fonctionnalités',
       navFaq: 'FAQ',
       heroCta: 'Consulter le calendrier',
@@ -617,7 +612,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       seriesLogoAria: series => `${series}-Logo`,
       upcomingEventDescriptorFallback: 'Keine Events',
       brandName: 'RaceSync',
-      navSchedule: 'Kalender',
       navFeatures: 'Funktionen',
       navFaq: 'FAQ',
       heroCta: 'Zum Kalender',
@@ -739,7 +733,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       seriesLogoAria: series => `${series} 标志`,
       upcomingEventDescriptorFallback: '暂无赛事',
       brandName: 'RaceSync',
-      navSchedule: '赛程',
       navFeatures: '功能',
       navFaq: '常见问题',
       heroCta: '查看赛程',

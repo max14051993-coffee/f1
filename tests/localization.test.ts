@@ -60,7 +60,6 @@ describe('localization configuration', () => {
         expect(texts.seriesLogoAria('F1').trim().length).toBeGreaterThan(0);
         expect(texts.upcomingEventDescriptorFallback.trim().length).toBeGreaterThan(0);
         expect(texts.brandName.trim().length).toBeGreaterThan(0);
-        expect(texts.navSchedule.trim().length).toBeGreaterThan(0);
         expect(texts.navFeatures.trim().length).toBeGreaterThan(0);
         expect(texts.navFaq.trim().length).toBeGreaterThan(0);
         expect(texts.heroCta.trim().length).toBeGreaterThan(0);
