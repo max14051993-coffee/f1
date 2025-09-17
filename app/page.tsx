@@ -82,6 +82,23 @@ type Row = {
   startsAtUtc: string; // ISO
 };
 
+function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
+  if (!target.isValid || !base.isValid) return null;
+
+  const diffInHours = Math.abs(target.diff(base, 'hours').hours);
+  const options = { base, locale, style: 'long' } as const;
+
+  if (diffInHours < 1) {
+    return target.toRelative({ ...options, unit: 'minutes' });
+  }
+
+  if (diffInHours < 48) {
+    return target.toRelative({ ...options, unit: 'hours' });
+  }
+
+  return target.toRelative(options);
+}
+
 type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de' | 'zh';
 
 type FeatureDescriptor = {
@@ -1239,9 +1256,7 @@ export default function Home() {
         .setZone(userTz)
         .setLocale(locale)
     : null;
-  const nextRelative = nextLocal
-    ? nextLocal.toRelative({ base: nowLocal, locale, style: 'long' })
-    : null;
+  const nextRelative = nextLocal ? buildRelativeLabel(nextLocal, nowLocal, locale) : null;
   const nextCountdown =
     nextLocal && nextRelative
       ? nextLocal > nowLocal
@@ -1514,7 +1529,7 @@ export default function Home() {
               const timeLabel = localized.toFormat('HH:mm');
               const dayLabel = localized.toFormat('ccc');
               const dateLabel = localized.toFormat('dd LLL');
-              const relative = localized.toRelative({ base: nowLocal, locale, style: 'long' });
+              const relative = buildRelativeLabel(localized, nowLocal, locale);
               const countdown = relative
                 ? localized > nowLocal
                   ? texts.countdownStart(relative)
