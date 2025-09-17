@@ -100,6 +100,7 @@ type TranslationBundle = {
   countdownFinish: (relative: string) => string;
   countdownScheduled: string;
   trackLayoutLabel: (parts: string[]) => string;
+  trackLayoutUnavailable: string;
   languageLabel: string;
   seriesLogoAria: (series: string) => string;
   upcomingEventDescriptorFallback: string;
@@ -150,6 +151,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'По расписанию',
       trackLayoutLabel: parts =>
         parts.length ? `Схема автодрома: ${parts.join(' — ')}` : 'Схема автодрома',
+      trackLayoutUnavailable: 'Схема трассы появится позже',
       languageLabel: 'Язык',
       seriesLogoAria: series => `Логотип ${series}`,
       upcomingEventDescriptorFallback: 'Нет событий',
@@ -190,6 +192,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'On schedule',
       trackLayoutLabel: parts =>
         parts.length ? `Circuit layout: ${parts.join(' — ')}` : 'Circuit layout',
+      trackLayoutUnavailable: 'Layout preview coming soon',
       languageLabel: 'Language',
       seriesLogoAria: series => `${series} logo`,
       upcomingEventDescriptorFallback: 'No events',
@@ -230,6 +233,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'Según lo previsto',
       trackLayoutLabel: parts =>
         parts.length ? `Trazado del circuito: ${parts.join(' — ')}` : 'Trazado del circuito',
+      trackLayoutUnavailable: 'Trazado del circuito disponible pronto',
       languageLabel: 'Idioma',
       seriesLogoAria: series => `Logotipo de ${series}`,
       upcomingEventDescriptorFallback: 'Sin eventos',
@@ -270,6 +274,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'Selon le programme',
       trackLayoutLabel: parts =>
         parts.length ? `Tracé du circuit : ${parts.join(' — ')}` : 'Tracé du circuit',
+      trackLayoutUnavailable: 'Tracé du circuit bientôt disponible',
       languageLabel: 'Langue',
       seriesLogoAria: series => `Logo ${series}`,
       upcomingEventDescriptorFallback: 'Aucun événement',
@@ -310,6 +315,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: 'Planmäßig',
       trackLayoutLabel: parts =>
         parts.length ? `Streckenlayout: ${parts.join(' — ')}` : 'Streckenlayout',
+      trackLayoutUnavailable: 'Streckenlayout folgt in Kürze',
       languageLabel: 'Sprache',
       seriesLogoAria: series => `${series}-Logo`,
       upcomingEventDescriptorFallback: 'Keine Events',
@@ -350,6 +356,7 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       countdownScheduled: '按计划进行',
       trackLayoutLabel: parts =>
         parts.length ? `赛道布局：${parts.join(' — ')}` : '赛道布局',
+      trackLayoutUnavailable: '赛道布局稍后提供',
       languageLabel: '语言',
       seriesLogoAria: series => `${series} 标志`,
       upcomingEventDescriptorFallback: '暂无赛事',
@@ -852,6 +859,7 @@ export default function Home() {
             )
           );
           const trackLabel = texts.trackLayoutLabel(trackLabelParts);
+          const hasTrack = Boolean(track);
           const sessionLabel = sessionLabels[r.session] ?? r.session;
 
           return (
@@ -891,8 +899,12 @@ export default function Home() {
                   {r.circuit ? <span>{r.circuit}</span> : null}
                   <span>{sessionLabel}</span>
                 </div>
-                {track ? (
-                  <div className="event-card__track">
+                <div
+                  className={`event-card__track${hasTrack ? '' : ' event-card__track--placeholder'}`}
+                  role={hasTrack ? undefined : 'img'}
+                  aria-label={hasTrack ? undefined : trackLabel}
+                >
+                  {hasTrack && track ? (
                     <svg
                       viewBox={track.layout.viewBox}
                       role="img"
@@ -903,8 +915,15 @@ export default function Home() {
                       <path className="event-card__track-outline" d={track.layout.path} />
                       <path className="event-card__track-highlight" d={track.layout.path} />
                     </svg>
-                  </div>
-                ) : null}
+                  ) : (
+                    <div className="event-card__track-placeholder" aria-hidden>
+                      <span className="event-card__track-placeholder-title">{trackLabel}</span>
+                      <span className="event-card__track-placeholder-meta">
+                        {texts.trackLayoutUnavailable}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 <div className="event-card__countdown">
                   <span className="event-card__countdown-dot" aria-hidden />
                   <span>{countdown}</span>
