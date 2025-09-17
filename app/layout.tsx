@@ -14,13 +14,31 @@ const display = Exo_2({
   variable: '--font-display',
 });
 
+const withAssetPrefix = (path: string) => {
+  const prefix = process.env.NEXT_PUBLIC_ASSET_PREFIX?.trim();
+
+  if (!prefix) {
+    return path;
+  }
+
+  const sanitizedPrefix = prefix.replace(/^\/+|\/+$/g, '');
+
+  if (!sanitizedPrefix) {
+    return path;
+  }
+
+  const normalizedPath = path.replace(/^\/+/, '');
+
+  return `/${sanitizedPrefix}/${normalizedPath}`;
+};
+
 export const metadata: Metadata = {
   title: 'RaceSync',
   description: 'Upcoming qualifying & race times (your time zone)',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    icon: withAssetPrefix('/favicon.svg'),
+    shortcut: withAssetPrefix('/favicon.svg'),
+    apple: withAssetPrefix('/favicon.svg'),
   },
 };
 
