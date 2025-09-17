@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { DEFAULT_LANGUAGE, LANGUAGE_CODES, LANGUAGE_DEFINITIONS } from '../app/page';
+import { DEFAULT_LANGUAGE, LANGUAGE_CODES, LANGUAGE_DEFINITIONS } from '../lib/language';
 
 describe('localization configuration', () => {
   it('includes all expected language codes', () => {
