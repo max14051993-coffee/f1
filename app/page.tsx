@@ -82,7 +82,7 @@ type Row = {
   startsAtUtc: string; // ISO
 };
 
-type LanguageCode = 'en' | 'ru';
+type LanguageCode = 'en' | 'ru' | 'es' | 'fr' | 'de';
 
 type TranslationBundle = {
   heroBadge: string;
@@ -193,6 +193,126 @@ const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       languageLabel: 'Language',
       seriesLogoAria: series => `${series} logo`,
       upcomingEventDescriptorFallback: 'No events',
+    },
+  },
+  es: {
+    code: 'es',
+    name: 'Español',
+    locale: 'es',
+    periodOptions: [
+      { label: '24 horas', value: 24 },
+      { label: '48 horas', value: 48 },
+      { label: '72 horas', value: 72 },
+      { label: '7 días', value: 168 },
+      { label: '30 días' },
+    ],
+    sessionLabels: {
+      Qualifying: 'Clasificación',
+      Race: 'Carrera',
+      Sprint: 'Sprint',
+    },
+    texts: {
+      heroBadge: 'calendario de fines de semana en vivo',
+      heroTitle: seriesTitle =>
+        `Próximas clasificaciones y carreras — ${seriesTitle || 'F1 / F2 / F3 / MotoGP'}`,
+      heroSubtitle:
+        'Mantente sincronizado con los fines de semana de carreras: filtra las series, ajusta la ventana de visualización y sigue los horarios de las sesiones en tu propio huso horario.',
+      seriesLabel: 'Series',
+      activeSelection: names => `Seleccionadas: ${names.join(' · ')}`,
+      allSeriesHidden: 'Todas las series ocultas',
+      reviewPeriodLabel: 'Ventana de visualización',
+      eventsInWindowLabel: 'Eventos en la ventana',
+      nextStartLabel: 'Próxima sesión',
+      noEvents: 'Sin eventos',
+      extendPeriodHint: 'Intenta ampliar la ventana',
+      countdownStart: relative => `Comienza ${relative}`,
+      countdownFinish: relative => `Terminó ${relative}`,
+      countdownScheduled: 'Según lo previsto',
+      trackLayoutLabel: parts =>
+        parts.length ? `Trazado del circuito: ${parts.join(' — ')}` : 'Trazado del circuito',
+      languageLabel: 'Idioma',
+      seriesLogoAria: series => `Logotipo de ${series}`,
+      upcomingEventDescriptorFallback: 'Sin eventos',
+    },
+  },
+  fr: {
+    code: 'fr',
+    name: 'Français',
+    locale: 'fr',
+    periodOptions: [
+      { label: '24 heures', value: 24 },
+      { label: '48 heures', value: 48 },
+      { label: '72 heures', value: 72 },
+      { label: '7 jours', value: 168 },
+      { label: '30 jours' },
+    ],
+    sessionLabels: {
+      Qualifying: 'Qualifications',
+      Race: 'Course',
+      Sprint: 'Sprint',
+    },
+    texts: {
+      heroBadge: 'calendrier des week-ends en direct',
+      heroTitle: seriesTitle =>
+        `Prochaines qualifications et courses — ${seriesTitle || 'F1 / F2 / F3 / MotoGP'}`,
+      heroSubtitle:
+        'Restez synchronisé avec les week-ends de course : filtrez les séries, ajustez la fenêtre d’affichage et suivez les horaires des sessions dans votre propre fuseau horaire.',
+      seriesLabel: 'Séries',
+      activeSelection: names => `Sélection : ${names.join(' · ')}`,
+      allSeriesHidden: 'Toutes les séries masquées',
+      reviewPeriodLabel: 'Fenêtre d’affichage',
+      eventsInWindowLabel: 'Événements dans la fenêtre',
+      nextStartLabel: 'Prochaine session',
+      noEvents: 'Aucun événement',
+      extendPeriodHint: 'Essayez d’élargir la fenêtre',
+      countdownStart: relative => `Commence ${relative}`,
+      countdownFinish: relative => `Terminé ${relative}`,
+      countdownScheduled: 'Selon le programme',
+      trackLayoutLabel: parts =>
+        parts.length ? `Tracé du circuit : ${parts.join(' — ')}` : 'Tracé du circuit',
+      languageLabel: 'Langue',
+      seriesLogoAria: series => `Logo ${series}`,
+      upcomingEventDescriptorFallback: 'Aucun événement',
+    },
+  },
+  de: {
+    code: 'de',
+    name: 'Deutsch',
+    locale: 'de',
+    periodOptions: [
+      { label: '24 Stunden', value: 24 },
+      { label: '48 Stunden', value: 48 },
+      { label: '72 Stunden', value: 72 },
+      { label: '7 Tage', value: 168 },
+      { label: '30 Tage' },
+    ],
+    sessionLabels: {
+      Qualifying: 'Qualifying',
+      Race: 'Rennen',
+      Sprint: 'Sprint',
+    },
+    texts: {
+      heroBadge: 'Live-Wochenendkalender',
+      heroTitle: seriesTitle =>
+        `Bevorstehende Qualifyings & Rennen — ${seriesTitle || 'F1 / F2 / F3 / MotoGP'}`,
+      heroSubtitle:
+        'Bleib mit den Rennwochenenden im Takt: Filtere die Serien, passe das Betrachtungsfenster an und verfolge die Sessionzeiten in deiner eigenen Zeitzone.',
+      seriesLabel: 'Serien',
+      activeSelection: names => `Ausgewählt: ${names.join(' · ')}`,
+      allSeriesHidden: 'Alle Serien ausgeblendet',
+      reviewPeriodLabel: 'Betrachtungszeitraum',
+      eventsInWindowLabel: 'Events im Zeitraum',
+      nextStartLabel: 'Nächste Session',
+      noEvents: 'Keine Events',
+      extendPeriodHint: 'Versuche den Zeitraum zu vergrößern',
+      countdownStart: relative => `Beginnt ${relative}`,
+      countdownFinish: relative => `Beendet ${relative}`,
+      countdownScheduled: 'Planmäßig',
+      trackLayoutLabel: parts =>
+        parts.length ? `Streckenlayout: ${parts.join(' — ')}` : 'Streckenlayout',
+      languageLabel: 'Sprache',
+      seriesLogoAria: series => `${series}-Logo`,
+      upcomingEventDescriptorFallback: 'Keine Events',
     },
   },
 } as const;
