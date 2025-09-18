@@ -108,6 +108,8 @@ function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
 }
 
 const LANGUAGE_STORAGE_KEY = 'schedule-language';
+const SERIES_STORAGE_KEY = 'schedule-visible-series';
+const PERIOD_STORAGE_KEY = 'schedule-review-period-hours';
 
 function normalizeSession(raw: string): Row['session'] | undefined {
   const trimmed = raw.trim();
@@ -326,6 +328,8 @@ export default function Home() {
     buildSeriesVisibility(true),
   );
   const [hours, setHours] = useState<number | undefined>(undefined);
+  const [hasLoadedSeriesFilters, setHasLoadedSeriesFilters] = useState(false);
+  const [hasLoadedPeriod, setHasLoadedPeriod] = useState(false);
   const [userTz, setUserTz] = useState<string>('UTC');
   const [language, setLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
   const [isLanguageMenuOpen, setLanguageMenuOpen] = useState(false);
@@ -343,6 +347,83 @@ export default function Home() {
     load().catch(console.error);
     setUserTz(DateTime.local().zoneName);
   }, []);
+
+  useEffect(() => {
+    if (typeof localStorage === 'undefined') {
+      setHasLoadedSeriesFilters(true);
+      return;
+    }
+
+    const stored = localStorage.getItem(SERIES_STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as Record<string, unknown>;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          const next = buildSeriesVisibility(true);
+          let hasValid = false;
+          for (const series of SERIES_IDS) {
+            if (typeof parsed[series] === 'boolean') {
+              next[series] = parsed[series] as boolean;
+              hasValid = true;
+            }
+          }
+          if (hasValid) {
+            setVisibleSeries(next);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    setHasLoadedSeriesFilters(true);
+  }, []);
+
+  useEffect(() => {
+    if (typeof localStorage === 'undefined') {
+      setHasLoadedPeriod(true);
+      return;
+    }
+
+    const stored = localStorage.getItem(PERIOD_STORAGE_KEY);
+    if (stored) {
+      if (stored === 'all') {
+        setHours(undefined);
+      } else {
+        const parsed = Number.parseInt(stored, 10);
+        if (Number.isFinite(parsed)) {
+          setHours(parsed);
+        }
+      }
+    }
+
+    setHasLoadedPeriod(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedSeriesFilters || typeof localStorage === 'undefined') {
+      return;
+    }
+
+    try {
+      localStorage.setItem(SERIES_STORAGE_KEY, JSON.stringify(visibleSeries));
+    } catch (error) {
+      console.error(error);
+    }
+  }, [visibleSeries, hasLoadedSeriesFilters]);
+
+  useEffect(() => {
+    if (!hasLoadedPeriod || typeof localStorage === 'undefined') {
+      return;
+    }
+
+    const value = typeof hours === 'number' && Number.isFinite(hours) ? hours.toString(10) : 'all';
+    try {
+      localStorage.setItem(PERIOD_STORAGE_KEY, value);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [hours, hasLoadedPeriod]);
 
   useEffect(() => {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
