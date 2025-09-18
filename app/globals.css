@@ -811,6 +811,26 @@ button {
   color: rgba(18, 22, 37, 0.6);
 }
 
+:root[data-theme='light'] .site-footer__heading {
+  color: rgba(18, 22, 37, 0.65);
+}
+
+:root[data-theme='light'] .site-footer__list-item a,
+:root[data-theme='light'] .site-footer__list-button {
+  color: rgba(18, 22, 37, 0.78);
+}
+
+:root[data-theme='light'] .site-footer__list-item a:hover,
+:root[data-theme='light'] .site-footer__list-item a:focus-visible,
+:root[data-theme='light'] .site-footer__list-button:hover,
+:root[data-theme='light'] .site-footer__list-button:focus-visible {
+  color: #0f162c;
+}
+
+:root[data-theme='light'] .site-footer__list-button:focus-visible {
+  outline-color: rgba(18, 22, 37, 0.32);
+}
+
 :root[data-theme='light'] .modal__backdrop {
   background: rgba(12, 16, 28, 0.28);
 }
