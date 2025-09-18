@@ -18,6 +18,14 @@ type FaqItem = {
   answer: string;
 };
 
+type ThemeCopy = {
+  label: string;
+  dark: string;
+  light: string;
+  toggleToDark: string;
+  toggleToLight: string;
+};
+
 type FooterLink = {
   label: string;
   href: string;
@@ -70,6 +78,7 @@ type TranslationBundle = {
   trackLayoutLabel: (parts: string[]) => string;
   trackLayoutUnavailable: string;
   languageLabel: string;
+  theme: ThemeCopy;
   seriesLogoAria: (series: string) => string;
   upcomingEventDescriptorFallback: string;
   brandName: string;
@@ -141,6 +150,13 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         parts.length ? `Схема автодрома: ${parts.join(' — ')}` : 'Схема автодрома',
       trackLayoutUnavailable: 'Схема трассы появится позже',
       languageLabel: 'Язык',
+      theme: {
+        label: 'Тема',
+        dark: 'Тёмная',
+        light: 'Светлая',
+        toggleToDark: 'Переключить на тёмную тему',
+        toggleToLight: 'Переключить на светлую тему',
+      },
       seriesLogoAria: series => `Логотип ${series}`,
       upcomingEventDescriptorFallback: 'Нет событий',
       brandName: 'RaceSync',
@@ -309,6 +325,13 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         parts.length ? `Circuit layout: ${parts.join(' — ')}` : 'Circuit layout',
       trackLayoutUnavailable: 'Layout preview coming soon',
       languageLabel: 'Language',
+      theme: {
+        label: 'Theme',
+        dark: 'Dark',
+        light: 'Light',
+        toggleToDark: 'Switch to dark theme',
+        toggleToLight: 'Switch to light theme',
+      },
       seriesLogoAria: series => `${series} logo`,
       upcomingEventDescriptorFallback: 'No events',
       brandName: 'RaceSync',
@@ -477,6 +500,13 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         parts.length ? `Trazado del circuito: ${parts.join(' — ')}` : 'Trazado del circuito',
       trackLayoutUnavailable: 'Trazado del circuito disponible pronto',
       languageLabel: 'Idioma',
+      theme: {
+        label: 'Tema',
+        dark: 'Oscura',
+        light: 'Clara',
+        toggleToDark: 'Cambiar a tema oscuro',
+        toggleToLight: 'Cambiar a tema claro',
+      },
       seriesLogoAria: series => `Logotipo de ${series}`,
       upcomingEventDescriptorFallback: 'Sin eventos',
       brandName: 'RaceSync',
@@ -645,6 +675,13 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         parts.length ? `Tracé du circuit : ${parts.join(' — ')}` : 'Tracé du circuit',
       trackLayoutUnavailable: 'Tracé du circuit bientôt disponible',
       languageLabel: 'Langue',
+      theme: {
+        label: 'Thème',
+        dark: 'Sombre',
+        light: 'Clair',
+        toggleToDark: 'Activer le thème sombre',
+        toggleToLight: 'Activer le thème clair',
+      },
       seriesLogoAria: series => `Logo ${series}`,
       upcomingEventDescriptorFallback: 'Aucun événement',
       brandName: 'RaceSync',
@@ -813,6 +850,13 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         parts.length ? `Streckenlayout: ${parts.join(' — ')}` : 'Streckenlayout',
       trackLayoutUnavailable: 'Streckenlayout folgt in Kürze',
       languageLabel: 'Sprache',
+      theme: {
+        label: 'Thema',
+        dark: 'Dunkel',
+        light: 'Hell',
+        toggleToDark: 'Zur dunklen Ansicht wechseln',
+        toggleToLight: 'Zur hellen Ansicht wechseln',
+      },
       seriesLogoAria: series => `${series}-Logo`,
       upcomingEventDescriptorFallback: 'Keine Events',
       brandName: 'RaceSync',
@@ -981,6 +1025,13 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         parts.length ? `赛道布局：${parts.join(' — ')}` : '赛道布局',
       trackLayoutUnavailable: '赛道布局稍后提供',
       languageLabel: '语言',
+      theme: {
+        label: '主题',
+        dark: '深色',
+        light: '浅色',
+        toggleToDark: '切换到深色主题',
+        toggleToLight: '切换到浅色主题',
+      },
       seriesLogoAria: series => `${series} 标志`,
       upcomingEventDescriptorFallback: '暂无赛事',
       brandName: 'RaceSync',
