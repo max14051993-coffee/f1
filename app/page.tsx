@@ -759,7 +759,6 @@ export default function Home() {
                   {themeIcon}
                 </span>
                 <span className="theme-toggle__text">
-                  <span className="theme-toggle__label">{themeCopy.label}</span>
                   <span className="theme-toggle__state">{themeStateLabel}</span>
                 </span>
               </button>
