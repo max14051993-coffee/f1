@@ -2073,7 +2073,7 @@ button {
   border-radius: 20px;
   border: 1px solid rgba(var(--accent-rgb), 0.35);
   background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.2), rgba(255, 255, 255, 0.04));
-  padding: clamp(10px, 2.2vw, 16px);
+  padding: clamp(6px, 1.6vw, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2090,7 +2090,7 @@ button {
 .event-card__track--placeholder::after {
   content: '';
   position: absolute;
-  inset: clamp(8px, 1.8vw, 12px);
+  inset: clamp(6px, 1.6vw, 12px);
   border-radius: 16px;
   background: linear-gradient(140deg, rgba(var(--accent-rgb), 0.22), rgba(255, 255, 255, 0.08));
   opacity: 0.65;
@@ -2114,6 +2114,7 @@ button {
   width: 100%;
   max-width: clamp(200px, 36vw, 260px);
   aspect-ratio: 1 / 1;
+  overflow: visible;
 }
 
 .event-card__track-placeholder {
