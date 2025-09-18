@@ -1,6 +1,6 @@
 'use client';
 
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import {
   DEFAULT_LANGUAGE,
@@ -110,6 +110,14 @@ function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
 const LANGUAGE_STORAGE_KEY = 'schedule-language';
 const SERIES_STORAGE_KEY = 'schedule-visible-series';
 const PERIOD_STORAGE_KEY = 'schedule-review-period-hours';
+const THEME_STORAGE_KEY = 'schedule-theme';
+const SYSTEM_THEME_QUERY = '(prefers-color-scheme: light)';
+
+type Theme = 'dark' | 'light';
+
+function isTheme(value: string | null): value is Theme {
+  return value === 'dark' || value === 'light';
+}
 
 function normalizeSession(raw: string): Row['session'] | undefined {
   const trimmed = raw.trim();
@@ -323,6 +331,15 @@ function SeriesLogo({ series, ariaLabel }: { series: SeriesId; ariaLabel?: strin
 const SERIES_TITLE = SERIES_IDS.map(series => SERIES_DEFINITIONS[series].label).join(' / ');
 
 export default function Home() {
+  const [theme, setTheme] = useState<Theme>('dark');
+  const [themeInitialized, setThemeInitialized] = useState(false);
+  const applyThemeToDocument = useCallback((next: Theme) => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    root.dataset.theme = next;
+    root.style.colorScheme = next;
+  }, []);
+
   const [rows, setRows] = useState<Row[]>([]);
   const [visibleSeries, setVisibleSeries] = useState<Record<SeriesId, boolean>>(() =>
     buildSeriesVisibility(true),
@@ -337,6 +354,77 @@ export default function Home() {
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
   const privacyPolicyDialogRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const media = window.matchMedia(SYSTEM_THEME_QUERY);
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    let initial: Theme = 'dark';
+    let hasStoredPreference = false;
+
+    if (isTheme(stored)) {
+      initial = stored;
+      hasStoredPreference = true;
+    } else if (media.matches) {
+      initial = 'light';
+    }
+
+    applyThemeToDocument(initial);
+    setTheme(initial);
+    setThemeInitialized(true);
+
+    if (hasStoredPreference) {
+      return;
+    }
+
+    const handleMediaChange = (event: MediaQueryListEvent) => {
+      const currentPreference = window.localStorage.getItem(THEME_STORAGE_KEY);
+      if (isTheme(currentPreference)) {
+        return;
+      }
+      setTheme(event.matches ? 'light' : 'dark');
+    };
+
+    media.addEventListener('change', handleMediaChange);
+    return () => {
+      media.removeEventListener('change', handleMediaChange);
+    };
+  }, [applyThemeToDocument]);
+
+  useEffect(() => {
+    if (!themeInitialized) return;
+    applyThemeToDocument(theme);
+  }, [theme, themeInitialized, applyThemeToDocument]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== THEME_STORAGE_KEY) return;
+      if (isTheme(event.newValue)) {
+        setTheme(event.newValue);
+      } else if (event.newValue === null) {
+        const prefersLight = window.matchMedia(SYSTEM_THEME_QUERY).matches;
+        setTheme(prefersLight ? 'light' : 'dark');
+      }
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(THEME_STORAGE_KEY, next);
+      }
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -559,6 +647,10 @@ export default function Home() {
 
   const languageDefinition = LANGUAGE_DEFINITIONS[language];
   const { texts, periodOptions, sessionLabels, locale } = languageDefinition;
+  const themeCopy = texts.theme;
+  const themeButtonLabel = theme === 'dark' ? themeCopy.toggleToLight : themeCopy.toggleToDark;
+  const themeStateLabel = theme === 'dark' ? themeCopy.dark : themeCopy.light;
+  const themeIcon = theme === 'dark' ? '🌙' : '☀️';
 
   const filtered = useMemo(() => {
     let arr = rows.filter(r => visibleSeries[r.series]);
@@ -656,6 +748,21 @@ export default function Home() {
               <a className="site-header__cta" href="#schedule">
                 {texts.heroCta}
               </a>
+              <button
+                type="button"
+                className="theme-toggle"
+                aria-label={themeButtonLabel}
+                aria-pressed={theme === 'light'}
+                onClick={toggleTheme}
+              >
+                <span className="theme-toggle__icon" aria-hidden>
+                  {themeIcon}
+                </span>
+                <span className="theme-toggle__text">
+                  <span className="theme-toggle__label">{themeCopy.label}</span>
+                  <span className="theme-toggle__state">{themeStateLabel}</span>
+                </span>
+              </button>
               <div className="site-header__meta-group">
                 <div
                   className="site-header__meta-portion site-header__language"
