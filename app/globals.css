@@ -2234,55 +2234,85 @@ button {
     font-size: 0.72rem;
   }
 
+  .site-header__inner {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
   .site-header__row--main {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 14px;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .site-header__brand {
+    flex: 1 1 auto;
   }
 
   .site-header__nav {
+    order: 3;
+    width: 100%;
+    margin: 4px 0 0;
     justify-content: center;
-    margin: 6px 0 0;
+    gap: 16px;
+  }
+
+  .site-header__link {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
   }
 
   .site-header__actions {
-    width: auto;
+    order: 2;
     margin-left: 0;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    align-self: center;
+    flex: 0 1 auto;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .site-header__cta {
-    width: auto;
-    align-self: center;
+    padding: 10px 16px;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
   }
 
   .theme-toggle {
-    width: auto;
-    align-self: center;
+    padding: 8px 14px;
+    gap: 8px;
+    letter-spacing: 0.12em;
+  }
+
+  .theme-toggle__icon {
+    font-size: 0.95rem;
+  }
+
+  .theme-toggle__label {
+    font-size: 0.54rem;
+    letter-spacing: 0.2em;
+  }
+
+  .theme-toggle__state {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
   }
 
   .site-header__meta-group {
-    width: auto;
-    justify-content: center;
-    align-self: center;
+    flex: 0 1 auto;
+    justify-content: flex-end;
   }
 
   .site-header__meta-portion {
-    justify-content: center;
-    flex: 0 0 auto;
-    width: auto;
-  }
-
-  .site-header__language {
-    width: auto;
-    justify-content: center;
+    padding: 8px 14px;
   }
 
   .site-header__language-toggle {
-    justify-content: center;
-    width: auto;
+    gap: 8px;
+  }
+
+  .site-header__language-value {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
   }
 }
