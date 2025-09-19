@@ -24,6 +24,8 @@ type ThemeCopy = {
   light: string;
   toggleToDark: string;
   toggleToLight: string;
+  compactDark?: string;
+  compactLight?: string;
 };
 
 type FooterLink = {
@@ -106,6 +108,7 @@ type TranslationBundle = {
 export type LanguageDefinition = {
   code: LanguageCode;
   name: string;
+  shortName: string;
   locale: string;
   periodOptions: { label: string; value?: number }[];
   sessionLabels: Record<RaceSession, string>;
@@ -116,6 +119,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   ru: {
     code: 'ru',
     name: 'Русский',
+    shortName: 'RU',
     locale: 'ru',
     periodOptions: [
       { label: '24 часа', value: 24 },
@@ -156,6 +160,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         light: 'Светлая',
         toggleToDark: 'Переключить на тёмную тему',
         toggleToLight: 'Переключить на светлую тему',
+        compactDark: 'Тёмн.',
+        compactLight: 'Светл.',
       },
       seriesLogoAria: series => `Логотип ${series}`,
       upcomingEventDescriptorFallback: 'Нет событий',
@@ -291,6 +297,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   en: {
     code: 'en',
     name: 'English',
+    shortName: 'EN',
     locale: 'en',
     periodOptions: [
       { label: '24 hours', value: 24 },
@@ -331,6 +338,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         light: 'Light',
         toggleToDark: 'Switch to dark theme',
         toggleToLight: 'Switch to light theme',
+        compactDark: 'Dark',
+        compactLight: 'Light',
       },
       seriesLogoAria: series => `${series} logo`,
       upcomingEventDescriptorFallback: 'No events',
@@ -466,6 +475,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   es: {
     code: 'es',
     name: 'Español',
+    shortName: 'ES',
     locale: 'es',
     periodOptions: [
       { label: '24 horas', value: 24 },
@@ -506,6 +516,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         light: 'Clara',
         toggleToDark: 'Cambiar a tema oscuro',
         toggleToLight: 'Cambiar a tema claro',
+        compactDark: 'Osc.',
+        compactLight: 'Clar.',
       },
       seriesLogoAria: series => `Logotipo de ${series}`,
       upcomingEventDescriptorFallback: 'Sin eventos',
@@ -641,6 +653,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   fr: {
     code: 'fr',
     name: 'Français',
+    shortName: 'FR',
     locale: 'fr',
     periodOptions: [
       { label: '24 heures', value: 24 },
@@ -681,6 +694,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         light: 'Clair',
         toggleToDark: 'Activer le thème sombre',
         toggleToLight: 'Activer le thème clair',
+        compactDark: 'Somb.',
+        compactLight: 'Clair',
       },
       seriesLogoAria: series => `Logo ${series}`,
       upcomingEventDescriptorFallback: 'Aucun événement',
@@ -816,6 +831,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   de: {
     code: 'de',
     name: 'Deutsch',
+    shortName: 'DE',
     locale: 'de',
     periodOptions: [
       { label: '24 Stunden', value: 24 },
@@ -856,6 +872,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         light: 'Hell',
         toggleToDark: 'Zur dunklen Ansicht wechseln',
         toggleToLight: 'Zur hellen Ansicht wechseln',
+        compactDark: 'Dunk.',
+        compactLight: 'Hell',
       },
       seriesLogoAria: series => `${series}-Logo`,
       upcomingEventDescriptorFallback: 'Keine Events',
@@ -991,6 +1009,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   zh: {
     code: 'zh',
     name: '中文',
+    shortName: '中文',
     locale: 'zh',
     periodOptions: [
       { label: '24 小时', value: 24 },
@@ -1031,6 +1050,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         light: '浅色',
         toggleToDark: '切换到深色主题',
         toggleToLight: '切换到浅色主题',
+        compactDark: '深色',
+        compactLight: '浅色',
       },
       seriesLogoAria: series => `${series} 标志`,
       upcomingEventDescriptorFallback: '暂无赛事',
