@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Exo_2, Manrope } from 'next/font/google';
 
@@ -40,6 +40,11 @@ export const metadata: Metadata = {
     shortcut: withAssetPrefix('/favicon.svg'),
     apple: withAssetPrefix('/favicon.svg'),
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
