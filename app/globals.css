@@ -2249,14 +2249,19 @@ button {
   }
 
   .site-header__row--main {
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'brand actions'
+      'nav nav';
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    column-gap: 10px;
+    row-gap: 12px;
   }
 
   .site-header__brand {
     flex: 1 1 auto;
+    grid-area: brand;
   }
 
   .site-header__nav {
@@ -2265,6 +2270,7 @@ button {
     margin: 4px 0 0;
     justify-content: center;
     gap: 16px;
+    grid-area: nav;
   }
 
   .site-header__link {
@@ -2279,6 +2285,8 @@ button {
     gap: 8px;
     flex-wrap: wrap;
     justify-content: flex-end;
+    grid-area: actions;
+    justify-self: flex-end;
   }
 
   .site-header__cta {
