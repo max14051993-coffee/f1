@@ -128,17 +128,17 @@ button {
 .site-header__inner {
   max-width: 1180px;
   margin: 0 auto;
-  padding: clamp(16px, 4vw, 28px) clamp(18px, 6vw, 54px);
+  padding: clamp(14px, 3.4vw, 24px) clamp(16px, 5vw, 44px);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: clamp(14px, 3.4vw, 24px);
+  gap: clamp(12px, 2.8vw, 20px);
 }
 
 .site-header__row {
   display: flex;
   align-items: center;
-  gap: clamp(12px, 3.2vw, 28px);
+  gap: clamp(10px, 2.6vw, 22px);
   flex-wrap: wrap;
   width: 100%;
   min-width: 0;
@@ -178,7 +178,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(16px, 4vw, 28px);
+  gap: clamp(14px, 3.2vw, 24px);
   flex: 1 1 auto;
   flex-wrap: nowrap;
   min-width: 0;
@@ -187,13 +187,13 @@ button {
 .site-header__actions {
   display: inline-flex;
   align-items: center;
-  gap: clamp(16px, 4vw, 28px);
-  margin-left: clamp(16px, 4vw, 32px);
+  gap: clamp(14px, 3.2vw, 24px);
+  margin-left: clamp(12px, 3.4vw, 28px);
   flex: 0 1 auto;
   min-width: 0;
   flex-wrap: wrap;
   justify-content: flex-end;
-  row-gap: clamp(12px, 3.2vw, 20px);
+  row-gap: clamp(10px, 2.6vw, 18px);
 }
 
 .site-header__meta-group {
@@ -2236,25 +2236,27 @@ button {
 
   .site-header__row--main {
     flex-direction: column;
-    align-items: stretch;
-    gap: 18px;
+    align-items: center;
+    gap: 14px;
   }
 
   .site-header__nav {
     justify-content: center;
-    margin: 8px 0 0;
+    margin: 6px 0 0;
   }
 
   .site-header__actions {
-    width: 100%;
+    width: auto;
     margin-left: 0;
     flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
+    align-self: center;
   }
 
   .site-header__cta {
-    width: 100%;
+    width: auto;
+    align-self: center;
   }
 
   .theme-toggle {
