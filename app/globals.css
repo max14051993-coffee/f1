@@ -2253,29 +2253,34 @@ button {
     gap: 12px;
   }
 
-  .site-header__cta,
-  .theme-toggle,
-  .site-header__meta-group {
+  .site-header__cta {
     width: 100%;
   }
 
+  .theme-toggle {
+    width: auto;
+    align-self: center;
+  }
+
   .site-header__meta-group {
+    width: auto;
     justify-content: center;
+    align-self: center;
   }
 
   .site-header__meta-portion {
     justify-content: center;
-    flex: 1 1 auto;
-    width: 100%;
+    flex: 0 0 auto;
+    width: auto;
   }
 
   .site-header__language {
-    width: 100%;
+    width: auto;
     justify-content: center;
   }
 
   .site-header__language-toggle {
     justify-content: center;
-    width: 100%;
+    width: auto;
   }
 }
