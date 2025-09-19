@@ -649,12 +649,7 @@ export default function Home() {
   const { texts, periodOptions, sessionLabels, locale } = languageDefinition;
   const themeCopy = texts.theme;
   const themeButtonLabel = theme === 'dark' ? themeCopy.toggleToLight : themeCopy.toggleToDark;
-  const themeStateLabel =
-    theme === 'dark'
-      ? themeCopy.compactDark ?? themeCopy.dark
-      : themeCopy.compactLight ?? themeCopy.light;
   const languageDisplayName = languageDefinition.shortName || languageDefinition.name;
-  const themeIcon = theme === 'dark' ? '🌙' : '☀️';
 
   const filtered = useMemo(() => {
     let arr = rows.filter(r => visibleSeries[r.series]);
@@ -757,13 +752,12 @@ export default function Home() {
                 className="theme-toggle"
                 aria-label={themeButtonLabel}
                 aria-pressed={theme === 'light'}
+                data-theme-state={theme}
                 onClick={toggleTheme}
               >
-                <span className="theme-toggle__icon" aria-hidden>
-                  {themeIcon}
-                </span>
-                <span className="theme-toggle__text">
-                  <span className="theme-toggle__state">{themeStateLabel}</span>
+                <span className="theme-toggle__icons" aria-hidden>
+                  <span className="theme-toggle__icon theme-toggle__icon--moon">🌙</span>
+                  <span className="theme-toggle__icon theme-toggle__icon--sun">☀️</span>
                 </span>
               </button>
               <div className="site-header__meta-group">
