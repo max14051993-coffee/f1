@@ -649,7 +649,11 @@ export default function Home() {
   const { texts, periodOptions, sessionLabels, locale } = languageDefinition;
   const themeCopy = texts.theme;
   const themeButtonLabel = theme === 'dark' ? themeCopy.toggleToLight : themeCopy.toggleToDark;
-  const themeStateLabel = theme === 'dark' ? themeCopy.dark : themeCopy.light;
+  const themeStateLabel =
+    theme === 'dark'
+      ? themeCopy.compactDark ?? themeCopy.dark
+      : themeCopy.compactLight ?? themeCopy.light;
+  const languageDisplayName = languageDefinition.shortName || languageDefinition.name;
   const themeIcon = theme === 'dark' ? '🌙' : '☀️';
 
   const filtered = useMemo(() => {
@@ -776,7 +780,7 @@ export default function Home() {
                     aria-controls="language-select-menu"
                     onClick={() => setLanguageMenuOpen(prev => !prev)}
                   >
-                    <span className="site-header__language-value">{languageDefinition.name}</span>
+                    <span className="site-header__language-value">{languageDisplayName}</span>
                   </button>
                   {isLanguageMenuOpen ? (
                     <ul
