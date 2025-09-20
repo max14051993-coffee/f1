@@ -2283,6 +2283,26 @@ button {
   }
 }
 
+@media (max-width: 600px) {
+  .event-card__top {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  .event-card__datetime {
+    margin-left: auto;
+    align-items: flex-end;
+    gap: 2px;
+    letter-spacing: 0.08em;
+  }
+
+  .event-card__time {
+    letter-spacing: 0.1em;
+  }
+}
+
 @media (max-width: 720px) {
   .hero__layout {
     grid-template-columns: minmax(0, 1fr);
