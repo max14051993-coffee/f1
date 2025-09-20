@@ -2352,13 +2352,13 @@ button {
   .site-header__actions {
     order: 0;
     margin-left: 0;
-    flex: 1 1 auto;
-    width: 100%;
+    flex: 0 1 auto;
+    width: auto;
     gap: 8px;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: flex-end;
     grid-area: actions;
-    justify-self: stretch;
+    justify-self: end;
     align-self: start;
     grid-column: 1 / -1;
     grid-row: 2;
