@@ -2405,28 +2405,43 @@ button {
 
 @media (max-width: 420px) {
   .site-header__row--main {
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     grid-template-areas:
-      'brand actions'
-      'nav nav';
+      'brand brand brand'
+      'cta cta cta'
+      'nav theme language';
     column-gap: 8px;
     row-gap: 12px;
+    align-items: center;
   }
 
   .site-header__brand {
+    grid-area: brand;
     justify-self: flex-start;
     font-size: 0.82rem;
     letter-spacing: 0.18em;
     gap: 10px;
   }
 
+  .site-header__actions {
+    display: contents;
+  }
+
+  .site-header__cta {
+    grid-area: cta;
+    justify-self: stretch;
+    flex: 1 1 auto;
+    justify-content: center;
+    width: 100%;
+  }
+
   .site-header__nav {
     grid-area: nav;
     width: 100%;
     justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: nowrap;
+    gap: 12px;
   }
 
   .site-header__link {
@@ -2434,28 +2449,15 @@ button {
     padding: 6px 0;
   }
 
-  .site-header__actions {
-    grid-area: actions;
-    width: 100%;
-    justify-content: flex-end;
-    align-content: flex-start;
-    gap: 8px;
-  }
-
-  .site-header__cta {
-    order: 0;
-    flex: 1 1 100%;
-    justify-content: center;
-  }
-
   .theme-toggle {
-    order: 1;
+    grid-area: theme;
+    justify-self: end;
   }
 
   .site-header__meta-group {
-    order: 2;
+    grid-area: language;
+    justify-self: end;
     flex: 0 1 auto;
-    justify-content: flex-start;
     min-width: 0;
   }
 }
