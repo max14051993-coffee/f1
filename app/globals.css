@@ -2408,9 +2408,9 @@ button {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto auto;
     grid-template-areas:
-      'brand brand brand'
-      'cta cta cta'
-      'nav theme language';
+      'brand brand cta'
+      'nav nav nav'
+      'theme theme language';
     column-gap: 8px;
     row-gap: 12px;
     align-items: center;
@@ -2430,10 +2430,11 @@ button {
 
   .site-header__cta {
     grid-area: cta;
-    justify-self: stretch;
-    flex: 1 1 auto;
+    justify-self: end;
+    align-self: center;
+    flex: 0 0 auto;
     justify-content: center;
-    width: 100%;
+    width: auto;
   }
 
   .site-header__nav {
