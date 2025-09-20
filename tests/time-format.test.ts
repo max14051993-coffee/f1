@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DateTime } from 'luxon';
 
-import { buildRelativeLabel } from '../app/page';
+import { buildRelativeLabel } from '../lib/relative-time';
 
 describe('buildRelativeLabel', () => {
   it('formats upcoming events within two hours as hh:mm', () => {
