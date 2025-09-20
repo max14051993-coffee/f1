@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DateTime } from 'luxon';
 
+import { LANGUAGE_DEFINITIONS } from '../lib/language';
 import { buildRelativeLabel } from '../lib/relative-time';
 
 describe('buildRelativeLabel', () => {
@@ -23,5 +24,21 @@ describe('buildRelativeLabel', () => {
     const target = base.minus({ minutes: 90 });
 
     expect(buildRelativeLabel(target, base, 'en')).toBe('90 minutes ago');
+  });
+});
+
+describe('countdownStart copy', () => {
+  it('keeps russian phrasing consistent for clock-style durations', () => {
+    const { countdownStart } = LANGUAGE_DEFINITIONS.ru.texts;
+
+    expect(countdownStart('01:17')).toBe('Старт через 01:17');
+    expect(countdownStart('через 2 часа')).toBe('Старт через 2 часа');
+  });
+
+  it('keeps english phrasing consistent for clock-style durations', () => {
+    const { countdownStart } = LANGUAGE_DEFINITIONS.en.texts;
+
+    expect(countdownStart('01:17')).toBe('Starts in 01:17');
+    expect(countdownStart('in 3 hours')).toBe('Starts in 3 hours');
   });
 });
