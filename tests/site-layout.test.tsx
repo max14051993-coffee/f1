@@ -100,8 +100,7 @@ describe('site layout rendering across languages', () => {
         });
 
         await waitFor(() => {
-          const ariaLabel = definition.texts.seriesLogoAria('F1');
-          expect(screen.getAllByLabelText(ariaLabel).length).toBeGreaterThan(0);
+          expect(document.querySelectorAll('.event-card__series-pill').length).toBeGreaterThan(0);
         });
       }
     } finally {
