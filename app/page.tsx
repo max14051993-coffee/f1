@@ -625,7 +625,6 @@ export default function Home() {
                           aria-hidden="true"
                           draggable={false}
                         />
-                        <span className="event-card__series-pill">{definition.label}</span>
                       </div>
                       <time className="event-card__datetime" dateTime={isoLocal ?? undefined}>
                         <span className="event-card__time">{timeLabel}</span>

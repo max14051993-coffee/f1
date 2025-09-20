@@ -739,12 +739,6 @@ button {
   color: #0f162c;
 }
 
-:root[data-theme='light'] .event-card__series-pill {
-  background: rgba(var(--accent-rgb), 0.12);
-  border-color: rgba(var(--accent-rgb), 0.3);
-  color: rgba(var(--accent-rgb), 0.82);
-}
-
 :root[data-theme='light'] .event-card__datetime {
   color: rgba(18, 22, 37, 0.58);
 }
@@ -1699,7 +1693,6 @@ button {
 .control-panel__label,
 .series-chip,
 .period-button,
-.event-card__series-pill,
 .event-card__datetime,
 .event-card__time,
 .event-card__title,
@@ -2048,7 +2041,6 @@ button {
 .event-card__series {
   display: flex;
   align-items: center;
-  gap: 12px;
 }
 
 .event-card__series-logo {
@@ -2057,18 +2049,6 @@ button {
   width: auto;
   user-select: none;
   pointer-events: none;
-}
-
-.event-card__series-pill {
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(var(--accent-rgb), 0.45);
-  background: rgba(var(--accent-rgb), 0.22);
-  color: #ffffff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
 }
 
 .event-card__datetime {

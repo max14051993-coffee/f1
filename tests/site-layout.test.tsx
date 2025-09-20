@@ -100,7 +100,7 @@ describe('site layout rendering across languages', () => {
         });
 
         await waitFor(() => {
-          expect(document.querySelectorAll('.event-card__series-pill').length).toBeGreaterThan(0);
+          expect(document.querySelectorAll('.event-card__series-logo').length).toBeGreaterThan(0);
         });
       }
     } finally {
