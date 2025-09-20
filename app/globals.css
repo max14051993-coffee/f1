@@ -1496,7 +1496,7 @@ button {
   }
 
   .site-header__brand {
-    order: 1;
+    order: 0;
   }
 }
 
