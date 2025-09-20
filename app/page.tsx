@@ -96,7 +96,7 @@ function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
   const diffInHours = Math.abs(target.diff(base, 'hours').hours);
   const options = { base, locale, style: 'long' } as const;
 
-  if (diffInHours < 1) {
+  if (diffInHours < 2) {
     return target.toRelative({ ...options, unit: 'minutes' });
   }
 
