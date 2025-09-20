@@ -7,12 +7,6 @@ type SeriesLogo = {
   height: number;
 };
 
-type SeriesLogo = {
-  src: string;
-  width: number;
-  height: number;
-};
-
 type SeriesDefinitionBase = {
   label: string;
   accentColor: string;
