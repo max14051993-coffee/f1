@@ -615,6 +615,16 @@ export default function Home() {
                   <div className="event-card__inner">
                     <div className="event-card__top">
                       <div className="event-card__series">
+                        <img
+                          src={definition.logo.src}
+                          alt=""
+                          width={definition.logo.width}
+                          height={definition.logo.height}
+                          className="event-card__series-logo"
+                          loading="lazy"
+                          aria-hidden="true"
+                          draggable={false}
+                        />
                         <span className="event-card__series-pill">{definition.label}</span>
                       </div>
                       <time className="event-card__datetime" dateTime={isoLocal ?? undefined}>
