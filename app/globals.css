@@ -2325,12 +2325,12 @@ button {
 
   .site-header__row--main {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: auto auto;
     grid-template-areas:
-      'brand nav'
-      'actions actions';
-    align-items: center;
+      'brand actions'
+      'nav nav';
+    align-items: flex-start;
     column-gap: 10px;
     row-gap: 12px;
   }
@@ -2338,20 +2338,16 @@ button {
   .site-header__brand {
     flex: 1 1 auto;
     grid-area: brand;
-    order: 0;
-    grid-column: 1;
-    grid-row: 1;
   }
 
   .site-header__nav {
     order: 0;
-    width: auto;
+    grid-area: nav;
+    width: 100%;
     margin: 0;
     justify-content: flex-start;
+    flex-wrap: wrap;
     gap: 16px;
-    grid-area: nav;
-    grid-column: 2;
-    grid-row: 1;
   }
 
   .site-header__link {
@@ -2363,15 +2359,13 @@ button {
     order: 0;
     margin-left: 0;
     flex: 0 1 auto;
-    width: auto;
+    width: 100%;
     gap: 8px;
     flex-wrap: wrap;
     justify-content: flex-end;
     grid-area: actions;
     justify-self: end;
     align-self: start;
-    grid-column: 1 / -1;
-    grid-row: 2;
   }
 
   .site-header__cta {
@@ -2411,43 +2405,41 @@ button {
 
 @media (max-width: 420px) {
   .site-header__row--main {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
     grid-template-areas:
-      'brand'
-      'nav'
-      'actions';
-    row-gap: 14px;
+      'brand actions'
+      'nav nav';
+    column-gap: 8px;
+    row-gap: 12px;
   }
 
   .site-header__brand {
     justify-self: flex-start;
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    gap: 10px;
   }
 
   .site-header__nav {
     grid-area: nav;
-    grid-column: 1;
-    grid-row: 2;
     width: 100%;
     justify-content: flex-start;
-    align-items: stretch;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
   }
 
   .site-header__link {
-    flex: 1 1 100%;
-    text-align: left;
-    padding: 6px 4px;
+    flex: 0 1 auto;
+    padding: 6px 0;
   }
 
   .site-header__actions {
     grid-area: actions;
-    grid-column: 1;
-    grid-row: 3;
     width: 100%;
-    justify-content: flex-start;
-    gap: 10px;
+    justify-content: flex-end;
+    align-content: flex-start;
+    gap: 8px;
   }
 
   .site-header__cta {
@@ -2462,7 +2454,7 @@ button {
 
   .site-header__meta-group {
     order: 2;
-    flex: 1 1 auto;
+    flex: 1 1 100%;
     justify-content: flex-start;
   }
 }
