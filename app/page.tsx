@@ -90,13 +90,121 @@ type Row = {
   startsAtUtc: string; // ISO
 };
 
+const relativeTimeFormatterCache = new Map<string, Intl.RelativeTimeFormat | null>();
+const minuteUnitPatternCache = new Map<string, RegExp[] | null>();
+const NUMBER_STRIP_REGEX = /[\p{Number}\p{Separator}\p{Punctuation}]/gu;
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function getRelativeTimeFormatter(locale: string) {
+  if (relativeTimeFormatterCache.has(locale)) {
+    return relativeTimeFormatterCache.get(locale) ?? null;
+  }
+
+  if (typeof Intl === 'undefined' || typeof Intl.RelativeTimeFormat === 'undefined') {
+    relativeTimeFormatterCache.set(locale, null);
+    return null;
+  }
+
+  try {
+    const formatter = new Intl.RelativeTimeFormat(locale, { style: 'long' });
+    relativeTimeFormatterCache.set(locale, formatter);
+    return formatter;
+  } catch {
+    relativeTimeFormatterCache.set(locale, null);
+    return null;
+  }
+}
+
+function getMinuteUnitPatterns(locale: string) {
+  if (minuteUnitPatternCache.has(locale)) {
+    return minuteUnitPatternCache.get(locale) ?? [];
+  }
+
+  if (typeof Intl === 'undefined' || typeof Intl.NumberFormat === 'undefined') {
+    minuteUnitPatternCache.set(locale, null);
+    return [];
+  }
+
+  try {
+    const formatter = new Intl.NumberFormat(locale, {
+      style: 'unit',
+      unit: 'minute',
+      unitDisplay: 'long',
+    });
+    const variants = new Set<string>();
+    for (const sample of [0, 1, 2, 5]) {
+      const formatted = formatter.format(sample);
+      const cleaned = formatted.replace(NUMBER_STRIP_REGEX, '').trim();
+      if (cleaned) {
+        variants.add(cleaned);
+      }
+    }
+    const patterns = Array.from(variants).map(variant =>
+      new RegExp(escapeRegExp(variant), 'giu')
+    );
+    minuteUnitPatternCache.set(locale, patterns);
+    return patterns;
+  } catch {
+    minuteUnitPatternCache.set(locale, null);
+    return [];
+  }
+}
+
 function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
   if (!target.isValid || !base.isValid) return null;
 
   const diffInHours = Math.abs(target.diff(base, 'hours').hours);
   const options = { base, locale, style: 'long' } as const;
 
-  if (diffInHours < 1) {
+  if (diffInHours < 2) {
+    const diffInMinutes = target.diff(base, 'minutes').minutes;
+    if (!Number.isFinite(diffInMinutes)) {
+      return target.toRelative({ ...options, unit: 'minutes' });
+    }
+
+    const roundedMinutes = Math.trunc(diffInMinutes);
+    if (Math.abs(roundedMinutes) === 0) {
+      return target.toRelative(options);
+    }
+
+    const absoluteMinutes = Math.abs(roundedMinutes);
+    const hoursPortion = Math.floor(absoluteMinutes / 60);
+    const minutesPortion = absoluteMinutes % 60;
+    const formattedDuration = `${String(hoursPortion).padStart(2, '0')}:${String(minutesPortion).padStart(2, '0')}`;
+
+    const formatter = getRelativeTimeFormatter(locale);
+
+    if (formatter) {
+      try {
+        const parts = formatter.formatToParts(roundedMinutes, 'minute');
+        const unitPatterns = getMinuteUnitPatterns(locale);
+
+        const pieces = parts
+          .map(part => {
+            if (part.type === 'integer') {
+              return formattedDuration;
+            }
+
+            let value = part.value;
+            for (const pattern of unitPatterns) {
+              value = value.replace(pattern, '');
+            }
+            return value;
+          })
+          .filter(piece => piece && piece.trim().length > 0);
+
+        const compact = pieces.join('').replace(/\s+/g, ' ').trim();
+        if (compact.length > 0) {
+          return compact;
+        }
+      } catch {
+        // ignore formatter issues and fall back to default relative formatting
+      }
+    }
+
     return target.toRelative({ ...options, unit: 'minutes' });
   }
 
