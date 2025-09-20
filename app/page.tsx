@@ -88,7 +88,26 @@ type Row = {
   circuit?: string;
   session: RaceSession;
   startsAtUtc: string; // ISO
+  endsAtUtc?: string; // ISO
 };
+
+function parseIcsDateTime(raw: string | undefined, tzHint?: string) {
+  if (!raw) return null;
+
+  const normalizedTz = tzHint && tzHint.trim().length > 0 ? tzHint : undefined;
+  const attempts: Array<[string, { zone: string }]> = [
+    ["yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' }],
+    ["yyyyMMdd'T'HHmmss", { zone: normalizedTz ?? 'utc' }],
+    ['yyyyMMdd', { zone: normalizedTz ?? 'utc' }],
+  ];
+
+  for (const [format, options] of attempts) {
+    const dt = DateTime.fromFormat(raw, format, options);
+    if (dt.isValid) return dt;
+  }
+
+  return null;
+}
 
 function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
   if (!target.isValid || !base.isValid) return null;
@@ -159,18 +178,15 @@ function parseICS(ics: string): Row[] {
             const [seriesRaw, roundRaw, countryRaw, circuitRaw, sessionRaw] = parts;
             if (!isSeriesId(seriesRaw)) continue;
 
-            let dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' });
-            if (!dt.isValid) {
-              const tz = current.DTSTART_TZID || 'utc';
-              dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss", { zone: tz });
-            }
-            if (dt.isValid) {
+            const start = parseIcsDateTime(dtstart, current.DTSTART_TZID);
+            if (start) {
               const session = normalizeSession(sessionRaw);
               if (!session) continue;
 
               const round = roundRaw.trim();
               const country = countryRaw.trim();
               const circuit = circuitRaw.trim();
+              const end = parseIcsDateTime(current.DTEND, current.DTEND_TZID ?? current.DTSTART_TZID);
 
               events.push({
                 series: seriesRaw,
@@ -178,17 +194,14 @@ function parseICS(ics: string): Row[] {
                 country: country.length ? country : undefined,
                 circuit: circuit.length ? circuit : undefined,
                 session,
-                startsAtUtc: dt.toUTC().toISO()!,
+                startsAtUtc: start.toUTC().toISO()!,
+                endsAtUtc: end?.toUTC().toISO() ?? undefined,
               });
             }
           }
         } else if (isMotoGpEvent) {
-          let dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' });
-          if (!dt.isValid) {
-            const tz = current.DTSTART_TZID || 'utc';
-            dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss", { zone: tz });
-          }
-          if (dt.isValid) {
+          const start = parseIcsDateTime(dtstart, current.DTSTART_TZID);
+          if (start) {
             const [rawDetails, rawRoundCandidate] = summary.split(/\s+[–-]\s+/);
             const detailPart = rawDetails ?? summary;
             const sessionCode = detailPart.replace(/^MotoGP\s*/i, '').trim();
@@ -229,6 +242,7 @@ function parseICS(ics: string): Row[] {
             if (!round.length) round = 'MotoGP';
 
             const series: SeriesId = 'MotoGP';
+            const end = parseIcsDateTime(current.DTEND, current.DTEND_TZID ?? current.DTSTART_TZID);
 
             events.push({
               series,
@@ -236,7 +250,8 @@ function parseICS(ics: string): Row[] {
               country: country && country.length ? country : undefined,
               circuit: circuit && circuit.length ? circuit : undefined,
               session,
-              startsAtUtc: dt.toUTC().toISO()!,
+              startsAtUtc: start.toUTC().toISO()!,
+              endsAtUtc: end?.toUTC().toISO() ?? undefined,
             });
           }
         } else {
@@ -245,21 +260,22 @@ function parseICS(ics: string): Row[] {
             const session = normalizeSession(rawSession);
             if (session) {
               const eventName = rawEvent.replace(/^RN365\s*/, '').trim();
-              const tz = current.DTSTART_TZID || 'utc';
-              const dt = DateTime.fromFormat(dtstart, "yyyyMMdd'T'HHmmss", { zone: tz });
-              if (dt.isValid) {
+              const start = parseIcsDateTime(dtstart, current.DTSTART_TZID);
+              if (start) {
                 const circuit = current.LOCATION
                   ?.replace(/\\,/g, ',')
                   .replace(/\\\\/g, '\\');
                 const fallbackSeries = DEFAULT_SERIES_ID;
                 if (!fallbackSeries) continue;
+                const end = parseIcsDateTime(current.DTEND, current.DTEND_TZID ?? current.DTSTART_TZID);
 
                 events.push({
                   series: fallbackSeries,
                   round: eventName,
                   circuit,
                   session,
-                  startsAtUtc: dt.toUTC().toISO()!,
+                  startsAtUtc: start.toUTC().toISO()!,
+                  endsAtUtc: end?.toUTC().toISO() ?? undefined,
                 });
               }
             }
@@ -274,6 +290,10 @@ function parseICS(ics: string): Row[] {
       if (key === 'DTSTART') {
         const tzParam = params.find(p => p.startsWith('TZID='));
         if (tzParam) current.DTSTART_TZID = tzParam.split('=')[1];
+      }
+      if (key === 'DTEND') {
+        const tzParam = params.find(p => p.startsWith('TZID='));
+        if (tzParam) current.DTEND_TZID = tzParam.split('=')[1];
       }
     }
   }
@@ -658,8 +678,13 @@ export default function Home() {
     const from = now.minus({ hours: 2 });
     const to = now.plus({ hours: limit });
     arr = arr.filter(r => {
-      const dt = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' });
-      return dt >= from && dt <= to;
+      const startUtc = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' });
+      const endUtcRaw = r.endsAtUtc ? DateTime.fromISO(r.endsAtUtc, { zone: 'utc' }) : null;
+      const endUtc = endUtcRaw && endUtcRaw.isValid ? endUtcRaw : null;
+      const startsWithinWindow = startUtc >= from && startUtc <= to;
+      const endsAfterFrom = endUtc ? endUtc >= from : false;
+      const startsBeforeTo = startUtc <= to;
+      return (startsWithinWindow || endsAfterFrom) && startsBeforeTo;
     });
     return arr
       .slice()
@@ -967,12 +992,34 @@ export default function Home() {
               const timeLabel = localized.toFormat('HH:mm');
               const dayLabel = localized.toFormat('ccc');
               const dateLabel = localized.toFormat('dd LLL');
-              const relative = buildRelativeLabel(localized, nowLocal, locale);
-              const countdown = relative
-                ? localized > nowLocal
-                  ? texts.countdownStart(relative)
-                  : texts.countdownFinish(relative)
-                : texts.countdownScheduled;
+              const endLocalRaw = r.endsAtUtc
+                ? DateTime.fromISO(r.endsAtUtc, { zone: 'utc' }).setZone(userTz)
+                : null;
+              const endLocal = endLocalRaw && endLocalRaw.isValid ? endLocalRaw.setLocale(locale) : null;
+              const startRelative = buildRelativeLabel(localized, nowLocal, locale);
+              const finishRelative = endLocal ? buildRelativeLabel(endLocal, nowLocal, locale) : null;
+              let status: 'upcoming' | 'live' | 'finished' = 'upcoming';
+              if (endLocal && endLocal <= nowLocal) {
+                status = 'finished';
+              } else if (localized <= nowLocal) {
+                status = 'live';
+              }
+              let countdown: string;
+              if (status === 'live') {
+                countdown = texts.countdownLive(startRelative ?? '');
+              } else if (status === 'finished') {
+                if (finishRelative) {
+                  countdown = texts.countdownFinish(finishRelative);
+                } else if (startRelative) {
+                  countdown = texts.countdownFinish(startRelative);
+                } else {
+                  countdown = texts.countdownScheduled;
+                }
+              } else {
+                countdown = startRelative ? texts.countdownStart(startRelative) : texts.countdownScheduled;
+              }
+              const countdownClassName =
+                status === 'upcoming' ? 'event-card__countdown' : `event-card__countdown event-card__countdown--${status}`;
               const track = getTrackLayout(r.circuit, r.round);
               const trackLabelParts = Array.from(
                 new Set(
@@ -1037,7 +1084,7 @@ export default function Home() {
                         </svg>
                       </div>
                     ) : null}
-                    <div className="event-card__countdown">
+                    <div className={countdownClassName} aria-live={status === 'live' ? 'polite' : 'off'}>
                       <span className="event-card__countdown-dot" aria-hidden />
                       <span>{countdown}</span>
 

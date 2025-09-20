@@ -790,8 +790,32 @@ button {
   box-shadow: 0 20px 50px -36px rgba(var(--accent-rgb), 0.35);
 }
 
+:root[data-theme='light'] .event-card__countdown--live {
+  background: rgba(0, 158, 105, 0.12);
+  border-color: rgba(0, 158, 105, 0.38);
+  color: #0c5b3b;
+  box-shadow: 0 20px 50px -36px rgba(0, 158, 105, 0.32);
+}
+
+:root[data-theme='light'] .event-card__countdown--finished {
+  background: rgba(18, 24, 35, 0.08);
+  border-color: rgba(18, 24, 35, 0.18);
+  color: rgba(18, 24, 35, 0.6);
+  box-shadow: none;
+}
+
 :root[data-theme='light'] .event-card__countdown-dot {
   box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.2);
+}
+
+:root[data-theme='light'] .event-card__countdown--live .event-card__countdown-dot {
+  background: rgba(0, 158, 105, 0.9);
+  box-shadow: 0 0 0 6px rgba(0, 158, 105, 0.2);
+}
+
+:root[data-theme='light'] .event-card__countdown--finished .event-card__countdown-dot {
+  background: rgba(18, 24, 35, 0.35);
+  box-shadow: 0 0 0 6px rgba(18, 24, 35, 0.12);
 }
 
 :root[data-theme='light'] .cta-section__content p {
@@ -2198,12 +2222,36 @@ button {
   box-shadow: 0 20px 50px -36px rgba(var(--accent-rgb), 0.9);
 }
 
+.event-card__countdown--live {
+  border-color: rgba(14, 192, 120, 0.6);
+  background: rgba(14, 192, 120, 0.18);
+  color: #eafff5;
+  box-shadow: 0 20px 50px -36px rgba(14, 192, 120, 0.9);
+}
+
+.event-card__countdown--finished {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.72);
+  box-shadow: none;
+}
+
 .event-card__countdown-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: rgba(var(--accent-rgb), 0.9);
   box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.24);
+}
+
+.event-card__countdown--live .event-card__countdown-dot {
+  background: rgba(14, 192, 120, 0.9);
+  box-shadow: 0 0 0 6px rgba(14, 192, 120, 0.24);
+}
+
+.event-card__countdown--finished .event-card__countdown-dot {
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
 }
 
 .period-button:focus-visible,

@@ -75,6 +75,7 @@ type TranslationBundle = {
   noEvents: string;
   extendPeriodHint: string;
   countdownStart: (relative: string) => string;
+  countdownLive: (relative: string) => string;
   countdownFinish: (relative: string) => string;
   countdownScheduled: string;
   trackLayoutLabel: (parts: string[]) => string;
@@ -148,6 +149,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       noEvents: 'Нет событий',
       extendPeriodHint: 'Попробуйте расширить период',
       countdownStart: relative => `Старт ${relative}`,
+      countdownLive: relative => (relative ? `Идёт • старт ${relative}` : 'Идёт'),
       countdownFinish: relative => `Финиш ${relative}`,
       countdownScheduled: 'По расписанию',
       trackLayoutLabel: parts =>
@@ -326,6 +328,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       noEvents: 'No events',
       extendPeriodHint: 'Try expanding the window',
       countdownStart: relative => `Starts ${relative}`,
+      countdownLive: relative => (relative ? `Live now • started ${relative}` : 'Live now'),
       countdownFinish: relative => `Finished ${relative}`,
       countdownScheduled: 'On schedule',
       trackLayoutLabel: parts =>
@@ -504,6 +507,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       noEvents: 'Sin eventos',
       extendPeriodHint: 'Intenta ampliar la ventana',
       countdownStart: relative => `Comienza ${relative}`,
+      countdownLive: relative => (relative ? `En vivo • empezó ${relative}` : 'En vivo'),
       countdownFinish: relative => `Terminó ${relative}`,
       countdownScheduled: 'Según lo previsto',
       trackLayoutLabel: parts =>
@@ -682,6 +686,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       noEvents: 'Aucun événement',
       extendPeriodHint: 'Essayez d’élargir la fenêtre',
       countdownStart: relative => `Commence ${relative}`,
+      countdownLive: relative => (relative ? `En direct • départ ${relative}` : 'En direct'),
       countdownFinish: relative => `Terminé ${relative}`,
       countdownScheduled: 'Selon le programme',
       trackLayoutLabel: parts =>
@@ -860,6 +865,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       noEvents: 'Keine Events',
       extendPeriodHint: 'Versuche den Zeitraum zu vergrößern',
       countdownStart: relative => `Beginnt ${relative}`,
+      countdownLive: relative => (relative ? `Live • Start ${relative}` : 'Live'),
       countdownFinish: relative => `Beendet ${relative}`,
       countdownScheduled: 'Planmäßig',
       trackLayoutLabel: parts =>
@@ -1038,6 +1044,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       noEvents: '暂无赛事',
       extendPeriodHint: '试着延长查看窗口',
       countdownStart: relative => `将于 ${relative} 开始`,
+      countdownLive: relative => (relative ? `正在进行 • 开始于 ${relative}` : '正在进行'),
       countdownFinish: relative => `已于 ${relative} 结束`,
       countdownScheduled: '按计划进行',
       trackLayoutLabel: parts =>
