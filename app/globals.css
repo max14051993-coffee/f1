@@ -2454,7 +2454,8 @@ button {
 
   .site-header__meta-group {
     order: 2;
-    flex: 1 1 100%;
+    flex: 0 1 auto;
     justify-content: flex-start;
+    min-width: 0;
   }
 }
