@@ -2249,22 +2249,34 @@ button {
   }
 
   .site-header__row--main {
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'brand actions'
+      'nav nav';
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    column-gap: 10px;
+    row-gap: 12px;
   }
 
   .site-header__brand {
     flex: 1 1 auto;
+    grid-area: brand;
+    order: 0;
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .site-header__nav {
-    order: 3;
+    order: 0;
     width: 100%;
     margin: 4px 0 0;
     justify-content: center;
     gap: 16px;
+    grid-area: nav;
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .site-header__link {
@@ -2273,12 +2285,17 @@ button {
   }
 
   .site-header__actions {
-    order: 2;
+    order: 0;
     margin-left: 0;
     flex: 0 1 auto;
     gap: 8px;
     flex-wrap: wrap;
     justify-content: flex-end;
+    grid-area: actions;
+    justify-self: flex-end;
+    align-self: start;
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .site-header__cta {
