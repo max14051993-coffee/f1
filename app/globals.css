@@ -2335,3 +2335,61 @@ button {
     right: auto;
   }
 }
+
+@media (max-width: 420px) {
+  .site-header__row--main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      'brand'
+      'nav'
+      'actions';
+    row-gap: 14px;
+  }
+
+  .site-header__brand {
+    justify-self: flex-start;
+  }
+
+  .site-header__nav {
+    grid-area: nav;
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .site-header__link {
+    flex: 1 1 100%;
+    text-align: left;
+    padding: 6px 4px;
+  }
+
+  .site-header__actions {
+    grid-area: actions;
+    grid-column: 1;
+    grid-row: 3;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .site-header__cta {
+    order: 0;
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .theme-toggle {
+    order: 1;
+  }
+
+  .site-header__meta-group {
+    order: 2;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+  }
+}
