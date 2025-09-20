@@ -116,6 +116,15 @@ export type LanguageDefinition = {
   texts: TranslationBundle;
 };
 
+const CLOCK_RELATIVE_PATTERN = /^\d{1,2}:\d{2}(?::\d{2})?$/;
+
+function formatCountdownStart(relative: string, prefix: string, clockPrefix: string) {
+  const trimmed = relative.trim();
+  if (!trimmed) return prefix;
+  const leading = CLOCK_RELATIVE_PATTERN.test(trimmed) ? clockPrefix : prefix;
+  return `${leading} ${trimmed}`;
+}
+
 export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   ru: {
     code: 'ru',
@@ -148,7 +157,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       nextStartLabel: 'Ближайший старт',
       noEvents: 'Нет событий',
       extendPeriodHint: 'Попробуйте расширить период',
-      countdownStart: relative => `Старт ${relative}`,
+      countdownStart: relative => formatCountdownStart(relative, 'Старт', 'Старт через'),
       countdownLive: relative => (relative ? `Идёт • старт ${relative}` : 'Идёт'),
       countdownFinish: relative => `Финиш ${relative}`,
       countdownScheduled: 'По расписанию',
@@ -327,7 +336,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       nextStartLabel: 'Next session',
       noEvents: 'No events',
       extendPeriodHint: 'Try expanding the window',
-      countdownStart: relative => `Starts ${relative}`,
+      countdownStart: relative => formatCountdownStart(relative, 'Starts', 'Starts in'),
       countdownLive: relative => (relative ? `Live now • started ${relative}` : 'Live now'),
       countdownFinish: relative => `Finished ${relative}`,
       countdownScheduled: 'On schedule',
@@ -506,7 +515,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       nextStartLabel: 'Próxima sesión',
       noEvents: 'Sin eventos',
       extendPeriodHint: 'Intenta ampliar la ventana',
-      countdownStart: relative => `Comienza ${relative}`,
+      countdownStart: relative => formatCountdownStart(relative, 'Comienza', 'Comienza en'),
       countdownLive: relative => (relative ? `En vivo • empezó ${relative}` : 'En vivo'),
       countdownFinish: relative => `Terminó ${relative}`,
       countdownScheduled: 'Según lo previsto',
@@ -685,7 +694,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       nextStartLabel: 'Prochaine session',
       noEvents: 'Aucun événement',
       extendPeriodHint: 'Essayez d’élargir la fenêtre',
-      countdownStart: relative => `Commence ${relative}`,
+      countdownStart: relative => formatCountdownStart(relative, 'Commence', 'Commence dans'),
       countdownLive: relative => (relative ? `En direct • départ ${relative}` : 'En direct'),
       countdownFinish: relative => `Terminé ${relative}`,
       countdownScheduled: 'Selon le programme',
@@ -864,7 +873,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       nextStartLabel: 'Nächste Session',
       noEvents: 'Keine Events',
       extendPeriodHint: 'Versuche den Zeitraum zu vergrößern',
-      countdownStart: relative => `Beginnt ${relative}`,
+      countdownStart: relative => formatCountdownStart(relative, 'Beginnt', 'Beginnt in'),
       countdownLive: relative => (relative ? `Live • Start ${relative}` : 'Live'),
       countdownFinish: relative => `Beendet ${relative}`,
       countdownScheduled: 'Planmäßig',
