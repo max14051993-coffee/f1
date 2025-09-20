@@ -655,7 +655,7 @@ export default function Home() {
     let arr = rows.filter(r => visibleSeries[r.series]);
     const now = DateTime.utc();
     const limit = hours && hours > 0 ? hours : 24 * 30; // default 30 days
-    const from = now.minus({ hours: 24 });
+    const from = now.minus({ hours: 2 });
     const to = now.plus({ hours: limit });
     arr = arr.filter(r => {
       const dt = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' });
