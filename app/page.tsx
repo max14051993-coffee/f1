@@ -711,12 +711,35 @@ export default function Home() {
         .setLocale(locale)
     : null;
   const nextRelative = nextLocal ? buildRelativeLabel(nextLocal, nowLocal, locale) : null;
-  const nextCountdown =
-    nextLocal && nextRelative
-      ? nextLocal > nowLocal
-        ? texts.countdownStart(nextRelative)
-        : texts.countdownFinish(nextRelative)
-      : null;
+  const nextEndLocalRaw = nextEvent?.endsAtUtc
+    ? DateTime.fromISO(nextEvent.endsAtUtc, { zone: 'utc' }).setZone(userTz)
+    : null;
+  const nextEndLocal = nextEndLocalRaw && nextEndLocalRaw.isValid ? nextEndLocalRaw.setLocale(locale) : null;
+  const nextFinishRelative = nextEndLocal ? buildRelativeLabel(nextEndLocal, nowLocal, locale) : null;
+  let nextStatus: 'upcoming' | 'live' | 'finished' = 'upcoming';
+  if (nextEvent) {
+    if (nextEndLocal && nextEndLocal <= nowLocal) {
+      nextStatus = 'finished';
+    } else if (nextLocal && nextLocal <= nowLocal) {
+      nextStatus = 'live';
+    }
+  }
+  let nextCountdown: string | null = null;
+  if (nextEvent) {
+    if (nextStatus === 'live') {
+      nextCountdown = texts.countdownLive(nextRelative ?? '');
+    } else if (nextStatus === 'finished') {
+      if (nextFinishRelative) {
+        nextCountdown = texts.countdownFinish(nextFinishRelative);
+      } else if (nextRelative) {
+        nextCountdown = texts.countdownFinish(nextRelative);
+      } else {
+        nextCountdown = texts.countdownScheduled;
+      }
+    } else {
+      nextCountdown = nextRelative ? texts.countdownStart(nextRelative) : texts.countdownScheduled;
+    }
+  }
   const nextDescriptor = nextEvent
     ? `${nextEvent.round}${nextEvent.country ? ` • ${nextEvent.country}` : ''}`
     : texts.upcomingEventDescriptorFallback;
@@ -737,6 +760,10 @@ export default function Home() {
         ? ''
         : nextDescriptor
     : nextDescriptor;
+  const nextCountdownClassName =
+    nextStatus === 'upcoming'
+      ? 'event-card__countdown hero-card__countdown'
+      : `event-card__countdown event-card__countdown--${nextStatus} hero-card__countdown`;
   const heroSeriesDefinition = nextSeriesDefinition ?? FALLBACK_SERIES_DEFINITION;
   const heroAccentColor = heroSeriesDefinition?.accentColor ?? '#e10600';
   const heroAccentRgb = heroSeriesDefinition?.accentRgb ?? '225, 6, 0';
@@ -959,7 +986,10 @@ export default function Home() {
                     ) : null}
                   </div>
                   {nextCountdown ? (
-                    <span className="hero-card__meta hero-card__meta--accent">{nextCountdown}</span>
+                    <div className={nextCountdownClassName} aria-live={nextStatus === 'live' ? 'polite' : 'off'}>
+                      <span className="event-card__countdown-dot" aria-hidden />
+                      <span>{nextCountdown}</span>
+                    </div>
                   ) : null}
                 </div>
               ) : (
