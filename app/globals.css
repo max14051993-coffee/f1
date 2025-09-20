@@ -405,15 +405,17 @@ button {
 }
 
 .theme-toggle {
-  --theme-toggle-icon-size: 1.05rem;
-  --theme-toggle-padding: 6px;
+  --theme-toggle-icon-size: 1.2rem;
+  --theme-toggle-padding: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0;
   padding: var(--theme-toggle-padding);
-  width: calc(var(--theme-toggle-icon-size) * 2 + var(--theme-toggle-padding) * 2);
-  min-width: calc(var(--theme-toggle-icon-size) * 2 + var(--theme-toggle-padding) * 2);
+  width: calc(var(--theme-toggle-icon-size) + var(--theme-toggle-padding) * 2);
+  min-width: calc(var(--theme-toggle-icon-size) + var(--theme-toggle-padding) * 2);
+  height: calc(var(--theme-toggle-icon-size) + var(--theme-toggle-padding) * 2);
+  min-height: calc(var(--theme-toggle-icon-size) + var(--theme-toggle-padding) * 2);
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.05);
@@ -435,35 +437,44 @@ button {
 }
 
 .theme-toggle__icons {
+  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: calc(var(--theme-toggle-icon-size) * 2);
-}
-
-.theme-toggle__icon {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: var(--theme-toggle-icon-size);
+  height: var(--theme-toggle-icon-size);
+}
+
+.theme-toggle__icon {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: var(--theme-toggle-icon-size);
   line-height: 1;
   flex-shrink: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
-  opacity: 0.45;
+  opacity: 0;
 }
 
-.theme-toggle[data-theme-state='dark'] .theme-toggle__icon--moon,
-.theme-toggle[data-theme-state='light'] .theme-toggle__icon--sun {
+.theme-toggle__icon--moon {
   opacity: 1;
+  transform: scale(1);
+}
+
+.theme-toggle__icon--sun {
+  transform: scale(0.6) rotate(-12deg);
 }
 
 .theme-toggle[data-theme-state='light'] .theme-toggle__icon--moon {
-  transform: translateX(calc(var(--theme-toggle-icon-size)));
+  opacity: 0;
+  transform: scale(0.6) rotate(12deg);
 }
 
 .theme-toggle[data-theme-state='light'] .theme-toggle__icon--sun {
-  transform: translateX(calc(-1 * var(--theme-toggle-icon-size)));
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
 }
 
 :root[data-theme='light'] {
