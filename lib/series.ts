@@ -1,4 +1,11 @@
 import type { RaceSession } from './language';
+import { withAssetPrefix } from './assets';
+
+type SeriesLogo = {
+  src: string;
+  width: number;
+  height: number;
+};
 
 type SeriesLogo = {
   src: string;
@@ -23,7 +30,7 @@ export const SERIES_DEFINITIONS = {
     accentColor: '#e10600',
     accentRgb: '225, 6, 0',
     logo: {
-      src: '/logos/f1.svg',
+      src: withAssetPrefix('/logos/f1.svg'),
       width: 120,
       height: 30,
     },
@@ -33,7 +40,7 @@ export const SERIES_DEFINITIONS = {
     accentColor: '#0090ff',
     accentRgb: '0, 144, 255',
     logo: {
-      src: '/logos/f2.svg',
+      src: withAssetPrefix('/logos/f2.svg'),
       width: 1000,
       height: 320,
     },
@@ -43,7 +50,7 @@ export const SERIES_DEFINITIONS = {
     accentColor: '#ff6f00',
     accentRgb: '255, 111, 0',
     logo: {
-      src: '/logos/f3.svg',
+      src: withAssetPrefix('/logos/f3.svg'),
       width: 1000,
       height: 320,
     },
@@ -53,7 +60,7 @@ export const SERIES_DEFINITIONS = {
     accentColor: '#ff0050',
     accentRgb: '255, 0, 80',
     logo: {
-      src: '/logos/motogp.svg',
+      src: withAssetPrefix('/logos/motogp.svg'),
       width: 486,
       height: 266,
     },

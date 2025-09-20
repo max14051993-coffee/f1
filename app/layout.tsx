@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Exo_2, Manrope } from 'next/font/google';
+import { withAssetPrefix } from '../lib/assets';
 
 const sans = Manrope({
   subsets: ['latin', 'latin-ext', 'cyrillic'],
@@ -13,24 +14,6 @@ const display = Exo_2({
   weight: ['500', '600', '700', '800'],
   variable: '--font-display',
 });
-
-const withAssetPrefix = (path: string) => {
-  const prefix = process.env.NEXT_PUBLIC_ASSET_PREFIX?.trim();
-
-  if (!prefix) {
-    return path;
-  }
-
-  const sanitizedPrefix = prefix.replace(/^\/+|\/+$/g, '');
-
-  if (!sanitizedPrefix) {
-    return path;
-  }
-
-  const normalizedPath = path.replace(/^\/+/, '');
-
-  return `/${sanitizedPrefix}/${normalizedPath}`;
-};
 
 export const metadata: Metadata = {
   title: 'RaceSync',
