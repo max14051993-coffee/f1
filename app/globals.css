@@ -2041,6 +2041,14 @@ button {
   gap: 12px;
 }
 
+.event-card__series-logo {
+  display: block;
+  height: clamp(16px, 2.8vw, 22px);
+  width: auto;
+  user-select: none;
+  pointer-events: none;
+}
+
 .event-card__series-pill {
   padding: 6px 14px;
   border-radius: 999px;
