@@ -2,7 +2,6 @@ import { DateTime } from 'luxon';
 
 import { buildRelativeLabel } from './relative-time';
 import type { ScheduleEvent } from './ics';
-import type { LanguageCode } from './language';
 import type { SeriesId } from './series';
 
 export type EventStatus = 'upcoming' | 'live' | 'finished';
@@ -51,7 +50,7 @@ export function filterEventsByVisibility(
 export function localizeEvent(
   event: ScheduleEvent,
   userTz: string,
-  locale: LanguageCode,
+  locale: string,
   nowLocal: DateTime,
 ): LocalizedScheduleEvent {
   const localStart = DateTime.fromISO(event.startsAtUtc, { zone: 'utc' })
