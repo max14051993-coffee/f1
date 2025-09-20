@@ -1780,6 +1780,10 @@ button {
   gap: 6px;
 }
 
+.hero-card__countdown {
+  align-self: flex-start;
+}
+
 .hero-card__section {
   display: flex;
   flex-direction: column;
