@@ -303,6 +303,8 @@ button {
   flex-direction: column;
   gap: 4px;
   z-index: 40;
+  width: max-content;
+  max-width: min(220px, calc(100vw - 32px));
 }
 
 .site-header__language-option {
@@ -2326,5 +2328,10 @@ button {
   .site-header__language-value {
     font-size: 0.72rem;
     letter-spacing: 0.12em;
+  }
+
+  .site-header__language-menu {
+    left: 0;
+    right: auto;
   }
 }
