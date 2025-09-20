@@ -17,48 +17,28 @@ type SeriesDefinition = {
   label: string;
   accentColor: string;
   accentRgb: string;
-  logoBackground: string;
-  logoAsset?: string;
 };
-
-const ASSET_PREFIX = (process.env.NEXT_PUBLIC_ASSET_PREFIX ?? '').replace(/\/$/, '');
-
-function prefixAssetPath(asset?: string) {
-  if (!asset) return undefined;
-  if (asset.startsWith('http://') || asset.startsWith('https://')) return asset;
-  if (!ASSET_PREFIX) return asset;
-  if (asset.startsWith('/')) return `${ASSET_PREFIX}${asset}`;
-  return `${ASSET_PREFIX}/${asset}`;
-}
 
 const SERIES_DEFINITIONS = {
   F1: {
     label: 'F1',
     accentColor: '#e10600',
     accentRgb: '225, 6, 0',
-    logoBackground: '#111',
-    logoAsset: '/logos/f1.svg',
   },
   F2: {
     label: 'F2',
     accentColor: '#0090ff',
     accentRgb: '0, 144, 255',
-    logoBackground: '#fff',
-    logoAsset: '/logos/f2.svg',
   },
   F3: {
     label: 'F3',
     accentColor: '#ff6f00',
     accentRgb: '255, 111, 0',
-    logoBackground: '#fff',
-    logoAsset: '/logos/f3.svg',
   },
   MotoGP: {
     label: 'MotoGP',
     accentColor: '#ff0050',
     accentRgb: '255, 0, 80',
-    logoBackground: '#fff',
-    logoAsset: '/logos/motogp.svg',
   },
 } as const satisfies Record<string, SeriesDefinition>;
 
@@ -282,54 +262,6 @@ function parseICS(ics: string): Row[] {
     }
   }
   return events;
-}
-
-function SeriesLogo({ series, ariaLabel }: { series: SeriesId; ariaLabel?: string }) {
-  const definition = SERIES_DEFINITIONS[series];
-  const { label, logoBackground, logoAsset, accentColor } = definition;
-  const resolvedLogoAsset = useMemo(() => prefixAssetPath(logoAsset), [logoAsset]);
-  const accessibleLabel = ariaLabel ?? `${label} logo`;
-
-  const defaultText = (
-    <text
-      x="50%"
-      y="50%"
-      textAnchor="middle"
-      dominantBaseline="middle"
-      fill={accentColor}
-      fontFamily="var(--font-display, 'Manrope')"
-      fontSize={15}
-      letterSpacing={1.2}
-    >
-      {label}
-    </text>
-  );
-
-  return (
-    <svg
-      width={56}
-      height={24}
-      viewBox="0 0 56 24"
-      role="img"
-      aria-label={accessibleLabel}
-      style={{ display: 'block' }}
-    >
-      <rect x={0} y={0} width={56} height={24} rx={6} fill={logoBackground} />
-      {resolvedLogoAsset ? (
-        <image
-          x={0}
-          y={0}
-          width={56}
-          height={24}
-          preserveAspectRatio="xMidYMid meet"
-          href={resolvedLogoAsset}
-          xlinkHref={resolvedLogoAsset}
-        />
-      ) : (
-        defaultText
-      )}
-    </svg>
-  );
 }
 
 const SERIES_TITLE = SERIES_IDS.map(series => SERIES_DEFINITIONS[series].label).join(' / ');
@@ -1059,12 +991,6 @@ export default function Home() {
                   <div className="event-card__inner">
                     <div className="event-card__top">
                       <div className="event-card__series">
-                        <div className="event-card__logo">
-                          <SeriesLogo
-                            series={r.series}
-                            ariaLabel={texts.seriesLogoAria(definition.label)}
-                          />
-                        </div>
                         <span className="event-card__series-pill">{definition.label}</span>
                       </div>
                       <time className="event-card__datetime" dateTime={isoLocal ?? undefined}>

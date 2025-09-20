@@ -2041,14 +2041,6 @@ button {
   gap: 12px;
 }
 
-.event-card__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 62px;
-  filter: drop-shadow(0 10px 24px rgba(var(--accent-rgb), 0.36));
-}
-
 .event-card__series-pill {
   padding: 6px 14px;
   border-radius: 999px;
