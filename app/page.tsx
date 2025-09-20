@@ -109,10 +109,18 @@ function parseIcsDateTime(raw: string | undefined, tzHint?: string) {
   return null;
 }
 
-function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
+export function buildRelativeLabel(target: DateTime, base: DateTime, locale: string) {
   if (!target.isValid || !base.isValid) return null;
 
-  const diffInHours = Math.abs(target.diff(base, 'hours').hours);
+  const diffInSeconds = target.diff(base, 'seconds').seconds;
+  if (diffInSeconds > 0 && diffInSeconds < 2 * 60 * 60) {
+    const totalSeconds = Math.floor(diffInSeconds);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }
+
+  const diffInHours = Math.abs(diffInSeconds) / 3600;
   const options = { base, locale, style: 'long' } as const;
 
   if (diffInHours < 2) {
