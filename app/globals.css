@@ -2250,11 +2250,11 @@ button {
 
   .site-header__row--main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
     grid-template-areas:
-      'brand actions'
-      'nav nav';
+      'brand nav'
+      'actions actions';
     align-items: center;
     column-gap: 10px;
     row-gap: 12px;
@@ -2270,13 +2270,13 @@ button {
 
   .site-header__nav {
     order: 0;
-    width: 100%;
-    margin: 4px 0 0;
-    justify-content: center;
+    width: auto;
+    margin: 0;
+    justify-content: flex-start;
     gap: 16px;
     grid-area: nav;
-    grid-column: 1 / -1;
-    grid-row: 2;
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .site-header__link {
@@ -2287,15 +2287,16 @@ button {
   .site-header__actions {
     order: 0;
     margin-left: 0;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
+    width: 100%;
     gap: 8px;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     grid-area: actions;
-    justify-self: flex-end;
+    justify-self: stretch;
     align-self: start;
-    grid-column: 2;
-    grid-row: 1;
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .site-header__cta {
