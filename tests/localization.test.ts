@@ -52,6 +52,7 @@ describe('localization configuration', () => {
         expect(texts.noEvents.trim().length).toBeGreaterThan(0);
         expect(texts.extendPeriodHint.trim().length).toBeGreaterThan(0);
         expect(texts.countdownStart('через 5 минут').trim().length).toBeGreaterThan(0);
+        expect(texts.countdownLive('5 минут назад').trim().length).toBeGreaterThan(0);
         expect(texts.countdownFinish('через 5 минут').trim().length).toBeGreaterThan(0);
         expect(texts.countdownScheduled.trim().length).toBeGreaterThan(0);
         expect(texts.trackLayoutLabel(['Circuit', 'Round']).trim().length).toBeGreaterThan(0);
