@@ -2305,11 +2305,11 @@ button {
 
   .site-header__row--main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: auto auto;
     grid-template-areas:
-      'brand brand'
-      'nav actions';
+      'brand actions'
+      'nav nav';
     align-items: flex-start;
     column-gap: 10px;
     row-gap: 12px;
@@ -2339,7 +2339,7 @@ button {
     order: 0;
     margin-left: 0;
     flex: 0 1 auto;
-    width: auto;
+    width: 100%;
     gap: 8px;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -2385,11 +2385,11 @@ button {
 
 @media (max-width: 420px) {
   .site-header__row--main {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: auto auto;
     grid-template-areas:
-      'brand brand'
-      'nav actions';
+      'brand actions'
+      'nav nav';
     column-gap: 8px;
     row-gap: 12px;
   }
@@ -2416,7 +2416,7 @@ button {
 
   .site-header__actions {
     grid-area: actions;
-    width: auto;
+    width: 100%;
     justify-content: flex-end;
     align-content: flex-start;
     gap: 8px;
