@@ -1,282 +1,32 @@
 'use client';
 
-import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import {
   DEFAULT_LANGUAGE,
   LANGUAGE_CODES,
   LANGUAGE_DEFINITIONS,
   type LanguageCode,
-  type RaceSession,
   isLanguageCode,
 } from '../lib/language';
-import { buildRelativeLabel } from '../lib/relative-time';
 import { getTrackLayout } from '../lib/track-layouts';
-
-type SeriesDefinition = {
-  label: string;
-  accentColor: string;
-  accentRgb: string;
-};
-
-const SERIES_DEFINITIONS = {
-  F1: {
-    label: 'F1',
-    accentColor: '#e10600',
-    accentRgb: '225, 6, 0',
-  },
-  F2: {
-    label: 'F2',
-    accentColor: '#0090ff',
-    accentRgb: '0, 144, 255',
-  },
-  F3: {
-    label: 'F3',
-    accentColor: '#ff6f00',
-    accentRgb: '255, 111, 0',
-  },
-  MotoGP: {
-    label: 'MotoGP',
-    accentColor: '#ff0050',
-    accentRgb: '255, 0, 80',
-  },
-} as const satisfies Record<string, SeriesDefinition>;
-
-type SeriesId = keyof typeof SERIES_DEFINITIONS;
-
-const SERIES_IDS = Object.keys(SERIES_DEFINITIONS) as SeriesId[];
-
-const DEFAULT_SERIES_ID = SERIES_IDS[0];
-
-const FALLBACK_SERIES_DEFINITION =
-  DEFAULT_SERIES_ID ? SERIES_DEFINITIONS[DEFAULT_SERIES_ID] : undefined;
-
-function isSeriesId(value: string): value is SeriesId {
-  return Object.prototype.hasOwnProperty.call(SERIES_DEFINITIONS, value);
-}
-
-function buildSeriesVisibility(value: boolean): Record<SeriesId, boolean> {
-  return SERIES_IDS.reduce((acc, series) => {
-    acc[series] = value;
-    return acc;
-  }, {} as Record<SeriesId, boolean>);
-}
-
-type Row = {
-  series: SeriesId;
-  round: string;
-  country?: string;
-  circuit?: string;
-  session: RaceSession;
-  startsAtUtc: string; // ISO
-  endsAtUtc?: string; // ISO
-};
-
-function parseIcsDateTime(raw: string | undefined, tzHint?: string) {
-  if (!raw) return null;
-
-  const normalizedTz = tzHint && tzHint.trim().length > 0 ? tzHint : undefined;
-  const attempts: Array<[string, { zone: string }]> = [
-    ["yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' }],
-    ["yyyyMMdd'T'HHmmss", { zone: normalizedTz ?? 'utc' }],
-    ['yyyyMMdd', { zone: normalizedTz ?? 'utc' }],
-  ];
-
-  for (const [format, options] of attempts) {
-    const dt = DateTime.fromFormat(raw, format, options);
-    if (dt.isValid) return dt;
-  }
-
-  return null;
-}
-
-const LANGUAGE_STORAGE_KEY = 'schedule-language';
-const SERIES_STORAGE_KEY = 'schedule-visible-series';
-const PERIOD_STORAGE_KEY = 'schedule-review-period-hours';
-const THEME_STORAGE_KEY = 'schedule-theme';
-const SYSTEM_THEME_QUERY = '(prefers-color-scheme: light)';
-
-type Theme = 'dark' | 'light';
-
-function isTheme(value: string | null): value is Theme {
-  return value === 'dark' || value === 'light';
-}
-
-function normalizeSession(raw: string): Row['session'] | undefined {
-  const trimmed = raw.trim();
-  if (!trimmed.length) return undefined;
-
-  const lower = trimmed.toLowerCase();
-  const upper = trimmed.toUpperCase();
-
-  if (lower.includes('sprint') || upper === 'SPR') {
-    if (lower.includes('qual')) return 'Qualifying';
-    return 'Sprint';
-  }
-  if (lower.includes('qual') || /^Q\d+$/.test(upper)) return 'Qualifying';
-  if (lower.includes('feature')) return 'Race';
-  if (lower.includes('race') || upper === 'RAC' || lower === 'grand prix' || upper === 'GP') return 'Race';
-  return undefined;
-}
-
-function parseICS(ics: string): Row[] {
-  const lines = ics.split(/\r?\n/);
-  const events: Row[] = [];
-  let current: Record<string, string> = {};
-  for (const line of lines) {
-    if (line === 'BEGIN:VEVENT') {
-      current = {};
-    } else if (line === 'END:VEVENT') {
-      const summary = current.SUMMARY;
-      const dtstart = current.DTSTART;
-      if (summary && dtstart) {
-        const categories = current.CATEGORIES
-          ? current.CATEGORIES.split(',').map(part => part.trim()).filter(Boolean)
-          : [];
-        const isMotoGpEvent =
-          categories.some(cat => cat.toLowerCase() === 'motogp') || /^MotoGP\b/i.test(summary);
-
-        if (summary.includes('|')) {
-          const parts = summary.split('|').map(part => part.trim());
-          if (parts.length >= 5) {
-            const [seriesRaw, roundRaw, countryRaw, circuitRaw, sessionRaw] = parts;
-            if (!isSeriesId(seriesRaw)) continue;
-
-            const start = parseIcsDateTime(dtstart, current.DTSTART_TZID);
-            if (start) {
-              const session = normalizeSession(sessionRaw);
-              if (!session) continue;
-
-              const round = roundRaw.trim();
-              const country = countryRaw.trim();
-              const circuit = circuitRaw.trim();
-              const end = parseIcsDateTime(current.DTEND, current.DTEND_TZID ?? current.DTSTART_TZID);
-
-              events.push({
-                series: seriesRaw,
-                round,
-                country: country.length ? country : undefined,
-                circuit: circuit.length ? circuit : undefined,
-                session,
-                startsAtUtc: start.toUTC().toISO()!,
-                endsAtUtc: end?.toUTC().toISO() ?? undefined,
-              });
-            }
-          }
-        } else if (isMotoGpEvent) {
-          const start = parseIcsDateTime(dtstart, current.DTSTART_TZID);
-          if (start) {
-            const [rawDetails, rawRoundCandidate] = summary.split(/\s+[–-]\s+/);
-            const detailPart = rawDetails ?? summary;
-            const sessionCode = detailPart.replace(/^MotoGP\s*/i, '').trim();
-            const session = normalizeSession(sessionCode);
-            if (!session) continue;
-
-            const roundCandidate = rawRoundCandidate?.trim() ?? '';
-            const location = current.LOCATION
-              ?.replace(/\\,/g, ',')
-              .replace(/\\\\/g, '\\');
-            const locationParts = location
-              ? location.split(',').map(part => part.trim()).filter(Boolean)
-              : [];
-            const circuit = locationParts[0];
-            const country = locationParts.length > 1 ? locationParts.slice(1).join(', ') : undefined;
-
-            const descriptionLines = current.DESCRIPTION
-              ? current.DESCRIPTION.split('\\n').map(line => line.trim()).filter(Boolean)
-              : [];
-            let round = roundCandidate;
-            if (!round.length) {
-              const fallbackLine =
-                descriptionLines.find(line => /grand prix/i.test(line)) ?? descriptionLines[0];
-              if (fallbackLine) {
-                round = fallbackLine
-                  .replace(/^MotoGP\s*/i, '')
-                  .replace(/^PT\s+/i, '')
-                  .trim();
-              } else if (country) {
-                round = `${country} MotoGP`;
-              } else if (circuit) {
-                round = circuit;
-              } else {
-                round = 'MotoGP';
-              }
-            }
-            round = round.replace(/\s+/g, ' ').trim();
-            if (!round.length) round = 'MotoGP';
-
-            const series: SeriesId = 'MotoGP';
-            const end = parseIcsDateTime(current.DTEND, current.DTEND_TZID ?? current.DTSTART_TZID);
-
-            events.push({
-              series,
-              round,
-              country: country && country.length ? country : undefined,
-              circuit: circuit && circuit.length ? circuit : undefined,
-              session,
-              startsAtUtc: start.toUTC().toISO()!,
-              endsAtUtc: end?.toUTC().toISO() ?? undefined,
-            });
-          }
-        } else {
-          const [rawEvent, rawSession] = summary.split(' - ');
-          if (rawEvent && rawSession) {
-            const session = normalizeSession(rawSession);
-            if (session) {
-              const eventName = rawEvent.replace(/^RN365\s*/, '').trim();
-              const start = parseIcsDateTime(dtstart, current.DTSTART_TZID);
-              if (start) {
-                const circuit = current.LOCATION
-                  ?.replace(/\\,/g, ',')
-                  .replace(/\\\\/g, '\\');
-                const fallbackSeries = DEFAULT_SERIES_ID;
-                if (!fallbackSeries) continue;
-                const end = parseIcsDateTime(current.DTEND, current.DTEND_TZID ?? current.DTSTART_TZID);
-
-                events.push({
-                  series: fallbackSeries,
-                  round: eventName,
-                  circuit,
-                  session,
-                  startsAtUtc: start.toUTC().toISO()!,
-                  endsAtUtc: end?.toUTC().toISO() ?? undefined,
-                });
-              }
-            }
-          }
-        }
-      }
-    } else {
-      const [rawKey, value] = line.split(':', 2);
-      if (!rawKey || !value) continue;
-      const [key, ...params] = rawKey.split(';');
-      current[key] = value;
-      if (key === 'DTSTART') {
-        const tzParam = params.find(p => p.startsWith('TZID='));
-        if (tzParam) current.DTSTART_TZID = tzParam.split('=')[1];
-      }
-      if (key === 'DTEND') {
-        const tzParam = params.find(p => p.startsWith('TZID='));
-        if (tzParam) current.DTEND_TZID = tzParam.split('=')[1];
-      }
-    }
-  }
-  return events;
-}
+import {
+  buildSeriesVisibility,
+  FALLBACK_SERIES_DEFINITION,
+  SERIES_DEFINITIONS,
+  SERIES_IDS,
+  type SeriesId,
+} from '../lib/series';
+import { parseSchedule, type ScheduleEvent } from '../lib/ics';
+import { buildCountdownLabel, filterEventsByVisibility, localizeEvent } from '../lib/schedule';
+import { LANGUAGE_STORAGE_KEY, PERIOD_STORAGE_KEY, SERIES_STORAGE_KEY } from '../lib/preferences';
+import { useThemePreference } from './hooks/useThemePreference';
 
 const SERIES_TITLE = SERIES_IDS.map(series => SERIES_DEFINITIONS[series].label).join(' / ');
 
 export default function Home() {
-  const [theme, setTheme] = useState<Theme>('dark');
-  const [themeInitialized, setThemeInitialized] = useState(false);
-  const applyThemeToDocument = useCallback((next: Theme) => {
-    if (typeof document === 'undefined') return;
-    const root = document.documentElement;
-    root.dataset.theme = next;
-    root.style.colorScheme = next;
-  }, []);
-
-  const [rows, setRows] = useState<Row[]>([]);
+  const { theme, toggleTheme } = useThemePreference();
+  const [events, setEvents] = useState<ScheduleEvent[]>([]);
   const [visibleSeries, setVisibleSeries] = useState<Record<SeriesId, boolean>>(() =>
     buildSeriesVisibility(true),
   );
@@ -290,83 +40,11 @@ export default function Home() {
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
   const privacyPolicyDialogRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const media = window.matchMedia(SYSTEM_THEME_QUERY);
-    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-    let initial: Theme = 'dark';
-    let hasStoredPreference = false;
-
-    if (isTheme(stored)) {
-      initial = stored;
-      hasStoredPreference = true;
-    } else if (media.matches) {
-      initial = 'light';
-    }
-
-    applyThemeToDocument(initial);
-    setTheme(initial);
-    setThemeInitialized(true);
-
-    if (hasStoredPreference) {
-      return;
-    }
-
-    const handleMediaChange = (event: MediaQueryListEvent) => {
-      const currentPreference = window.localStorage.getItem(THEME_STORAGE_KEY);
-      if (isTheme(currentPreference)) {
-        return;
-      }
-      setTheme(event.matches ? 'light' : 'dark');
-    };
-
-    media.addEventListener('change', handleMediaChange);
-    return () => {
-      media.removeEventListener('change', handleMediaChange);
-    };
-  }, [applyThemeToDocument]);
-
-  useEffect(() => {
-    if (!themeInitialized) return;
-    applyThemeToDocument(theme);
-  }, [theme, themeInitialized, applyThemeToDocument]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key !== THEME_STORAGE_KEY) return;
-      if (isTheme(event.newValue)) {
-        setTheme(event.newValue);
-      } else if (event.newValue === null) {
-        const prefersLight = window.matchMedia(SYSTEM_THEME_QUERY).matches;
-        setTheme(prefersLight ? 'light' : 'dark');
-      }
-    };
-
-    window.addEventListener('storage', handleStorage);
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-    };
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(prev => {
-      const next = prev === 'dark' ? 'light' : 'dark';
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(THEME_STORAGE_KEY, next);
-      }
-      return next;
-    });
-  }, []);
-
   useEffect(() => {
     async function load() {
       const text = await fetch('./schedule.ics').then(r => r.text());
-      const events = parseICS(text);
-      setRows(events);
+      const parsed = parseSchedule(text);
+      setEvents(parsed);
     }
     load().catch(console.error);
     setUserTz(DateTime.local().zoneName);
@@ -586,28 +264,20 @@ export default function Home() {
   const themeCopy = texts.theme;
   const themeButtonLabel = theme === 'dark' ? themeCopy.toggleToLight : themeCopy.toggleToDark;
   const languageDisplayName = languageDefinition.shortName || languageDefinition.name;
+  const countdownCopy = {
+    countdownLive: texts.countdownLive,
+    countdownFinish: texts.countdownFinish,
+    countdownStart: texts.countdownStart,
+    countdownScheduled: texts.countdownScheduled,
+  };
 
-  const filtered = useMemo(() => {
-    let arr = rows.filter(r => visibleSeries[r.series]);
-    const now = DateTime.utc();
-    const limit = hours && hours > 0 ? hours : 24 * 30; // default 30 days
-    const from = now.minus({ hours: 2 });
-    const to = now.plus({ hours: limit });
-    arr = arr.filter(r => {
-      const startUtc = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' });
-      const endUtcRaw = r.endsAtUtc ? DateTime.fromISO(r.endsAtUtc, { zone: 'utc' }) : null;
-      const endUtc = endUtcRaw && endUtcRaw.isValid ? endUtcRaw : null;
-      const startsWithinWindow = startUtc >= from && startUtc <= to;
-      const endsAfterFrom = endUtc ? endUtc >= from : false;
-      const startsBeforeTo = startUtc <= to;
-      return (startsWithinWindow || endsAfterFrom) && startsBeforeTo;
-    });
-    return arr
-      .slice()
-      .sort((a, b) => Date.parse(a.startsAtUtc) - Date.parse(b.startsAtUtc));
-  }, [rows, visibleSeries, hours]);
+  const filtered = useMemo(
+    () => filterEventsByVisibility(events, visibleSeries, hours),
+    [events, visibleSeries, hours],
+  );
 
   const nowLocal = DateTime.local().setZone(userTz).setLocale(locale);
+  const localizedEvents = filtered.map(event => localizeEvent(event, userTz, locale, nowLocal));
   const activeSeries = (Object.entries(visibleSeries) as [SeriesId, boolean][])
     .filter(([, active]) => active)
     .map(([series]) => series);
@@ -617,45 +287,23 @@ export default function Home() {
     ? texts.activeSelection(activeSeriesNames)
     : texts.allSeriesHidden;
   const selectedPeriodLabel =
-    periodOptions.find(opt => opt.value === hours)?.label ?? periodOptions[periodOptions.length - 1]?.label ?? '';
-  const nextEvent = filtered[0];
+    periodOptions.find(opt => opt.value === hours)?.label ??
+    periodOptions[periodOptions.length - 1]?.label ??
+    '';
+  const nextLocalized = localizedEvents[0];
+  const nextEvent = nextLocalized?.event;
   const nextSeriesDefinition = nextEvent ? SERIES_DEFINITIONS[nextEvent.series] : undefined;
   const nextSeriesLabel = nextSeriesDefinition?.label ?? nextEvent?.series ?? '';
-  const nextLocal = nextEvent
-    ? DateTime.fromISO(nextEvent.startsAtUtc, { zone: 'utc' })
-        .setZone(userTz)
-        .setLocale(locale)
+  const nextLocal = nextLocalized?.localStart ?? null;
+  const nextCountdown = nextLocalized
+    ? buildCountdownLabel(
+        nextLocalized.status,
+        nextLocalized.startRelative,
+        nextLocalized.finishRelative,
+        countdownCopy,
+      )
     : null;
-  const nextRelative = nextLocal ? buildRelativeLabel(nextLocal, nowLocal, locale) : null;
-  const nextEndLocalRaw = nextEvent?.endsAtUtc
-    ? DateTime.fromISO(nextEvent.endsAtUtc, { zone: 'utc' }).setZone(userTz)
-    : null;
-  const nextEndLocal = nextEndLocalRaw && nextEndLocalRaw.isValid ? nextEndLocalRaw.setLocale(locale) : null;
-  const nextFinishRelative = nextEndLocal ? buildRelativeLabel(nextEndLocal, nowLocal, locale) : null;
-  let nextStatus: 'upcoming' | 'live' | 'finished' = 'upcoming';
-  if (nextEvent) {
-    if (nextEndLocal && nextEndLocal <= nowLocal) {
-      nextStatus = 'finished';
-    } else if (nextLocal && nextLocal <= nowLocal) {
-      nextStatus = 'live';
-    }
-  }
-  let nextCountdown: string | null = null;
-  if (nextEvent) {
-    if (nextStatus === 'live') {
-      nextCountdown = texts.countdownLive(nextRelative ?? '');
-    } else if (nextStatus === 'finished') {
-      if (nextFinishRelative) {
-        nextCountdown = texts.countdownFinish(nextFinishRelative);
-      } else if (nextRelative) {
-        nextCountdown = texts.countdownFinish(nextRelative);
-      } else {
-        nextCountdown = texts.countdownScheduled;
-      }
-    } else {
-      nextCountdown = nextRelative ? texts.countdownStart(nextRelative) : texts.countdownScheduled;
-    }
-  }
+  const nextStatus = nextLocalized?.status ?? 'upcoming';
   const nextDescriptor = nextEvent
     ? `${nextEvent.round}${nextEvent.country ? ` • ${nextEvent.country}` : ''}`
     : texts.upcomingEventDescriptorFallback;
@@ -928,58 +576,34 @@ export default function Home() {
             <p className="section-heading__description">{texts.scheduleSubtitle}</p>
           </div>
           <ul className="events-grid">
-            {filtered.map((r, index) => {
-              const definition = SERIES_DEFINITIONS[r.series];
+            {localizedEvents.map((localized, index) => {
+              const { event, localStart, status, startRelative, finishRelative } = localized;
+              const definition = SERIES_DEFINITIONS[event.series];
               const accentColor = definition.accentColor;
               const accentRgb = definition.accentRgb;
-              const local = DateTime.fromISO(r.startsAtUtc, { zone: 'utc' }).setZone(userTz);
-              const localized = local.setLocale(locale);
-              const isoLocal = local.toISO();
-              const timeLabel = localized.toFormat('HH:mm');
-              const dayLabel = localized.toFormat('ccc');
-              const dateLabel = localized.toFormat('dd LLL');
-              const endLocalRaw = r.endsAtUtc
-                ? DateTime.fromISO(r.endsAtUtc, { zone: 'utc' }).setZone(userTz)
-                : null;
-              const endLocal = endLocalRaw && endLocalRaw.isValid ? endLocalRaw.setLocale(locale) : null;
-              const startRelative = buildRelativeLabel(localized, nowLocal, locale);
-              const finishRelative = endLocal ? buildRelativeLabel(endLocal, nowLocal, locale) : null;
-              let status: 'upcoming' | 'live' | 'finished' = 'upcoming';
-              if (endLocal && endLocal <= nowLocal) {
-                status = 'finished';
-              } else if (localized <= nowLocal) {
-                status = 'live';
-              }
-              let countdown: string;
-              if (status === 'live') {
-                countdown = texts.countdownLive(startRelative ?? '');
-              } else if (status === 'finished') {
-                if (finishRelative) {
-                  countdown = texts.countdownFinish(finishRelative);
-                } else if (startRelative) {
-                  countdown = texts.countdownFinish(startRelative);
-                } else {
-                  countdown = texts.countdownScheduled;
-                }
-              } else {
-                countdown = startRelative ? texts.countdownStart(startRelative) : texts.countdownScheduled;
-              }
+              const isoLocal = localStart.toISO();
+              const timeLabel = localStart.toFormat('HH:mm');
+              const dayLabel = localStart.toFormat('ccc');
+              const dateLabel = localStart.toFormat('dd LLL');
+              const countdown = buildCountdownLabel(status, startRelative, finishRelative, countdownCopy);
               const countdownClassName =
-                status === 'upcoming' ? 'event-card__countdown' : `event-card__countdown event-card__countdown--${status}`;
-              const track = getTrackLayout(r.circuit, r.round);
+                status === 'upcoming'
+                  ? 'event-card__countdown'
+                  : `event-card__countdown event-card__countdown--${status}`;
+              const track = getTrackLayout(event.circuit, event.round);
               const trackLabelParts = Array.from(
                 new Set(
-                  [r.circuit, r.round].filter(
-                    (part): part is string => !!part && part.trim().length > 0
-                  )
-                )
+                  [event.circuit, event.round].filter(
+                    (part): part is string => !!part && part.trim().length > 0,
+                  ),
+                ),
               );
               const trackLabel = texts.trackLayoutLabel(trackLabelParts);
-              const sessionLabel = sessionLabels[r.session] ?? r.session;
+              const sessionLabel = sessionLabels[event.session] ?? event.session;
 
               return (
                 <li
-                  key={`${r.startsAtUtc}-${index}`}
+                  key={`${event.startsAtUtc}-${index}`}
                   className="event-card"
                   style={
                     {
@@ -1001,12 +625,12 @@ export default function Home() {
                       </time>
                     </div>
                     <div className="event-card__info">
-                      <span className="event-card__title">{r.round}</span>
-                      {r.country ? (
-                        <span className="event-card__country">{r.country}</span>
+                      <span className="event-card__title">{event.round}</span>
+                      {event.country ? (
+                        <span className="event-card__country">{event.country}</span>
                       ) : null}
-                      {r.circuit ? (
-                        <span className="event-card__meta-line">{r.circuit}</span>
+                      {event.circuit ? (
+                        <span className="event-card__meta-line">{event.circuit}</span>
                       ) : null}
                       <span className="event-card__meta-line event-card__session">{sessionLabel}</span>
                     </div>
@@ -1027,7 +651,6 @@ export default function Home() {
                     <div className={countdownClassName} aria-live={status === 'live' ? 'polite' : 'off'}>
                       <span className="event-card__countdown-dot" aria-hidden />
                       <span>{countdown}</span>
-
                     </div>
                   </div>
                 </li>
