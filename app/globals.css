@@ -710,14 +710,18 @@ button {
   color: #121625;
 }
 
+:root[data-theme='light'] .faq-item {
+  --faq-summary-color: rgba(18, 22, 37, 0.85);
+  --faq-body-color: rgba(18, 22, 37, 0.7);
+}
+
 :root[data-theme='light'] .feature-card__icon {
   background: rgba(18, 22, 37, 0.08);
   border-color: rgba(18, 22, 37, 0.12);
 }
 
 :root[data-theme='light'] .feature-card__description,
-:root[data-theme='light'] .insights-item__content p,
-:root[data-theme='light'] .faq-item > summary {
+:root[data-theme='light'] .insights-item__content p {
   color: rgba(18, 22, 37, 0.7);
 }
 
@@ -1134,7 +1138,7 @@ button {
   cursor: pointer;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: #ffffff;
+  color: var(--faq-summary-color, #ffffff);
   list-style: none;
 }
 
@@ -1155,7 +1159,7 @@ button {
 
 .faq-item p {
   margin: 12px 0 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--faq-body-color, rgba(255, 255, 255, 0.72));
   line-height: 1.6;
 }
 
