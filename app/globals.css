@@ -2447,6 +2447,8 @@ button {
     justify-content: flex-start;
     flex-wrap: nowrap;
     gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 2px;
   }
 
   .site-header__link {
@@ -2464,5 +2466,108 @@ button {
     justify-self: end;
     flex: 0 1 auto;
     min-width: 0;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .site-header__meta-portion {
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px 14px;
+    gap: 6px;
+  }
+
+  .site-header__meta-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+  }
+
+  .site-header__meta-value {
+    font-size: 0.72rem;
+    white-space: normal;
+    text-align: right;
+  }
+
+  .site-header__language {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .site-header__language-toggle {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .site-header__language-value {
+    white-space: nowrap;
+  }
+
+  .hero {
+    padding: 24px 18px;
+    gap: 24px;
+  }
+
+  .hero__top-row {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  .hero__capsule {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .hero__badge {
+    width: 100%;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .hero__badge-timezone {
+    margin-left: 0;
+    justify-content: flex-start;
+    flex: 1 1 100%;
+  }
+
+  .hero__subtitle {
+    font-size: 0.95rem;
+  }
+
+  .series-chips,
+  .period-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .series-chip,
+  .period-button {
+    width: 100%;
+    justify-content: space-between;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+  }
+
+  .events-section,
+  .features-section,
+  .insights-section,
+  .faq-section,
+  .cta-section {
+    padding: 24px 18px;
+    gap: 24px;
+  }
+
+  .events-grid {
+    gap: 18px;
+  }
+
+  .cta-section__inner {
+    gap: 18px;
+  }
+
+  .cta-section__button {
+    width: 100%;
+    justify-content: center;
   }
 }
