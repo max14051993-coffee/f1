@@ -447,9 +447,7 @@ export default function Home() {
           }
         >
           <div className="hero__intro">
-            <h1 className="hero__title">
-              {texts.heroTitle(SERIES_TITLE || 'F1 / F2 / F3 / MotoGP')}
-            </h1>
+            <h1 className="hero__title">My coffee experience</h1>
             <p className="hero__subtitle">{texts.heroSubtitle}</p>
           </div>
         <div className="hero__layout">
