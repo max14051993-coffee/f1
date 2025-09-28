@@ -1720,6 +1720,14 @@ button {
   min-width: 0;
 }
 
+.hero__column--controls {
+  align-items: flex-start;
+}
+
+.hero__column--summary {
+  align-items: stretch;
+}
+
 .hero-card {
   position: relative;
   z-index: 1;
@@ -2408,6 +2416,10 @@ button {
 }
 
 @media (max-width: 420px) {
+  .hero__column--controls .hero-card {
+    width: min(100%, 300px);
+  }
+
   .site-header__row--main {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto auto;
@@ -2533,6 +2545,15 @@ button {
 
   .hero__subtitle {
     font-size: 0.95rem;
+  }
+
+  .hero__column--controls {
+    align-items: center;
+  }
+
+  .hero__column--controls .hero-card {
+    width: min(100%, 340px);
+    margin: 0 auto;
   }
 
   .series-chips,

@@ -41,7 +41,7 @@ describe('localization configuration', () => {
         const { texts } = definition;
         expect(texts.heroBadge.trim().length).toBeGreaterThan(0);
         const sampleTitle = texts.heroTitle('F1 / F2');
-        expect(sampleTitle).toMatch(/F1/);
+        expect(sampleTitle).toBe('My coffee experience');
         expect(texts.heroSubtitle.trim().length).toBeGreaterThan(0);
         expect(texts.seriesLabel.trim().length).toBeGreaterThan(0);
         expect(texts.activeSelection(['F1']).trim().length).toBeGreaterThan(0);
