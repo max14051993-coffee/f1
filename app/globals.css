@@ -2538,15 +2538,44 @@ button {
   .series-chips,
   .period-buttons {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   .series-chip,
   .period-button {
     width: 100%;
     justify-content: space-between;
+    padding: 8px 12px;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+  }
+
+  .series-chip__indicator {
+    width: 8px;
+    height: 8px;
+    box-shadow: 0 0 0 3px rgba(var(--chip-rgb), 0.2);
+  }
+
+  .hero-card__summary {
+    gap: 12px;
+  }
+
+  .hero-card__summary-header {
+    gap: 8px;
+  }
+
+  .hero-card__summary-tags {
+    gap: 6px;
+  }
+
+  .hero-card__summary-body {
+    gap: 4px;
+  }
+
+  .hero-card__tag {
+    padding: 4px 10px;
+    font-size: 0.7rem;
     letter-spacing: 0.08em;
-    font-size: 0.78rem;
   }
 
   .events-section,
