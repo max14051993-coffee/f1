@@ -327,6 +327,8 @@ export default function Home() {
       ? 'event-card__countdown hero-card__countdown'
       : `event-card__countdown event-card__countdown--${nextStatus} hero-card__countdown`;
   const heroSeriesDefinition = nextSeriesDefinition ?? FALLBACK_SERIES_DEFINITION;
+  const heroSeriesLabel = heroSeriesDefinition?.label ?? nextSeriesLabel ?? '';
+  const localizedHeroTitle = texts.heroTitle(heroSeriesLabel);
   const heroAccentColor = heroSeriesDefinition?.accentColor ?? '#e10600';
   const heroAccentRgb = heroSeriesDefinition?.accentRgb ?? '225, 6, 0';
   const features = texts.features;
@@ -445,7 +447,7 @@ export default function Home() {
           }
         >
           <div className="hero__intro">
-            <h1 className="hero__title">My coffee experience</h1>
+            <h1 className="hero__title">{localizedHeroTitle}</h1>
             <p className="hero__subtitle">{texts.heroSubtitle}</p>
           </div>
           <div className="hero__layout">
