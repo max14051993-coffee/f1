@@ -32,6 +32,7 @@ import {
   googleAuthProvider,
   isFirebaseConfigured,
 } from '../lib/firebase';
+import { deletePushToken, persistPushToken } from '../lib/notifications';
 import { withAssetPrefix } from '../lib/assets';
 
 export default function Home() {
@@ -335,9 +336,27 @@ export default function Home() {
 
   useEffect(() => {
     if (!currentUser) {
-      setPushToken(null);
+      setPushToken(previous => {
+        if (previous) {
+          void deletePushToken(previous);
+        }
+        return null;
+      });
     }
-  }, [currentUser]);
+  }, [currentUser, deletePushToken]);
+
+  useEffect(() => {
+    if (notificationPermission !== 'denied') {
+      return;
+    }
+
+    setPushToken(previous => {
+      if (previous) {
+        void deletePushToken(previous);
+      }
+      return null;
+    });
+  }, [deletePushToken, notificationPermission]);
 
   useEffect(() => {
     if (isRequestingNotifications) {
@@ -416,7 +435,15 @@ export default function Home() {
         });
 
         if (!isCancelled) {
-          setPushToken(token);
+          setPushToken(previous => {
+            if (previous && previous !== token) {
+              void deletePushToken(previous);
+            }
+            return token;
+          });
+          void persistPushToken(token, currentUser).catch(error => {
+            console.error(error);
+          });
         }
       } catch (error) {
         console.error(error);
@@ -428,11 +455,13 @@ export default function Home() {
     };
   }, [
     currentUser,
+    deletePushToken,
     firebaseClientConfig,
     firebaseVapidKey,
     isNotificationSupported,
     isServiceWorkerSupported,
     notificationPermission,
+    persistPushToken,
   ]);
 
   const languageDefinition = LANGUAGE_DEFINITIONS[language];
@@ -705,7 +734,15 @@ export default function Home() {
         serviceWorkerRegistration: readyRegistration,
       });
 
-      setPushToken(token);
+      setPushToken(previous => {
+        if (previous && previous !== token) {
+          void deletePushToken(previous);
+        }
+        return token;
+      });
+      void persistPushToken(token, currentUser).catch(error => {
+        console.error(error);
+      });
       setNotificationStatusMessage(notificationsCopy.tokenHint);
     } catch (error) {
       console.error(error);
@@ -715,10 +752,13 @@ export default function Home() {
     }
   }, [
     currentUser,
+    deletePushToken,
     firebaseClientConfig,
+    firebaseVapidKey,
     isNotificationSupported,
     isServiceWorkerSupported,
     notificationsCopy,
+    persistPushToken,
   ]);
 
   return (
