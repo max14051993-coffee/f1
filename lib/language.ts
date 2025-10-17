@@ -178,7 +178,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
     },
     texts: {
       heroBadge: 'живой календарь уик-эндов',
-      heroTitle: () => 'My coffee experience',
+      heroTitle: () => 'My race weekand',
       heroSubtitle:
         'Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте горизонтом просмотра и следите за временем старта в собственном часовом поясе.',
       seriesLabel: 'Серии',
