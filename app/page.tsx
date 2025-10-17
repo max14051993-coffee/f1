@@ -397,7 +397,7 @@ export default function Home() {
       return;
     }
 
-    if (!isFirebaseConfigured || !firebaseClientConfig) {
+    if (!isFirebaseConfigured || !firebaseClientConfig || !firebaseVapidKey) {
       return;
     }
 
@@ -430,7 +430,7 @@ export default function Home() {
         sendConfig(readyRegistration.waiting ?? null);
 
         const token = await getToken(messaging, {
-          vapidKey: firebaseVapidKey ?? undefined,
+          vapidKey: firebaseVapidKey,
           serviceWorkerRegistration: readyRegistration,
         });
 
@@ -687,7 +687,7 @@ export default function Home() {
       return;
     }
 
-    if (!isFirebaseConfigured || !firebaseClientConfig) {
+    if (!isFirebaseConfigured || !firebaseClientConfig || !firebaseVapidKey) {
       setNotificationStatusMessage(notificationsCopy.configurationMissing);
       return;
     }
@@ -730,7 +730,7 @@ export default function Home() {
       }
 
       const token = await getToken(messaging, {
-        vapidKey: firebaseVapidKey ?? undefined,
+        vapidKey: firebaseVapidKey,
         serviceWorkerRegistration: readyRegistration,
       });
 

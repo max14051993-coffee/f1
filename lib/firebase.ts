@@ -17,6 +17,8 @@ const firebaseConfig: FirebaseOptions = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+const vapidKeyEnv = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
+
 const REQUIRED_CONFIG_KEYS: (keyof FirebaseOptions)[] = [
   'apiKey',
   'authDomain',
@@ -36,7 +38,8 @@ let messagingPromise: Promise<Messaging | undefined> | null = null;
 
 export const firebaseClientConfig = firebaseConfig;
 export const isFirebaseConfigured = isConfigComplete;
-export const firebaseVapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
+export const firebaseVapidKey: string | undefined =
+  typeof vapidKeyEnv === 'string' && vapidKeyEnv.trim().length > 0 ? vapidKeyEnv.trim() : undefined;
 
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
