@@ -1,6 +1,9 @@
 'use client';
 
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { User } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+import { getToken } from 'firebase/messaging';
 import { DateTime } from 'luxon';
 import {
   DEFAULT_LANGUAGE,
@@ -21,6 +24,15 @@ import { parseSchedule, type ScheduleEvent } from '../lib/ics';
 import { buildCountdownLabel, filterEventsByVisibility, localizeEvent } from '../lib/schedule';
 import { LANGUAGE_STORAGE_KEY, PERIOD_STORAGE_KEY, SERIES_STORAGE_KEY } from '../lib/preferences';
 import { useThemePreference } from './hooks/useThemePreference';
+import {
+  firebaseClientConfig,
+  firebaseVapidKey,
+  getFirebaseAuth,
+  getFirebaseMessaging,
+  googleAuthProvider,
+  isFirebaseConfigured,
+} from '../lib/firebase';
+import { withAssetPrefix } from '../lib/assets';
 
 export default function Home() {
   const { theme, toggleTheme } = useThemePreference();
@@ -35,6 +47,20 @@ export default function Home() {
   const [language, setLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
   const [isLanguageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [isPrivacyPolicyOpen, setPrivacyPolicyOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthLoading, setAuthLoading] = useState(isFirebaseConfigured);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isSigningIn, setSigningIn] = useState(false);
+  const [isSigningOut, setSigningOut] = useState(false);
+  const [isNotificationSupported, setNotificationSupported] = useState(false);
+  const [isServiceWorkerSupported, setServiceWorkerSupported] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+  const [isRequestingNotifications, setRequestingNotifications] = useState(false);
+  const [pushToken, setPushToken] = useState<string | null>(null);
+  const [notificationStatusMessage, setNotificationStatusMessage] = useState<string | null>(null);
+  const [clipboardFeedback, setClipboardFeedback] = useState<'success' | 'error' | null>(null);
+  const clipboardTimeoutRef = useRef<number | undefined>(undefined);
+  const messagingRegistrationRef = useRef<ServiceWorkerRegistration | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
   const privacyPolicyDialogRef = useRef<HTMLDivElement | null>(null);
@@ -46,6 +72,24 @@ export default function Home() {
     }
     load().catch(console.error);
     setUserTz(DateTime.local().zoneName);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    setNotificationSupported('Notification' in window);
+    setServiceWorkerSupported('serviceWorker' in navigator);
+    if ('Notification' in window) {
+      setNotificationPermission(Notification.permission);
+    }
+
+    return () => {
+      if (clipboardTimeoutRef.current) {
+        window.clearTimeout(clipboardTimeoutRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -257,6 +301,140 @@ export default function Home() {
     };
   }, [isLanguageMenuOpen]);
 
+  useEffect(() => {
+    if (!isFirebaseConfigured) {
+      setAuthLoading(false);
+      return;
+    }
+
+    const auth = getFirebaseAuth();
+    if (!auth) {
+      setAuthLoading(false);
+      return;
+    }
+
+    setAuthLoading(true);
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      user => {
+        setCurrentUser(user);
+        setAuthError(null);
+        setAuthLoading(false);
+      },
+      error => {
+        console.error(error);
+        setAuthError(error instanceof Error ? error.message : String(error));
+        setAuthLoading(false);
+      },
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser) {
+      setPushToken(null);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (isRequestingNotifications) {
+      return;
+    }
+
+    if (notificationPermission === 'default') {
+      setNotificationStatusMessage(null);
+    }
+  }, [notificationPermission, isRequestingNotifications]);
+
+  useEffect(() => {
+    if (clipboardFeedback === null) {
+      return;
+    }
+
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setClipboardFeedback(null);
+    }, 2200);
+
+    clipboardTimeoutRef.current = timeout;
+
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [clipboardFeedback]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+
+    if (!isNotificationSupported || !isServiceWorkerSupported) {
+      return;
+    }
+
+    if (!isFirebaseConfigured || !firebaseClientConfig) {
+      return;
+    }
+
+    if (notificationPermission !== 'granted') {
+      return;
+    }
+
+    let isCancelled = false;
+
+    (async () => {
+      try {
+        const messaging = await getFirebaseMessaging();
+        if (!messaging || isCancelled) {
+          return;
+        }
+
+        const registration =
+          messagingRegistrationRef.current ??
+          (await navigator.serviceWorker.register(withAssetPrefix('/firebase-messaging-sw.js')));
+
+        messagingRegistrationRef.current = registration;
+
+        const readyRegistration = await navigator.serviceWorker.ready.catch(() => registration);
+
+        const sendConfig = (worker: ServiceWorker | null) => {
+          worker?.postMessage({ type: 'FIREBASE_CONFIG', payload: firebaseClientConfig });
+        };
+
+        sendConfig(readyRegistration.active ?? null);
+        sendConfig(readyRegistration.waiting ?? null);
+
+        const token = await getToken(messaging, {
+          vapidKey: firebaseVapidKey ?? undefined,
+          serviceWorkerRegistration: readyRegistration,
+        });
+
+        if (!isCancelled) {
+          setPushToken(token);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    currentUser,
+    firebaseClientConfig,
+    firebaseVapidKey,
+    isNotificationSupported,
+    isServiceWorkerSupported,
+    notificationPermission,
+  ]);
+
   const languageDefinition = LANGUAGE_DEFINITIONS[language];
   const { texts, periodOptions, sessionLabels, locale } = languageDefinition;
   const themeCopy = texts.theme;
@@ -339,6 +517,209 @@ export default function Home() {
   const currentYear = new Date().getFullYear();
   const footerLegal = footer.legal.replace('{year}', currentYear.toString());
   const privacyPolicyTitleId = 'privacy-policy-title';
+  const notificationsCopy = texts.notifications;
+  const displayName = (currentUser?.displayName ?? currentUser?.email ?? '').trim();
+  const normalizedDisplayName = displayName || notificationsCopy.unknownUser;
+  const authStatusLabel = !isFirebaseConfigured
+    ? notificationsCopy.configurationMissing
+    : isAuthLoading
+      ? notificationsCopy.initializing
+      : currentUser
+        ? notificationsCopy.signedInAs(normalizedDisplayName)
+        : notificationsCopy.signedOut;
+  const authButtonLabel = currentUser
+    ? isSigningOut
+      ? notificationsCopy.signingOut
+      : notificationsCopy.signOut
+    : isSigningIn
+      ? notificationsCopy.signingIn
+      : notificationsCopy.signIn;
+  const isAuthActionDisabled =
+    isSigningIn || isSigningOut || isAuthLoading || !isFirebaseConfigured || !firebaseClientConfig;
+  const permissionStatusLabel = !isNotificationSupported
+    ? notificationsCopy.permissionUnsupported
+    : notificationPermission === 'granted'
+      ? notificationsCopy.permissionGranted
+      : notificationPermission === 'denied'
+        ? notificationsCopy.permissionDenied
+        : notificationsCopy.permissionDefault;
+  const notificationsButtonLabel = isRequestingNotifications
+    ? notificationsCopy.requesting
+    : notificationsCopy.enable;
+  const isNotificationActionDisabled =
+    isRequestingNotifications ||
+    !isNotificationSupported ||
+    !isServiceWorkerSupported ||
+    !currentUser ||
+    notificationPermission === 'denied' ||
+    !isFirebaseConfigured ||
+    !firebaseClientConfig;
+  const notificationsActionHint = !isFirebaseConfigured || !firebaseClientConfig
+    ? notificationsCopy.configurationMissing
+    : !isNotificationSupported
+      ? notificationsCopy.permissionUnsupported
+      : !isServiceWorkerSupported
+        ? notificationsCopy.serviceWorkerUnsupported
+        : !currentUser
+          ? notificationsCopy.signInRequired
+          : notificationPermission === 'denied'
+            ? notificationsCopy.permissionDenied
+            : notificationsCopy.permissionPrompt;
+  const copyFeedbackMessage =
+    clipboardFeedback === 'success'
+      ? notificationsCopy.copySuccess
+      : clipboardFeedback === 'error'
+        ? notificationsCopy.copyError
+        : null;
+
+  const handleSignIn = useCallback(async () => {
+    if (!isFirebaseConfigured || !firebaseClientConfig) {
+      setAuthError(notificationsCopy.configurationMissing);
+      return;
+    }
+
+    const auth = getFirebaseAuth();
+    if (!auth) {
+      setAuthError(notificationsCopy.configurationMissing);
+      return;
+    }
+
+    setSigningIn(true);
+    setAuthError(null);
+
+    try {
+      await signInWithPopup(auth, googleAuthProvider);
+    } catch (error) {
+      if ((error as { code?: string }).code === 'auth/popup-closed-by-user') {
+        return;
+      }
+
+      console.error(error);
+      setAuthError(error instanceof Error ? error.message : notificationsCopy.genericError);
+    } finally {
+      setSigningIn(false);
+    }
+  }, [notificationsCopy, firebaseClientConfig]);
+
+  const handleSignOut = useCallback(async () => {
+    const auth = getFirebaseAuth();
+    if (!auth) {
+      return;
+    }
+
+    setSigningOut(true);
+    setAuthError(null);
+
+    try {
+      await signOut(auth);
+      setNotificationStatusMessage(null);
+    } catch (error) {
+      console.error(error);
+      setAuthError(error instanceof Error ? error.message : notificationsCopy.genericError);
+    } finally {
+      setSigningOut(false);
+    }
+  }, [notificationsCopy.genericError]);
+
+  const handleCopyToken = useCallback(async () => {
+    if (!pushToken) {
+      return;
+    }
+
+    if (typeof navigator === 'undefined' || !navigator.clipboard) {
+      setNotificationStatusMessage(notificationsCopy.clipboardUnsupported);
+      setClipboardFeedback('error');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(pushToken);
+      setClipboardFeedback('success');
+    } catch (error) {
+      console.error(error);
+      setClipboardFeedback('error');
+      setNotificationStatusMessage(notificationsCopy.copyError);
+    }
+  }, [notificationsCopy.clipboardUnsupported, notificationsCopy.copyError, pushToken]);
+
+  const handleEnableNotifications = useCallback(async () => {
+    if (!currentUser) {
+      setNotificationStatusMessage(notificationsCopy.signInRequired);
+      return;
+    }
+
+    if (!isNotificationSupported) {
+      setNotificationStatusMessage(notificationsCopy.permissionUnsupported);
+      return;
+    }
+
+    if (!isServiceWorkerSupported) {
+      setNotificationStatusMessage(notificationsCopy.serviceWorkerUnsupported);
+      return;
+    }
+
+    if (!isFirebaseConfigured || !firebaseClientConfig) {
+      setNotificationStatusMessage(notificationsCopy.configurationMissing);
+      return;
+    }
+
+    setRequestingNotifications(true);
+    setNotificationStatusMessage(notificationsCopy.permissionPrompt);
+
+    try {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+
+      if (permission !== 'granted') {
+        setNotificationStatusMessage(
+          permission === 'denied'
+            ? notificationsCopy.permissionDenied
+            : notificationsCopy.permissionPrompt,
+        );
+        return;
+      }
+
+      const registration =
+        messagingRegistrationRef.current ??
+        (await navigator.serviceWorker.register(withAssetPrefix('/firebase-messaging-sw.js')));
+
+      messagingRegistrationRef.current = registration;
+
+      const readyRegistration = await navigator.serviceWorker.ready.catch(() => registration);
+
+      const sendConfig = (worker: ServiceWorker | null) => {
+        worker?.postMessage({ type: 'FIREBASE_CONFIG', payload: firebaseClientConfig });
+      };
+
+      sendConfig(readyRegistration.active ?? null);
+      sendConfig(readyRegistration.waiting ?? null);
+
+      const messaging = await getFirebaseMessaging();
+      if (!messaging) {
+        setNotificationStatusMessage(notificationsCopy.permissionUnsupported);
+        return;
+      }
+
+      const token = await getToken(messaging, {
+        vapidKey: firebaseVapidKey ?? undefined,
+        serviceWorkerRegistration: readyRegistration,
+      });
+
+      setPushToken(token);
+      setNotificationStatusMessage(notificationsCopy.tokenHint);
+    } catch (error) {
+      console.error(error);
+      setNotificationStatusMessage(error instanceof Error ? error.message : notificationsCopy.genericError);
+    } finally {
+      setRequestingNotifications(false);
+    }
+  }, [
+    currentUser,
+    firebaseClientConfig,
+    isNotificationSupported,
+    isServiceWorkerSupported,
+    notificationsCopy,
+  ]);
 
   return (
     <div className="site" id="top">
@@ -517,6 +898,90 @@ export default function Home() {
                     <span className="hero__event-summary-label">{texts.eventsInWindowLabel}</span>
                     <span className="hero__event-summary-value">{filtered.length}</span>
                     <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
+                  </div>
+                </div>
+                <div className="hero-card__section hero-card__section--notifications">
+                  <div className="hero-card__section-header">
+                    <span className="control-panel__label">{notificationsCopy.title}</span>
+                  </div>
+                  <div className="notifications-panel">
+                    <p className="notifications-panel__description">{notificationsCopy.description}</p>
+                    <div className="notifications-panel__row">
+                      <div className="notifications-panel__status">
+                        <span className="notifications-panel__status-label">
+                          {notificationsCopy.authStatusLabel}
+                        </span>
+                        <span className="notifications-panel__status-value">{authStatusLabel}</span>
+                        {authError ? (
+                          <span className="notifications-panel__hint notifications-panel__hint--error">
+                            {authError}
+                          </span>
+                        ) : null}
+                      </div>
+                      <button
+                        type="button"
+                        className="notifications-panel__button"
+                        onClick={currentUser ? handleSignOut : handleSignIn}
+                        disabled={isAuthActionDisabled}
+                      >
+                        {authButtonLabel}
+                      </button>
+                    </div>
+                    <div className="notifications-panel__row">
+                      <div className="notifications-panel__status">
+                        <span className="notifications-panel__status-label">
+                          {notificationsCopy.permissionStatusLabel}
+                        </span>
+                        <span className="notifications-panel__status-value">{permissionStatusLabel}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className="notifications-panel__button notifications-panel__button--accent"
+                        onClick={handleEnableNotifications}
+                        disabled={isNotificationActionDisabled}
+                      >
+                        {notificationsButtonLabel}
+                      </button>
+                    </div>
+                    <p className="notifications-panel__hint notifications-panel__hint--muted">
+                      {notificationsActionHint}
+                    </p>
+                    {notificationStatusMessage ? (
+                      <p
+                        className="notifications-panel__hint"
+                        aria-live="polite"
+                      >
+                        {notificationStatusMessage}
+                      </p>
+                    ) : null}
+                    {pushToken ? (
+                      <div className="notifications-panel__token">
+                        <div className="notifications-panel__token-header">
+                          <span className="notifications-panel__token-label">
+                            {notificationsCopy.tokenLabel}
+                          </span>
+                          <button
+                            type="button"
+                            className="notifications-panel__button"
+                            onClick={handleCopyToken}
+                          >
+                            {notificationsCopy.copyToken}
+                          </button>
+                        </div>
+                        <code className="notifications-panel__token-value">{pushToken}</code>
+                        {copyFeedbackMessage ? (
+                          <span
+                            className="notifications-panel__hint"
+                            data-variant={clipboardFeedback}
+                          >
+                            {copyFeedbackMessage}
+                          </span>
+                        ) : null}
+                        <p className="notifications-panel__hint notifications-panel__hint--muted">
+                          {notificationsCopy.tokenHint}
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
