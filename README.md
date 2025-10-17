@@ -10,6 +10,21 @@ npm run dev
 # открыть http://localhost:3000
 ```
 
+## Настройка Firebase
+Для авторизации и push-уведомлений нужны публичные ключи Firebase. Скопируй файл
+`.env.local.example` в `.env.local` и заполни переменные из настроек проекта Firebase:
+
+```bash
+cp .env.local.example .env.local
+# отредактируй .env.local
+```
+
+- `NEXT_PUBLIC_FIREBASE_API_KEY` и остальные `NEXT_PUBLIC_FIREBASE_*` — значения из
+  раздела **Project settings → General → Your apps → Firebase SDK snippet**.
+- `NEXT_PUBLIC_FIREBASE_VAPID_KEY` — ключ из **Project settings → Cloud Messaging → Web configuration**.
+- `NEXT_PUBLIC_FIREBASE_TOKENS_COLLECTION` (необязательно) — имя коллекции Firestore, в которой будут
+  храниться выданные токены push-уведомлений. По умолчанию — `pushTokens`.
+
 ## Сборка и экспорт (статический сайт)
 ```bash
 npm run build

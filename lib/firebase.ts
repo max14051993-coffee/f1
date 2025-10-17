@@ -4,6 +4,8 @@ import type { Auth } from 'firebase/auth';
 import { GoogleAuthProvider, getAuth } from 'firebase/auth';
 import type { Messaging } from 'firebase/messaging';
 import { getMessaging, isSupported } from 'firebase/messaging';
+import type { Firestore } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -78,6 +80,20 @@ export function getFirebaseAuth(): Auth | undefined {
     return getAuth(app);
   } catch (error) {
     console.error('Failed to initialize Firebase auth', error);
+    return undefined;
+  }
+}
+
+export function getFirebaseFirestore(): Firestore | undefined {
+  const app = initializeFirebaseApp();
+  if (!app) {
+    return undefined;
+  }
+
+  try {
+    return getFirestore(app);
+  } catch (error) {
+    console.error('Failed to initialize Firebase firestore', error);
     return undefined;
   }
 }
