@@ -35,6 +35,33 @@ import {
 import { deletePushToken, persistPushToken } from '../lib/notifications';
 import { withAssetPrefix } from '../lib/assets';
 
+async function awaitServiceWorkerReadyOrTimeout(
+  registration: ServiceWorkerRegistration,
+  timeoutMs = 3000,
+) {
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+    return registration;
+  }
+
+  let timeoutHandle: ReturnType<typeof window.setTimeout> | undefined;
+
+  try {
+    const readyPromise = navigator.serviceWorker.ready;
+    const timeoutPromise = new Promise<ServiceWorkerRegistration>(resolve => {
+      timeoutHandle = window.setTimeout(() => resolve(registration), timeoutMs);
+    });
+
+    return await Promise.race([readyPromise, timeoutPromise]);
+  } catch (error) {
+    console.error('Failed while waiting for service worker readiness', error);
+    return registration;
+  } finally {
+    if (typeof timeoutHandle !== 'undefined') {
+      window.clearTimeout(timeoutHandle);
+    }
+  }
+}
+
 export default function Home() {
   const { theme, toggleTheme } = useThemePreference();
   const [events, setEvents] = useState<ScheduleEvent[]>([]);
@@ -413,7 +440,7 @@ export default function Home() {
 
         messagingRegistrationRef.current = registration;
 
-        const readyRegistration = await navigator.serviceWorker.ready.catch(() => registration);
+        const readyRegistration = await awaitServiceWorkerReadyOrTimeout(registration);
 
         const sendConfig = (worker: ServiceWorker | null) => {
           worker?.postMessage({ type: 'FIREBASE_CONFIG', payload: firebaseClientConfig });
@@ -689,7 +716,7 @@ export default function Home() {
 
       messagingRegistrationRef.current = registration;
 
-      const readyRegistration = await navigator.serviceWorker.ready.catch(() => registration);
+      const readyRegistration = await awaitServiceWorkerReadyOrTimeout(registration);
 
       const sendConfig = (worker: ServiceWorker | null) => {
         worker?.postMessage({ type: 'FIREBASE_CONFIG', payload: firebaseClientConfig });
