@@ -174,7 +174,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
     },
     texts: {
       heroBadge: 'живой календарь уик-эндов',
-      heroTitle: () => 'My coffee experience',
+      heroTitle: () => 'My race weekend',
       heroSubtitle:
         'Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте горизонтом просмотра и следите за временем старта в собственном часовом поясе.',
       seriesLabel: 'Серии',
@@ -380,7 +380,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
     },
     texts: {
       heroBadge: 'live weekend calendar',
-      heroTitle: () => 'My coffee experience',
+      heroTitle: () => 'My race weekend',
       heroSubtitle:
         'Stay in sync with race weekends: filter the series, adjust the viewing window, and track session times in your own timezone.',
       seriesLabel: 'Series',
@@ -586,7 +586,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
     },
     texts: {
       heroBadge: 'calendario de fines de semana en vivo',
-      heroTitle: () => 'My coffee experience',
+      heroTitle: () => 'My race weekend',
       heroSubtitle:
         'Mantente sincronizado con los fines de semana de carreras: filtra las series, ajusta la ventana de visualización y sigue los horarios de las sesiones en tu propio huso horario.',
       seriesLabel: 'Series',
@@ -793,7 +793,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
     },
     texts: {
       heroBadge: 'calendrier des week-ends en direct',
-      heroTitle: () => 'My coffee experience',
+      heroTitle: () => 'My race weekend',
       heroSubtitle:
         'Restez synchronisé avec les week-ends de course : filtrez les séries, ajustez la fenêtre d’affichage et suivez les horaires des sessions dans votre propre fuseau horaire.',
       seriesLabel: 'Séries',
@@ -1000,7 +1000,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
     },
     texts: {
       heroBadge: 'Live-Wochenendkalender',
-      heroTitle: () => 'My coffee experience',
+      heroTitle: () => 'My race weekend',
       heroSubtitle:
         'Bleib mit den Rennwochenenden im Takt: Filtere die Serien, passe das Betrachtungsfenster an und verfolge die Sessionzeiten in deiner eigenen Zeitzone.',
       seriesLabel: 'Serien',
@@ -1207,7 +1207,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
     },
     texts: {
       heroBadge: '周末赛事实时日历',
-      heroTitle: () => 'My coffee experience',
+      heroTitle: () => 'My race weekend',
       heroSubtitle:
         '掌握赛周节奏：筛选系列、调整查看窗口，并在本地时区追踪各场次开始时间。',
       seriesLabel: '系列',
