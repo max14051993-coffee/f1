@@ -85,12 +85,8 @@ type NotificationsCopy = {
   serviceWorkerUnsupported: string;
   signInRequired: string;
   configurationMissing: string;
-  tokenLabel: string;
-  tokenHint: string;
-  copyToken: string;
-  copySuccess: string;
-  copyError: string;
-  clipboardUnsupported: string;
+  enabledSuccess: string;
+  saveError: string;
   genericError: string;
 };
 
@@ -178,7 +174,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
     },
     texts: {
       heroBadge: 'живой календарь уик-эндов',
-      heroTitle: () => 'My race weekand',
+      heroTitle: () => 'My coffee experience',
       heroSubtitle:
         'Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте горизонтом просмотра и следите за временем старта в собственном часовом поясе.',
       seriesLabel: 'Серии',
@@ -290,13 +286,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         serviceWorkerUnsupported: 'Service Worker не поддерживается в этом браузере.',
         signInRequired: 'Войдите, чтобы включить уведомления.',
         configurationMissing: 'Укажите Firebase-конфигурацию в переменных окружения.',
-        tokenLabel: 'FCM-токен устройства',
-        tokenHint:
-          'Сохраните токен на сервере и используйте его для отправки push-уведомлений через Firebase Cloud Messaging.',
-        copyToken: 'Скопировать токен',
-        copySuccess: 'Токен скопирован в буфер обмена.',
-        copyError: 'Не удалось скопировать токен.',
-        clipboardUnsupported: 'Копирование недоступно в этом браузере.',
+        enabledSuccess: 'Уведомления активированы. Мы будем отправлять напоминания автоматически.',
+        saveError: 'Не удалось сохранить подписку. Попробуйте ещё раз.',
         genericError: 'Не удалось выполнить действие. Попробуйте ещё раз.',
       },
       footer: {
@@ -501,13 +492,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         serviceWorkerUnsupported: 'Background service workers are unavailable in this browser.',
         signInRequired: 'Sign in to turn on notifications.',
         configurationMissing: 'Provide Firebase configuration via environment variables.',
-        tokenLabel: 'Device FCM token',
-        tokenHint:
-          'Store this token on your server to send push notifications through Firebase Cloud Messaging.',
-        copyToken: 'Copy token',
-        copySuccess: 'Token copied to clipboard.',
-        copyError: 'Could not copy the token.',
-        clipboardUnsupported: 'Clipboard access is not available in this browser.',
+        enabledSuccess: 'Notifications are enabled. We\'ll send reminders automatically.',
+        saveError: 'We couldn\'t save your subscription. Please try again.',
         genericError: 'Something went wrong. Please try again.',
       },
       footer: {
@@ -713,13 +699,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         serviceWorkerUnsupported: 'Este navegador no admite service workers en segundo plano.',
         signInRequired: 'Inicia sesión para activar las notificaciones.',
         configurationMissing: 'Configura Firebase mediante variables de entorno.',
-        tokenLabel: 'Token FCM del dispositivo',
-        tokenHint:
-          'Guarda este token en tu servidor para enviar notificaciones push con Firebase Cloud Messaging.',
-        copyToken: 'Copiar token',
-        copySuccess: 'Token copiado al portapapeles.',
-        copyError: 'No se pudo copiar el token.',
-        clipboardUnsupported: 'El navegador no permite copiar al portapapeles.',
+        enabledSuccess: 'Las notificaciones están activadas. Enviaremos recordatorios automáticamente.',
+        saveError: 'No se pudo guardar la suscripción. Inténtalo de nuevo.',
         genericError: 'No se pudo completar la acción. Inténtalo de nuevo.',
       },
       footer: {
@@ -925,13 +906,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         serviceWorkerUnsupported: 'Les service workers en arrière-plan ne sont pas disponibles dans ce navigateur.',
         signInRequired: 'Connectez-vous pour activer les notifications.',
         configurationMissing: 'Ajoutez la configuration Firebase via les variables d’environnement.',
-        tokenLabel: 'Jeton FCM de l’appareil',
-        tokenHint:
-          'Enregistrez ce jeton sur votre serveur pour envoyer des notifications push via Firebase Cloud Messaging.',
-        copyToken: 'Copier le jeton',
-        copySuccess: 'Jeton copié dans le presse-papiers.',
-        copyError: 'Impossible de copier le jeton.',
-        clipboardUnsupported: 'Le navigateur ne permet pas la copie dans le presse-papiers.',
+        enabledSuccess: 'Les notifications sont activées. Nous enverrons les rappels automatiquement.',
+        saveError: 'Impossible d’enregistrer votre abonnement. Veuillez réessayer.',
         genericError: 'Une erreur est survenue. Veuillez réessayer.',
       },
       footer: {
@@ -1137,13 +1113,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         serviceWorkerUnsupported: 'Service Worker im Hintergrund sind in diesem Browser nicht verfügbar.',
         signInRequired: 'Melde dich an, um Benachrichtigungen zu aktivieren.',
         configurationMissing: 'Hinterlege die Firebase-Konfiguration über Umgebungsvariablen.',
-        tokenLabel: 'FCM-Token des Geräts',
-        tokenHint:
-          'Speichere dieses Token auf deinem Server, um Push-Nachrichten mit Firebase Cloud Messaging zu senden.',
-        copyToken: 'Token kopieren',
-        copySuccess: 'Token in die Zwischenablage kopiert.',
-        copyError: 'Token konnte nicht kopiert werden.',
-        clipboardUnsupported: 'Der Browser erlaubt keinen Zugriff auf die Zwischenablage.',
+        enabledSuccess: 'Benachrichtigungen sind aktiviert. Wir senden Erinnerungen automatisch.',
+        saveError: 'Das Abo konnte nicht gespeichert werden. Bitte versuche es erneut.',
         genericError: 'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
       },
       footer: {
@@ -1346,12 +1317,8 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         serviceWorkerUnsupported: '当前浏览器不支持后台 Service Worker。',
         signInRequired: '登录后即可启用通知。',
         configurationMissing: '请在环境变量中配置 Firebase 信息。',
-        tokenLabel: '设备 FCM 令牌',
-        tokenHint: '将此令牌保存到服务器，即可通过 Firebase Cloud Messaging 发送推送通知。',
-        copyToken: '复制令牌',
-        copySuccess: '令牌已复制到剪贴板。',
-        copyError: '无法复制令牌。',
-        clipboardUnsupported: '浏览器不支持访问剪贴板。',
+        enabledSuccess: '通知已启用，我们会自动发送提醒。',
+        saveError: '无法保存订阅，请重试。',
         genericError: '操作失败，请稍后再试。',
       },
       footer: {

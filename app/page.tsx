@@ -59,8 +59,7 @@ export default function Home() {
   const [isRequestingNotifications, setRequestingNotifications] = useState(false);
   const [pushToken, setPushToken] = useState<string | null>(null);
   const [notificationStatusMessage, setNotificationStatusMessage] = useState<string | null>(null);
-  const [clipboardFeedback, setClipboardFeedback] = useState<'success' | 'error' | null>(null);
-  const clipboardTimeoutRef = useRef<number | undefined>(undefined);
+  const [shouldAutoClearStatus, setShouldAutoClearStatus] = useState(false);
   const messagingRegistrationRef = useRef<ServiceWorkerRegistration | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
@@ -85,12 +84,6 @@ export default function Home() {
     if ('Notification' in window) {
       setNotificationPermission(Notification.permission);
     }
-
-    return () => {
-      if (clipboardTimeoutRef.current) {
-        window.clearTimeout(clipboardTimeoutRef.current);
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -365,11 +358,12 @@ export default function Home() {
 
     if (notificationPermission === 'default') {
       setNotificationStatusMessage(null);
+      setShouldAutoClearStatus(false);
     }
   }, [notificationPermission, isRequestingNotifications]);
 
   useEffect(() => {
-    if (clipboardFeedback === null) {
+    if (!shouldAutoClearStatus || !notificationStatusMessage) {
       return;
     }
 
@@ -378,15 +372,14 @@ export default function Home() {
     }
 
     const timeout = window.setTimeout(() => {
-      setClipboardFeedback(null);
-    }, 2200);
-
-    clipboardTimeoutRef.current = timeout;
+      setNotificationStatusMessage(null);
+      setShouldAutoClearStatus(false);
+    }, 3200);
 
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [clipboardFeedback]);
+  }, [notificationStatusMessage, shouldAutoClearStatus]);
 
   useEffect(() => {
     if (!currentUser) {
@@ -583,6 +576,7 @@ export default function Home() {
     notificationPermission === 'denied' ||
     !isFirebaseConfigured ||
     !firebaseClientConfig;
+  const hasActiveSubscription = Boolean(pushToken) && notificationPermission === 'granted';
   const notificationsActionHint = !isFirebaseConfigured || !firebaseClientConfig
     ? notificationsCopy.configurationMissing
     : !isNotificationSupported
@@ -593,14 +587,9 @@ export default function Home() {
           ? notificationsCopy.signInRequired
           : notificationPermission === 'denied'
             ? notificationsCopy.permissionDenied
-            : notificationsCopy.permissionPrompt;
-  const copyFeedbackMessage =
-    clipboardFeedback === 'success'
-      ? notificationsCopy.copySuccess
-      : clipboardFeedback === 'error'
-        ? notificationsCopy.copyError
-        : null;
-
+            : hasActiveSubscription
+              ? notificationsCopy.enabledSuccess
+              : notificationsCopy.permissionPrompt;
   const handleSignIn = useCallback(async () => {
     if (!isFirebaseConfigured || !firebaseClientConfig) {
       setAuthError(notificationsCopy.configurationMissing);
@@ -642,6 +631,7 @@ export default function Home() {
     try {
       await signOut(auth);
       setNotificationStatusMessage(null);
+      setShouldAutoClearStatus(false);
     } catch (error) {
       console.error(error);
       setAuthError(error instanceof Error ? error.message : notificationsCopy.genericError);
@@ -650,50 +640,34 @@ export default function Home() {
     }
   }, [notificationsCopy.genericError]);
 
-  const handleCopyToken = useCallback(async () => {
-    if (!pushToken) {
-      return;
-    }
-
-    if (typeof navigator === 'undefined' || !navigator.clipboard) {
-      setNotificationStatusMessage(notificationsCopy.clipboardUnsupported);
-      setClipboardFeedback('error');
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(pushToken);
-      setClipboardFeedback('success');
-    } catch (error) {
-      console.error(error);
-      setClipboardFeedback('error');
-      setNotificationStatusMessage(notificationsCopy.copyError);
-    }
-  }, [notificationsCopy.clipboardUnsupported, notificationsCopy.copyError, pushToken]);
-
   const handleEnableNotifications = useCallback(async () => {
     if (!currentUser) {
       setNotificationStatusMessage(notificationsCopy.signInRequired);
+      setShouldAutoClearStatus(false);
       return;
     }
 
     if (!isNotificationSupported) {
       setNotificationStatusMessage(notificationsCopy.permissionUnsupported);
+      setShouldAutoClearStatus(false);
       return;
     }
 
     if (!isServiceWorkerSupported) {
       setNotificationStatusMessage(notificationsCopy.serviceWorkerUnsupported);
+      setShouldAutoClearStatus(false);
       return;
     }
 
     if (!isFirebaseConfigured || !firebaseClientConfig || !firebaseVapidKey) {
       setNotificationStatusMessage(notificationsCopy.configurationMissing);
+      setShouldAutoClearStatus(false);
       return;
     }
 
     setRequestingNotifications(true);
     setNotificationStatusMessage(notificationsCopy.permissionPrompt);
+    setShouldAutoClearStatus(false);
 
     try {
       const permission = await Notification.requestPermission();
@@ -705,6 +679,7 @@ export default function Home() {
             ? notificationsCopy.permissionDenied
             : notificationsCopy.permissionPrompt,
         );
+        setShouldAutoClearStatus(false);
         return;
       }
 
@@ -726,6 +701,7 @@ export default function Home() {
       const messaging = await getFirebaseMessaging();
       if (!messaging) {
         setNotificationStatusMessage(notificationsCopy.permissionUnsupported);
+        setShouldAutoClearStatus(false);
         return;
       }
 
@@ -740,13 +716,15 @@ export default function Home() {
         }
         return token;
       });
-      void persistPushToken(token, currentUser).catch(error => {
-        console.error(error);
-      });
-      setNotificationStatusMessage(notificationsCopy.tokenHint);
+      const persisted = await persistPushToken(token, currentUser);
+      setNotificationStatusMessage(
+        persisted ? notificationsCopy.enabledSuccess : notificationsCopy.saveError,
+      );
+      setShouldAutoClearStatus(persisted);
     } catch (error) {
       console.error(error);
       setNotificationStatusMessage(error instanceof Error ? error.message : notificationsCopy.genericError);
+      setShouldAutoClearStatus(false);
     } finally {
       setRequestingNotifications(false);
     }
@@ -993,34 +971,6 @@ export default function Home() {
                       >
                         {notificationStatusMessage}
                       </p>
-                    ) : null}
-                    {pushToken ? (
-                      <div className="notifications-panel__token">
-                        <div className="notifications-panel__token-header">
-                          <span className="notifications-panel__token-label">
-                            {notificationsCopy.tokenLabel}
-                          </span>
-                          <button
-                            type="button"
-                            className="notifications-panel__button"
-                            onClick={handleCopyToken}
-                          >
-                            {notificationsCopy.copyToken}
-                          </button>
-                        </div>
-                        <code className="notifications-panel__token-value">{pushToken}</code>
-                        {copyFeedbackMessage ? (
-                          <span
-                            className="notifications-panel__hint"
-                            data-variant={clipboardFeedback}
-                          >
-                            {copyFeedbackMessage}
-                          </span>
-                        ) : null}
-                        <p className="notifications-panel__hint notifications-panel__hint--muted">
-                          {notificationsCopy.tokenHint}
-                        </p>
-                      </div>
                     ) : null}
                   </div>
                 </div>
