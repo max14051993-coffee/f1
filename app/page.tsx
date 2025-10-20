@@ -40,21 +40,32 @@ async function awaitServiceWorkerReadyOrTimeout(
   timeoutMs = 3000,
 ) {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
-    return registration;
+    return {
+      registration,
+      didTimeout: false,
+      readyPromise: Promise.resolve(registration),
+    };
   }
 
   let timeoutHandle: ReturnType<typeof window.setTimeout> | undefined;
+  let didTimeout = false;
 
-  try {
-    const readyPromise = navigator.serviceWorker.ready;
-    const timeoutPromise = new Promise<ServiceWorkerRegistration>(resolve => {
-      timeoutHandle = window.setTimeout(() => resolve(registration), timeoutMs);
-    });
-
-    return await Promise.race([readyPromise, timeoutPromise]);
-  } catch (error) {
+  const readyPromise = navigator.serviceWorker.ready.catch(error => {
     console.error('Failed while waiting for service worker readiness', error);
     return registration;
+  });
+
+  try {
+    const timeoutPromise = new Promise<ServiceWorkerRegistration>(resolve => {
+      timeoutHandle = window.setTimeout(() => {
+        didTimeout = true;
+        resolve(registration);
+      }, timeoutMs);
+    });
+
+    const readyRegistration = await Promise.race([readyPromise, timeoutPromise]);
+
+    return { registration: readyRegistration, didTimeout, readyPromise };
   } finally {
     if (typeof timeoutHandle !== 'undefined') {
       window.clearTimeout(timeoutHandle);
@@ -440,7 +451,11 @@ export default function Home() {
 
         messagingRegistrationRef.current = registration;
 
-        const readyRegistration = await awaitServiceWorkerReadyOrTimeout(registration);
+        const {
+          registration: readyRegistration,
+          didTimeout,
+          readyPromise,
+        } = await awaitServiceWorkerReadyOrTimeout(registration);
 
         const sendConfig = (worker: ServiceWorker | null) => {
           worker?.postMessage({ type: 'FIREBASE_CONFIG', payload: firebaseClientConfig });
@@ -448,6 +463,17 @@ export default function Home() {
 
         sendConfig(readyRegistration.active ?? null);
         sendConfig(readyRegistration.waiting ?? null);
+
+        if (didTimeout) {
+          readyPromise.then(lateRegistration => {
+            if (isCancelled) {
+              return;
+            }
+
+            sendConfig(lateRegistration.active ?? null);
+            sendConfig(lateRegistration.waiting ?? null);
+          });
+        }
 
         const token = await getToken(messaging, {
           vapidKey: firebaseVapidKey,
@@ -716,7 +742,8 @@ export default function Home() {
 
       messagingRegistrationRef.current = registration;
 
-      const readyRegistration = await awaitServiceWorkerReadyOrTimeout(registration);
+      const { registration: readyRegistration, didTimeout, readyPromise } =
+        await awaitServiceWorkerReadyOrTimeout(registration);
 
       const sendConfig = (worker: ServiceWorker | null) => {
         worker?.postMessage({ type: 'FIREBASE_CONFIG', payload: firebaseClientConfig });
@@ -724,6 +751,13 @@ export default function Home() {
 
       sendConfig(readyRegistration.active ?? null);
       sendConfig(readyRegistration.waiting ?? null);
+
+      if (didTimeout) {
+        void readyPromise.then(lateRegistration => {
+          sendConfig(lateRegistration.active ?? null);
+          sendConfig(lateRegistration.waiting ?? null);
+        });
+      }
 
       const messaging = await getFirebaseMessaging();
       if (!messaging) {
