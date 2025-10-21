@@ -3,7 +3,7 @@
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { User } from 'firebase/auth';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
-import { getToken } from 'firebase/messaging';
+import { deleteToken as deleteFirebaseMessagingToken, getToken } from 'firebase/messaging';
 import { DateTime } from 'luxon';
 import {
   DEFAULT_LANGUAGE,
@@ -610,18 +610,18 @@ export default function Home() {
       : notificationPermission === 'denied'
         ? notificationsCopy.permissionDenied
         : notificationsCopy.permissionDefault;
+  const hasActiveSubscription = Boolean(pushToken) && notificationPermission === 'granted';
   const notificationsButtonLabel = isRequestingNotifications
     ? notificationsCopy.requesting
-    : notificationsCopy.enable;
+    : hasActiveSubscription
+      ? notificationsCopy.disable
+      : notificationsCopy.enable;
   const isNotificationActionDisabled =
     isRequestingNotifications ||
-    !isNotificationSupported ||
-    !isServiceWorkerSupported ||
     !currentUser ||
-    notificationPermission === 'denied' ||
     !isFirebaseConfigured ||
-    !firebaseClientConfig;
-  const hasActiveSubscription = Boolean(pushToken) && notificationPermission === 'granted';
+    !firebaseClientConfig ||
+    (!hasActiveSubscription && (!isNotificationSupported || !isServiceWorkerSupported || notificationPermission === 'denied'));
   const notificationsActionHint = !isFirebaseConfigured || !firebaseClientConfig
     ? notificationsCopy.configurationMissing
     : !isNotificationSupported
@@ -783,6 +783,65 @@ export default function Home() {
     notificationsCopy,
     persistPushToken,
     visibleSeries,
+  ]);
+
+  const handleDisableNotifications = useCallback(async () => {
+    if (!currentUser) {
+      setNotificationStatusMessage(notificationsCopy.signInRequired);
+      setShouldAutoClearStatus(false);
+      return;
+    }
+
+    if (!pushToken) {
+      setNotificationStatusMessage(notificationsCopy.genericError);
+      setShouldAutoClearStatus(false);
+      return;
+    }
+
+    if (!isFirebaseConfigured || !firebaseClientConfig) {
+      setNotificationStatusMessage(notificationsCopy.configurationMissing);
+      setShouldAutoClearStatus(false);
+      return;
+    }
+
+    setRequestingNotifications(true);
+    setNotificationStatusMessage(null);
+    setShouldAutoClearStatus(false);
+
+    try {
+      const deleted = await deletePushToken(pushToken);
+      if (!deleted) {
+        setNotificationStatusMessage(notificationsCopy.genericError);
+        return;
+      }
+
+      const messaging = await getFirebaseMessaging();
+      if (messaging) {
+        try {
+          await deleteFirebaseMessagingToken(messaging);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      setPushToken(null);
+      setNotificationStatusMessage(notificationsCopy.disabledSuccess);
+      setShouldAutoClearStatus(true);
+    } catch (error) {
+      console.error(error);
+      setNotificationStatusMessage(
+        error instanceof Error ? error.message : notificationsCopy.genericError,
+      );
+    } finally {
+      setRequestingNotifications(false);
+    }
+  }, [
+    currentUser,
+    deletePushToken,
+    firebaseClientConfig,
+    isFirebaseConfigured,
+    notificationsCopy,
+    pushToken,
   ]);
 
   return (
@@ -1001,7 +1060,7 @@ export default function Home() {
                       <button
                         type="button"
                         className="notifications-panel__button notifications-panel__button--accent"
-                        onClick={handleEnableNotifications}
+                        onClick={hasActiveSubscription ? handleDisableNotifications : handleEnableNotifications}
                         disabled={isNotificationActionDisabled}
                       >
                         {notificationsButtonLabel}
