@@ -76,6 +76,7 @@ type NotificationsCopy = {
   signedInAs: (name: string) => string;
   unknownUser: string;
   enable: string;
+  disable: string;
   requesting: string;
   permissionPrompt: string;
   permissionDefault: string;
@@ -86,6 +87,7 @@ type NotificationsCopy = {
   signInRequired: string;
   configurationMissing: string;
   enabledSuccess: string;
+  disabledSuccess: string;
   saveError: string;
   genericError: string;
 };
@@ -277,6 +279,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signedInAs: name => `Вы вошли как ${name}`,
         unknownUser: 'участник',
         enable: 'Включить уведомления',
+        disable: 'Отключить уведомления',
         requesting: 'Запрос…',
         permissionPrompt: 'Разрешите уведомления, чтобы получать пуши о старте сессий.',
         permissionDefault: 'Требуется разрешение',
@@ -287,6 +290,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signInRequired: 'Войдите, чтобы включить уведомления.',
         configurationMissing: 'Укажите Firebase-конфигурацию в переменных окружения.',
         enabledSuccess: 'Уведомления активированы. Мы будем отправлять напоминания автоматически.',
+        disabledSuccess: 'Уведомления отключены. Мы больше не будем отправлять напоминания.',
         saveError: 'Не удалось сохранить подписку. Попробуйте ещё раз.',
         genericError: 'Не удалось выполнить действие. Попробуйте ещё раз.',
       },
@@ -483,6 +487,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signedInAs: name => `Signed in as ${name}`,
         unknownUser: 'driver',
         enable: 'Enable notifications',
+        disable: 'Disable notifications',
         requesting: 'Requesting…',
         permissionPrompt: 'Allow browser notifications to receive push alerts about session start times.',
         permissionDefault: 'Permission required',
@@ -493,6 +498,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signInRequired: 'Sign in to turn on notifications.',
         configurationMissing: 'Provide Firebase configuration via environment variables.',
         enabledSuccess: 'Notifications are enabled. We\'ll send reminders automatically.',
+        disabledSuccess: 'Notifications are disabled. We won\'t send reminders anymore.',
         saveError: 'We couldn\'t save your subscription. Please try again.',
         genericError: 'Something went wrong. Please try again.',
       },
@@ -689,6 +695,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signedInAs: name => `Sesión iniciada como ${name}`,
         unknownUser: 'piloto',
         enable: 'Activar notificaciones',
+        disable: 'Desactivar notificaciones',
         requesting: 'Solicitando…',
         permissionPrompt:
           'Permite las notificaciones del navegador para recibir avisos sobre los horarios de inicio.',
@@ -700,6 +707,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signInRequired: 'Inicia sesión para activar las notificaciones.',
         configurationMissing: 'Configura Firebase mediante variables de entorno.',
         enabledSuccess: 'Las notificaciones están activadas. Enviaremos recordatorios automáticamente.',
+        disabledSuccess: 'Las notificaciones están desactivadas. Ya no enviaremos recordatorios.',
         saveError: 'No se pudo guardar la suscripción. Inténtalo de nuevo.',
         genericError: 'No se pudo completar la acción. Inténtalo de nuevo.',
       },
@@ -896,6 +904,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signedInAs: name => `Connecté en tant que ${name}`,
         unknownUser: 'pilote',
         enable: 'Activer les notifications',
+        disable: 'Désactiver les notifications',
         requesting: 'Demande en cours…',
         permissionPrompt:
           'Autorisez les notifications du navigateur pour recevoir les alertes de début de séance.',
@@ -907,6 +916,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signInRequired: 'Connectez-vous pour activer les notifications.',
         configurationMissing: 'Ajoutez la configuration Firebase via les variables d’environnement.',
         enabledSuccess: 'Les notifications sont activées. Nous enverrons les rappels automatiquement.',
+        disabledSuccess: "Les notifications sont désactivées. Nous n'enverrons plus de rappels.",
         saveError: 'Impossible d’enregistrer votre abonnement. Veuillez réessayer.',
         genericError: 'Une erreur est survenue. Veuillez réessayer.',
       },
@@ -1103,6 +1113,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signedInAs: name => `Angemeldet als ${name}`,
         unknownUser: 'Fahrer',
         enable: 'Benachrichtigungen aktivieren',
+        disable: 'Benachrichtigungen deaktivieren',
         requesting: 'Anfrage läuft…',
         permissionPrompt:
           'Erlaube Browser-Benachrichtigungen, um Push-Hinweise zu Startzeiten zu erhalten.',
@@ -1114,6 +1125,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signInRequired: 'Melde dich an, um Benachrichtigungen zu aktivieren.',
         configurationMissing: 'Hinterlege die Firebase-Konfiguration über Umgebungsvariablen.',
         enabledSuccess: 'Benachrichtigungen sind aktiviert. Wir senden Erinnerungen automatisch.',
+        disabledSuccess: 'Benachrichtigungen sind deaktiviert. Wir senden keine Erinnerungen mehr.',
         saveError: 'Das Abo konnte nicht gespeichert werden. Bitte versuche es erneut.',
         genericError: 'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
       },
@@ -1308,6 +1320,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signedInAs: name => `已登录：${name}`,
         unknownUser: '车迷',
         enable: '启用通知',
+        disable: '关闭通知',
         requesting: '请求中…',
         permissionPrompt: '请允许浏览器通知，以便接收赛程开始的推送提醒。',
         permissionDefault: '需要授权',
@@ -1318,6 +1331,7 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
         signInRequired: '登录后即可启用通知。',
         configurationMissing: '请在环境变量中配置 Firebase 信息。',
         enabledSuccess: '通知已启用，我们会自动发送提醒。',
+        disabledSuccess: '通知已关闭，我们将不再发送提醒。',
         saveError: '无法保存订阅，请重试。',
         genericError: '操作失败，请稍后再试。',
       },
