@@ -178,6 +178,23 @@ export default function Home() {
   }, [visibleSeries, hasLoadedSeriesFilters]);
 
   useEffect(() => {
+    if (!pushToken || !hasLoadedSeriesFilters || !isFirebaseConfigured) {
+      return;
+    }
+
+    void persistPushToken(pushToken, currentUser, visibleSeries).catch(error => {
+      console.error(error);
+    });
+  }, [
+    currentUser,
+    hasLoadedSeriesFilters,
+    isFirebaseConfigured,
+    persistPushToken,
+    pushToken,
+    visibleSeries,
+  ]);
+
+  useEffect(() => {
     if (!hasLoadedPeriod || typeof localStorage === 'undefined') {
       return;
     }
@@ -461,7 +478,7 @@ export default function Home() {
             }
             return token;
           });
-          void persistPushToken(token, currentUser).catch(error => {
+          void persistPushToken(token, currentUser, visibleSeries).catch(error => {
             console.error(error);
           });
         }
@@ -482,6 +499,7 @@ export default function Home() {
     isServiceWorkerSupported,
     notificationPermission,
     persistPushToken,
+    visibleSeries,
   ]);
 
   const languageDefinition = LANGUAGE_DEFINITIONS[language];
@@ -743,7 +761,7 @@ export default function Home() {
         }
         return token;
       });
-      const persisted = await persistPushToken(token, currentUser);
+      const persisted = await persistPushToken(token, currentUser, visibleSeries);
       setNotificationStatusMessage(
         persisted ? notificationsCopy.enabledSuccess : notificationsCopy.saveError,
       );
@@ -764,6 +782,7 @@ export default function Home() {
     isServiceWorkerSupported,
     notificationsCopy,
     persistPushToken,
+    visibleSeries,
   ]);
 
   return (
