@@ -25,6 +25,36 @@ cp .env.local.example .env.local
 - `NEXT_PUBLIC_FIREBASE_TOKENS_COLLECTION` (необязательно) — имя коллекции Firestore, в которой будут
   храниться выданные токены push-уведомлений. По умолчанию — `pushTokens`.
 
+### Отправка напоминаний через Firebase Cloud Messaging
+
+В каталоге [`functions/`](./functions) лежит Cloud Function `scheduleEventReminders`, которая
+раз в 5 минут проверяет расписание и отправляет напоминания за 2 часа и за 5 минут до старта
+каждой сессии. Функция учитывает выбранные пользователем серии (`subscribedSeries` в документе
+токена Firestore) и автоматически чистит просроченные токены.
+
+Чтобы задеплоить функцию:
+
+1. Установи зависимости:
+   ```bash
+   cd functions
+   npm install
+   ```
+2. Настрой переменные окружения Functions (пример с Firebase CLI):
+   ```bash
+   firebase functions:config:set schedule.url="https://example.com/schedule.ics"
+   firebase functions:config:set notifications.tokens_collection="pushTokens"
+   firebase functions:config:set notifications.dispatch_collection="notificationDispatches"
+   ```
+   `schedule.url` — полный URL до актуального файла `schedule.ics`.
+3. Собери и задеплой функцию:
+   ```bash
+   npm run build
+   firebase deploy --only functions
+   ```
+
+При необходимости можно переопределить имена коллекций через переменные окружения
+`TOKENS_COLLECTION` и `DISPATCH_COLLECTION`.
+
 ## Сборка и экспорт (статический сайт)
 ```bash
 npm run build

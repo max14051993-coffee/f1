@@ -2,6 +2,7 @@ import type { User } from 'firebase/auth';
 import { deleteDoc, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 import { getFirebaseFirestore, isFirebaseConfigured } from './firebase';
+import type { SeriesId } from './series';
 
 const FALLBACK_COLLECTION_NAME = 'pushTokens';
 
@@ -22,7 +23,25 @@ function ensureFirestore() {
   return getFirebaseFirestore();
 }
 
-export async function persistPushToken(token: string, user: User | null): Promise<boolean> {
+type SeriesVisibility = Record<SeriesId, boolean>;
+
+function extractSubscribedSeries(seriesVisibility?: SeriesVisibility | null): SeriesId[] | null {
+  if (!seriesVisibility) {
+    return null;
+  }
+
+  const active = Object.entries(seriesVisibility)
+    .filter(([, enabled]) => Boolean(enabled))
+    .map(([series]) => series as SeriesId);
+
+  return active.length > 0 ? active : [];
+}
+
+export async function persistPushToken(
+  token: string,
+  user: User | null,
+  seriesVisibility?: SeriesVisibility | null,
+): Promise<boolean> {
   const firestore = ensureFirestore();
   if (!firestore) {
     return false;
@@ -46,6 +65,8 @@ export async function persistPushToken(token: string, user: User | null): Promis
               displayName: user.displayName ?? null,
             }
           : null,
+        seriesVisibility: seriesVisibility ?? null,
+        subscribedSeries: extractSubscribedSeries(seriesVisibility),
       },
       { merge: true },
     );

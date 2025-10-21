@@ -1,24 +1,18 @@
 import { DateTime } from 'luxon';
 
-import type { RaceSession } from './language';
-import { DEFAULT_SERIES_ID, isSeriesId, type SeriesId } from './series';
+import type { RaceSession, ScheduleEvent, SeriesId } from './types';
 
-export type ScheduleEvent = {
-  series: SeriesId;
-  round: string;
-  country?: string;
-  circuit?: string;
-  session: RaceSession;
-  startsAtUtc: string;
-  endsAtUtc?: string;
-  uid?: string;
-};
+const SERIES_IDS: SeriesId[] = ['F1', 'F2', 'F3', 'MotoGP'];
 
 const ICS_DATE_FORMATS: Array<[string, { zone: string }]> = [
   ["yyyyMMdd'T'HHmmss'Z'", { zone: 'utc' }],
   ["yyyyMMdd'T'HHmmss", { zone: 'utc' }],
   ['yyyyMMdd', { zone: 'utc' }],
 ];
+
+function isSeriesId(value: string): value is SeriesId {
+  return SERIES_IDS.includes(value as SeriesId);
+}
 
 function parseIcsDateTime(raw: string | undefined, tzHint?: string) {
   if (!raw) return null;
@@ -72,15 +66,10 @@ function sanitizeRoundLabel(round: string | undefined, circuit?: string, country
   return 'MotoGP';
 }
 
-type ParseOptions = {
-  fallbackSeriesId?: SeriesId;
-};
-
-export function parseSchedule(ics: string, options: ParseOptions = {}): ScheduleEvent[] {
+export function parseSchedule(ics: string, fallbackSeriesId: SeriesId = 'F1'): ScheduleEvent[] {
   const lines = ics.split(/\r?\n/);
   const events: ScheduleEvent[] = [];
   let current: Record<string, string> = {};
-  const fallbackSeriesId = options.fallbackSeriesId ?? DEFAULT_SERIES_ID;
 
   for (const line of lines) {
     if (line === 'BEGIN:VEVENT') {
@@ -204,19 +193,23 @@ export function parseSchedule(ics: string, options: ParseOptions = {}): Schedule
       continue;
     }
 
-    const [rawKey, value] = line.split(':', 2);
-    if (!rawKey || !value) continue;
-    const [key, ...params] = rawKey.split(';');
-    current[key] = value;
-    if (key === 'DTSTART') {
-      const tzParam = params.find(p => p.startsWith('TZID='));
-      if (tzParam) current.DTSTART_TZID = tzParam.split('=')[1];
+    const [key, ...rest] = line.split(':');
+    if (!key || rest.length === 0) {
+      continue;
     }
-    if (key === 'DTEND') {
-      const tzParam = params.find(p => p.startsWith('TZID='));
-      if (tzParam) current.DTEND_TZID = tzParam.split('=')[1];
+    const value = rest.join(':');
+    const [baseKey, ...params] = key.split(';');
+    const normalizedKey = baseKey.toUpperCase();
+
+    current[normalizedKey] = value;
+
+    for (const param of params) {
+      const [paramKey, paramValue] = param.split('=');
+      if (paramKey && paramValue) {
+        current[`${normalizedKey}_${paramKey.toUpperCase()}`] = paramValue;
+      }
     }
   }
 
-  return events;
+  return events.sort((a, b) => a.startsAtUtc.localeCompare(b.startsAtUtc));
 }
