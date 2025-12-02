@@ -43,7 +43,7 @@ async function awaitServiceWorkerReadyOrTimeout(
     return registration;
   }
 
-  let timeoutHandle: ReturnType<typeof window.setTimeout> | undefined;
+  let timeoutHandle: number | undefined;
 
   try {
     const readyPromise = navigator.serviceWorker.ready;
@@ -1021,62 +1021,6 @@ export default function Home() {
                     <span className="hero__event-summary-label">{texts.eventsInWindowLabel}</span>
                     <span className="hero__event-summary-value">{filtered.length}</span>
                     <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
-                  </div>
-                </div>
-                <div className="hero-card__section hero-card__section--notifications">
-                  <div className="hero-card__section-header">
-                    <span className="control-panel__label">{notificationsCopy.title}</span>
-                  </div>
-                  <div className="notifications-panel">
-                    <p className="notifications-panel__description">{notificationsCopy.description}</p>
-                    <div className="notifications-panel__row">
-                      <div className="notifications-panel__status">
-                        <span className="notifications-panel__status-label">
-                          {notificationsCopy.authStatusLabel}
-                        </span>
-                        <span className="notifications-panel__status-value">{authStatusLabel}</span>
-                        {authError ? (
-                          <span className="notifications-panel__hint notifications-panel__hint--error">
-                            {authError}
-                          </span>
-                        ) : null}
-                      </div>
-                      <button
-                        type="button"
-                        className="notifications-panel__button"
-                        onClick={currentUser ? handleSignOut : handleSignIn}
-                        disabled={isAuthActionDisabled}
-                      >
-                        {authButtonLabel}
-                      </button>
-                    </div>
-                    <div className="notifications-panel__row">
-                      <div className="notifications-panel__status">
-                        <span className="notifications-panel__status-label">
-                          {notificationsCopy.permissionStatusLabel}
-                        </span>
-                        <span className="notifications-panel__status-value">{permissionStatusLabel}</span>
-                      </div>
-                      <button
-                        type="button"
-                        className="notifications-panel__button notifications-panel__button--accent"
-                        onClick={hasActiveSubscription ? handleDisableNotifications : handleEnableNotifications}
-                        disabled={isNotificationActionDisabled}
-                      >
-                        {notificationsButtonLabel}
-                      </button>
-                    </div>
-                    <p className="notifications-panel__hint notifications-panel__hint--muted">
-                      {notificationsActionHint}
-                    </p>
-                    {notificationStatusMessage ? (
-                      <p
-                        className="notifications-panel__hint"
-                        aria-live="polite"
-                      >
-                        {notificationStatusMessage}
-                      </p>
-                    ) : null}
                   </div>
                 </div>
               </div>
