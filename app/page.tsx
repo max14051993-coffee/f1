@@ -43,7 +43,7 @@ async function awaitServiceWorkerReadyOrTimeout(
     return registration;
   }
 
-  let timeoutHandle: ReturnType<typeof window.setTimeout> | undefined;
+  let timeoutHandle: number | undefined;
 
   try {
     const readyPromise = navigator.serviceWorker.ready;
