@@ -836,6 +836,30 @@ button {
   box-shadow: 0 0 0 6px rgba(18, 24, 35, 0.12);
 }
 
+:root[data-theme='light'] .schedule-error {
+  border-color: rgba(193, 45, 45, 0.3);
+  background: rgba(255, 238, 238, 0.9);
+}
+
+:root[data-theme='light'] .schedule-error__title {
+  color: #6b1f1f;
+}
+
+:root[data-theme='light'] .schedule-error__description,
+:root[data-theme='light'] .schedule-error__fallback {
+  color: rgba(18, 22, 37, 0.72);
+}
+
+:root[data-theme='light'] .schedule-error__retry {
+  border-color: rgba(193, 45, 45, 0.34);
+  background: rgba(193, 45, 45, 0.12);
+  color: #6b1f1f;
+}
+
+:root[data-theme='light'] .schedule-error__retry:hover {
+  background: rgba(193, 45, 45, 0.2);
+}
+
 :root[data-theme='light'] .cta-section__content p {
   color: rgba(18, 22, 37, 0.7);
 }
@@ -1995,6 +2019,74 @@ button {
   display: grid;
   gap: clamp(20px, 5vw, 32px);
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.schedule-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-radius: 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 104, 104, 0.36);
+  background: rgba(85, 22, 22, 0.32);
+}
+
+.schedule-error__content {
+  display: grid;
+  gap: 6px;
+}
+
+.schedule-error__title {
+  font-weight: 700;
+  color: rgba(255, 206, 206, 0.96);
+}
+
+.schedule-error__description,
+.schedule-error__fallback {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.92rem;
+}
+
+.schedule-error__fallback a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.schedule-error__retry {
+  border: 1px solid rgba(255, 173, 173, 0.5);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(255, 173, 173, 0.16);
+  color: rgba(255, 221, 221, 0.96);
+}
+
+.event-card--skeleton {
+  pointer-events: none;
+}
+
+.event-card--skeleton .event-card__inner {
+  min-height: clamp(220px, 44vw, 300px);
+  position: relative;
+  overflow: hidden;
+}
+
+.event-card--skeleton .event-card__inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.05) 20%, rgba(255, 255, 255, 0.16) 50%, rgba(255, 255, 255, 0.05) 80%);
+  transform: translateX(-100%);
+  animation: skeleton-loading 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  to {
+    transform: translateX(100%);
+  }
 }
 
 .event-card {
