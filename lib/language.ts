@@ -62,35 +62,6 @@ type PrivacyPolicyCopy = {
   closeLabel: string;
 };
 
-type NotificationsCopy = {
-  title: string;
-  description: string;
-  authStatusLabel: string;
-  permissionStatusLabel: string;
-  signIn: string;
-  signOut: string;
-  signingIn: string;
-  signingOut: string;
-  initializing: string;
-  signedOut: string;
-  signedInAs: (name: string) => string;
-  unknownUser: string;
-  enable: string;
-  disable: string;
-  requesting: string;
-  permissionPrompt: string;
-  permissionDefault: string;
-  permissionGranted: string;
-  permissionDenied: string;
-  permissionUnsupported: string;
-  serviceWorkerUnsupported: string;
-  signInRequired: string;
-  configurationMissing: string;
-  enabledSuccess: string;
-  disabledSuccess: string;
-  saveError: string;
-  genericError: string;
-};
 
 type TranslationBundle = {
   heroBadge: string;
@@ -134,7 +105,6 @@ type TranslationBundle = {
   ctaButton: string;
   footer: FooterCopy;
   privacyPolicy: PrivacyPolicyCopy;
-  notifications: NotificationsCopy;
 };
 
 export type LanguageDefinition = {
@@ -264,36 +234,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       ctaTitle: 'Готовы к старту?',
       ctaSubtitle: 'Откройте живой календарь и держите расписание всегда под рукой.',
       ctaButton: 'Открыть календарь',
-      notifications: {
-        title: 'Уведомления',
-        description:
-          'Войдите через Google, чтобы сохранять настройки уведомлений и получать пуши о старте сессий.',
-        authStatusLabel: 'Статус аккаунта',
-        permissionStatusLabel: 'Статус уведомлений',
-        signIn: 'Войти через Google',
-        signOut: 'Выйти',
-        signingIn: 'Вход…',
-        signingOut: 'Выход…',
-        initializing: 'Подключаем Google…',
-        signedOut: 'Не выполнен вход',
-        signedInAs: name => `Вы вошли как ${name}`,
-        unknownUser: 'участник',
-        enable: 'Включить уведомления',
-        disable: 'Отключить уведомления',
-        requesting: 'Запрос…',
-        permissionPrompt: 'Разрешите уведомления, чтобы получать пуши о старте сессий.',
-        permissionDefault: 'Требуется разрешение',
-        permissionGranted: 'Разрешено',
-        permissionDenied: 'Блокировано',
-        permissionUnsupported: 'Браузер не поддерживает уведомления.',
-        serviceWorkerUnsupported: 'Service Worker не поддерживается в этом браузере.',
-        signInRequired: 'Войдите, чтобы включить уведомления.',
-        configurationMissing: 'Укажите Firebase-конфигурацию в переменных окружения.',
-        enabledSuccess: 'Уведомления активированы. Мы будем отправлять напоминания автоматически.',
-        disabledSuccess: 'Уведомления отключены. Мы больше не будем отправлять напоминания.',
-        saveError: 'Не удалось сохранить подписку. Попробуйте ещё раз.',
-        genericError: 'Не удалось выполнить действие. Попробуйте ещё раз.',
-      },
       footer: {
         tagline: 'RaceSync помогает болельщикам синхронизироваться с гоночными уик-эндами.',
         productHeading: 'Продукт',
@@ -472,36 +412,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       ctaTitle: 'Ready for lights out?',
       ctaSubtitle: 'Open the live calendar, set your filters, and never miss a session.',
       ctaButton: 'Launch the calendar',
-      notifications: {
-        title: 'Notifications',
-        description:
-          'Sign in with Google to manage notifications and receive push alerts before each session begins.',
-        authStatusLabel: 'Account status',
-        permissionStatusLabel: 'Notification status',
-        signIn: 'Sign in with Google',
-        signOut: 'Sign out',
-        signingIn: 'Signing in…',
-        signingOut: 'Signing out…',
-        initializing: 'Connecting to Google…',
-        signedOut: 'Not signed in',
-        signedInAs: name => `Signed in as ${name}`,
-        unknownUser: 'driver',
-        enable: 'Enable notifications',
-        disable: 'Disable notifications',
-        requesting: 'Requesting…',
-        permissionPrompt: 'Allow browser notifications to receive push alerts about session start times.',
-        permissionDefault: 'Permission required',
-        permissionGranted: 'Granted',
-        permissionDenied: 'Blocked',
-        permissionUnsupported: 'Notifications are not supported in this browser.',
-        serviceWorkerUnsupported: 'Background service workers are unavailable in this browser.',
-        signInRequired: 'Sign in to turn on notifications.',
-        configurationMissing: 'Provide Firebase configuration via environment variables.',
-        enabledSuccess: 'Notifications are enabled. We\'ll send reminders automatically.',
-        disabledSuccess: 'Notifications are disabled. We won\'t send reminders anymore.',
-        saveError: 'We couldn\'t save your subscription. Please try again.',
-        genericError: 'Something went wrong. Please try again.',
-      },
       footer: {
         tagline: 'RaceSync keeps global fans aligned with every race weekend.',
         productHeading: 'Product',
@@ -680,37 +590,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       ctaTitle: '¿Listo para la largada?',
       ctaSubtitle: 'Abre el calendario en vivo y configura tus preferencias en segundos.',
       ctaButton: 'Abrir calendario',
-      notifications: {
-        title: 'Notificaciones',
-        description:
-          'Inicia sesión con Google para administrar tus notificaciones y recibir avisos push antes de cada sesión.',
-        authStatusLabel: 'Estado de la cuenta',
-        permissionStatusLabel: 'Estado de notificaciones',
-        signIn: 'Iniciar sesión con Google',
-        signOut: 'Cerrar sesión',
-        signingIn: 'Iniciando sesión…',
-        signingOut: 'Cerrando sesión…',
-        initializing: 'Conectando con Google…',
-        signedOut: 'Sesión no iniciada',
-        signedInAs: name => `Sesión iniciada como ${name}`,
-        unknownUser: 'piloto',
-        enable: 'Activar notificaciones',
-        disable: 'Desactivar notificaciones',
-        requesting: 'Solicitando…',
-        permissionPrompt:
-          'Permite las notificaciones del navegador para recibir avisos sobre los horarios de inicio.',
-        permissionDefault: 'Se requiere permiso',
-        permissionGranted: 'Permitidas',
-        permissionDenied: 'Bloqueadas',
-        permissionUnsupported: 'El navegador no admite notificaciones.',
-        serviceWorkerUnsupported: 'Este navegador no admite service workers en segundo plano.',
-        signInRequired: 'Inicia sesión para activar las notificaciones.',
-        configurationMissing: 'Configura Firebase mediante variables de entorno.',
-        enabledSuccess: 'Las notificaciones están activadas. Enviaremos recordatorios automáticamente.',
-        disabledSuccess: 'Las notificaciones están desactivadas. Ya no enviaremos recordatorios.',
-        saveError: 'No se pudo guardar la suscripción. Inténtalo de nuevo.',
-        genericError: 'No se pudo completar la acción. Inténtalo de nuevo.',
-      },
       footer: {
         tagline: 'RaceSync mantiene a los fans sincronizados con cada fin de semana de carreras.',
         productHeading: 'Producto',
@@ -889,37 +768,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       ctaTitle: 'Prêt pour le départ ?',
       ctaSubtitle: 'Ouvrez le calendrier en direct et gardez vos filtres toujours à portée de main.',
       ctaButton: 'Ouvrir le calendrier',
-      notifications: {
-        title: 'Notifications',
-        description:
-          'Connectez-vous avec Google pour gérer vos notifications et recevoir des alertes push avant chaque séance.',
-        authStatusLabel: 'Statut du compte',
-        permissionStatusLabel: 'Statut des notifications',
-        signIn: 'Se connecter avec Google',
-        signOut: 'Se déconnecter',
-        signingIn: 'Connexion…',
-        signingOut: 'Déconnexion…',
-        initializing: 'Connexion à Google…',
-        signedOut: 'Aucun compte connecté',
-        signedInAs: name => `Connecté en tant que ${name}`,
-        unknownUser: 'pilote',
-        enable: 'Activer les notifications',
-        disable: 'Désactiver les notifications',
-        requesting: 'Demande en cours…',
-        permissionPrompt:
-          'Autorisez les notifications du navigateur pour recevoir les alertes de début de séance.',
-        permissionDefault: 'Autorisation requise',
-        permissionGranted: 'Autorisées',
-        permissionDenied: 'Bloquées',
-        permissionUnsupported: 'Les notifications ne sont pas prises en charge par ce navigateur.',
-        serviceWorkerUnsupported: 'Les service workers en arrière-plan ne sont pas disponibles dans ce navigateur.',
-        signInRequired: 'Connectez-vous pour activer les notifications.',
-        configurationMissing: 'Ajoutez la configuration Firebase via les variables d’environnement.',
-        enabledSuccess: 'Les notifications sont activées. Nous enverrons les rappels automatiquement.',
-        disabledSuccess: "Les notifications sont désactivées. Nous n'enverrons plus de rappels.",
-        saveError: 'Impossible d’enregistrer votre abonnement. Veuillez réessayer.',
-        genericError: 'Une erreur est survenue. Veuillez réessayer.',
-      },
       footer: {
         tagline: 'RaceSync aide les fans du monde entier à suivre chaque week-end de course.',
         productHeading: 'Produit',
@@ -1098,37 +946,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       ctaTitle: 'Bereit für das Startsignal?',
       ctaSubtitle: 'Öffne den Live-Kalender, stelle deine Filter ein und bleib immer informiert.',
       ctaButton: 'Kalender öffnen',
-      notifications: {
-        title: 'Benachrichtigungen',
-        description:
-          'Melde dich mit Google an, um deine Benachrichtigungen zu verwalten und Push-Hinweise vor jeder Session zu erhalten.',
-        authStatusLabel: 'Kontostatus',
-        permissionStatusLabel: 'Benachrichtigungsstatus',
-        signIn: 'Mit Google anmelden',
-        signOut: 'Abmelden',
-        signingIn: 'Anmeldung…',
-        signingOut: 'Abmeldung…',
-        initializing: 'Verbindung zu Google…',
-        signedOut: 'Nicht angemeldet',
-        signedInAs: name => `Angemeldet als ${name}`,
-        unknownUser: 'Fahrer',
-        enable: 'Benachrichtigungen aktivieren',
-        disable: 'Benachrichtigungen deaktivieren',
-        requesting: 'Anfrage läuft…',
-        permissionPrompt:
-          'Erlaube Browser-Benachrichtigungen, um Push-Hinweise zu Startzeiten zu erhalten.',
-        permissionDefault: 'Genehmigung erforderlich',
-        permissionGranted: 'Genehmigt',
-        permissionDenied: 'Blockiert',
-        permissionUnsupported: 'Benachrichtigungen werden von diesem Browser nicht unterstützt.',
-        serviceWorkerUnsupported: 'Service Worker im Hintergrund sind in diesem Browser nicht verfügbar.',
-        signInRequired: 'Melde dich an, um Benachrichtigungen zu aktivieren.',
-        configurationMissing: 'Hinterlege die Firebase-Konfiguration über Umgebungsvariablen.',
-        enabledSuccess: 'Benachrichtigungen sind aktiviert. Wir senden Erinnerungen automatisch.',
-        disabledSuccess: 'Benachrichtigungen sind deaktiviert. Wir senden keine Erinnerungen mehr.',
-        saveError: 'Das Abo konnte nicht gespeichert werden. Bitte versuche es erneut.',
-        genericError: 'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
-      },
       footer: {
         tagline: 'RaceSync hält Fans weltweit mit jedem Rennwochenende synchron.',
         productHeading: 'Produkt',
@@ -1306,35 +1123,6 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       ctaTitle: '准备好出发了吗？',
       ctaSubtitle: '打开实时日历，设定你的偏好，抢先锁定每一次灯灭。',
       ctaButton: '立即打开',
-      notifications: {
-        title: '通知',
-        description: '通过 Google 登录后即可管理通知，并在每场比赛开始前收到推送提醒。',
-        authStatusLabel: '账户状态',
-        permissionStatusLabel: '通知状态',
-        signIn: '使用 Google 登录',
-        signOut: '退出登录',
-        signingIn: '正在登录…',
-        signingOut: '正在退出…',
-        initializing: '正在连接 Google…',
-        signedOut: '尚未登录',
-        signedInAs: name => `已登录：${name}`,
-        unknownUser: '车迷',
-        enable: '启用通知',
-        disable: '关闭通知',
-        requesting: '请求中…',
-        permissionPrompt: '请允许浏览器通知，以便接收赛程开始的推送提醒。',
-        permissionDefault: '需要授权',
-        permissionGranted: '已授权',
-        permissionDenied: '已阻止',
-        permissionUnsupported: '当前浏览器不支持通知功能。',
-        serviceWorkerUnsupported: '当前浏览器不支持后台 Service Worker。',
-        signInRequired: '登录后即可启用通知。',
-        configurationMissing: '请在环境变量中配置 Firebase 信息。',
-        enabledSuccess: '通知已启用，我们会自动发送提醒。',
-        disabledSuccess: '通知已关闭，我们将不再发送提醒。',
-        saveError: '无法保存订阅，请重试。',
-        genericError: '操作失败，请稍后再试。',
-      },
       footer: {
         tagline: 'RaceSync 让全球车迷在同一节奏下迎接每个赛道周末。',
         productHeading: '产品',
