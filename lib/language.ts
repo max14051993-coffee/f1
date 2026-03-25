@@ -91,6 +91,12 @@ type TranslationBundle = {
   heroCta: string;
   scheduleTitle: string;
   scheduleSubtitle: string;
+  scheduleLoadingLabel: string;
+  scheduleErrorTitle: string;
+  scheduleErrorDescription: string;
+  scheduleRetryButton: string;
+  scheduleErrorFallbackPrefix: string;
+  scheduleIcsLinkLabel: string;
   featuresTitle: string;
   featuresSubtitle: string;
   features: FeatureDescriptor[];
@@ -182,6 +188,12 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       heroCta: 'К событиям',
       scheduleTitle: 'Лента уик-эндов',
       scheduleSubtitle: 'Онлайн-обновление стартов с учётом вашего часового пояса.',
+      scheduleLoadingLabel: 'Загружаем расписание…',
+      scheduleErrorTitle: 'Не удалось загрузить расписание',
+      scheduleErrorDescription: 'Попробуйте ещё раз. Если ошибка повторится, откройте файл расписания вручную.',
+      scheduleRetryButton: 'Повторить',
+      scheduleErrorFallbackPrefix: 'Файл для диагностики:',
+      scheduleIcsLinkLabel: 'Открыть schedule.ics',
       featuresTitle: 'Сила оперативного календаря',
       featuresSubtitle: 'Всё, чтобы не пропустить старт.',
       features: [
@@ -360,6 +372,12 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       heroCta: 'Browse schedule',
       scheduleTitle: 'Weekend feed',
       scheduleSubtitle: 'Live-updated start times aligned with your timezone.',
+      scheduleLoadingLabel: 'Loading schedule…',
+      scheduleErrorTitle: 'Could not load the schedule',
+      scheduleErrorDescription: 'Please try again. If this keeps happening, open the schedule file directly.',
+      scheduleRetryButton: 'Retry',
+      scheduleErrorFallbackPrefix: 'Diagnostic file:',
+      scheduleIcsLinkLabel: 'Open schedule.ics',
       featuresTitle: 'Why fans choose RaceSync',
       featuresSubtitle: 'Purpose-built utilities for race weekend planning.',
       features: [
@@ -538,6 +556,12 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       heroCta: 'Ver calendario',
       scheduleTitle: 'Flujo de fines de semana',
       scheduleSubtitle: 'Horarios actualizados en vivo según tu zona horaria.',
+      scheduleLoadingLabel: 'Cargando calendario…',
+      scheduleErrorTitle: 'No se pudo cargar el calendario',
+      scheduleErrorDescription: 'Inténtalo de nuevo. Si el problema continúa, abre el archivo del calendario directamente.',
+      scheduleRetryButton: 'Reintentar',
+      scheduleErrorFallbackPrefix: 'Archivo para diagnóstico:',
+      scheduleIcsLinkLabel: 'Abrir schedule.ics',
       featuresTitle: 'Por qué elegir RaceSync',
       featuresSubtitle: 'Herramientas creadas para planificar cada sesión.',
       features: [
@@ -716,6 +740,12 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       heroCta: 'Consulter le calendrier',
       scheduleTitle: 'Flux des week-ends',
       scheduleSubtitle: 'Heures de départ mises à jour en direct dans votre fuseau horaire.',
+      scheduleLoadingLabel: 'Chargement du calendrier…',
+      scheduleErrorTitle: 'Impossible de charger le calendrier',
+      scheduleErrorDescription: 'Réessayez. Si le problème persiste, ouvrez le fichier du calendrier directement.',
+      scheduleRetryButton: 'Réessayer',
+      scheduleErrorFallbackPrefix: 'Fichier de diagnostic :',
+      scheduleIcsLinkLabel: 'Ouvrir schedule.ics',
       featuresTitle: 'Pourquoi choisir RaceSync',
       featuresSubtitle: 'Des outils pensés pour organiser chaque session.',
       features: [
@@ -894,6 +924,12 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       heroCta: 'Zum Kalender',
       scheduleTitle: 'Wochenend-Feed',
       scheduleSubtitle: 'Live aktualisierte Startzeiten in deiner Zeitzone.',
+      scheduleLoadingLabel: 'Zeitplan wird geladen…',
+      scheduleErrorTitle: 'Zeitplan konnte nicht geladen werden',
+      scheduleErrorDescription: 'Bitte versuche es erneut. Wenn der Fehler bleibt, öffne die Kalenderdatei direkt.',
+      scheduleRetryButton: 'Erneut versuchen',
+      scheduleErrorFallbackPrefix: 'Diagnosedatei:',
+      scheduleIcsLinkLabel: 'schedule.ics öffnen',
       featuresTitle: 'Darum RaceSync',
       featuresSubtitle: 'Durchdachte Werkzeuge für deine Rennplanung.',
       features: [
@@ -1072,6 +1108,12 @@ export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
       heroCta: '查看赛程',
       scheduleTitle: '周末赛程流',
       scheduleSubtitle: '开赛时间实时更新并匹配你的时区。',
+      scheduleLoadingLabel: '正在加载赛程…',
+      scheduleErrorTitle: '无法加载赛程',
+      scheduleErrorDescription: '请重试。如果问题持续，请直接打开赛程文件。',
+      scheduleRetryButton: '重试',
+      scheduleErrorFallbackPrefix: '诊断文件：',
+      scheduleIcsLinkLabel: '打开 schedule.ics',
       featuresTitle: '为什么选择 RaceSync',
       featuresSubtitle: '为赛车周末而生的实用功能。',
       features: [

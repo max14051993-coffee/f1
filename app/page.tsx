@@ -22,9 +22,14 @@ import { buildCountdownLabel, filterEventsByVisibility, localizeEvent } from '..
 import { LANGUAGE_STORAGE_KEY, PERIOD_STORAGE_KEY, SERIES_STORAGE_KEY } from '../lib/preferences';
 import { useThemePreference } from './hooks/useThemePreference';
 
+const SCHEDULE_URL = './schedule.ics';
+
 export default function Home() {
   const { theme, toggleTheme } = useThemePreference();
   const [events, setEvents] = useState<ScheduleEvent[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [visibleSeries, setVisibleSeries] = useState<Record<SeriesId, boolean>>(() =>
     buildSeriesVisibility(true),
   );
@@ -38,15 +43,33 @@ export default function Home() {
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
   const privacyPolicyDialogRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    async function load() {
-      const text = await fetch('./schedule.ics').then(r => r.text());
+
+  const loadSchedule = useCallback(async () => {
+    setIsLoading(true);
+    setIsError(false);
+    setErrorMessage('');
+
+    try {
+      const response = await fetch(SCHEDULE_URL);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const text = await response.text();
       const parsed = parseSchedule(text);
       setEvents(parsed);
+    } catch (error) {
+      setEvents([]);
+      setIsError(true);
+      setErrorMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setIsLoading(false);
     }
-    load().catch(console.error);
-    setUserTz(DateTime.local().zoneName);
   }, []);
+
+  useEffect(() => {
+    loadSchedule().catch(console.error);
+    setUserTz(DateTime.local().zoneName);
+  }, [loadSchedule]);
 
   useEffect(() => {
     if (typeof localStorage === 'undefined') {
@@ -572,8 +595,36 @@ export default function Home() {
             </h2>
             <p className="section-heading__description">{texts.scheduleSubtitle}</p>
           </div>
+          {isError ? (
+            <div className="schedule-error" role="alert">
+              <div className="schedule-error__content">
+                <p className="schedule-error__title">{texts.scheduleErrorTitle}</p>
+                <p className="schedule-error__description">{texts.scheduleErrorDescription}</p>
+                <p className="schedule-error__fallback">
+                  {texts.scheduleErrorFallbackPrefix}{' '}
+                  <a href={SCHEDULE_URL} target="_blank" rel="noreferrer noopener">
+                    {texts.scheduleIcsLinkLabel}
+                  </a>
+                  {errorMessage ? ` (${errorMessage})` : null}
+                </p>
+              </div>
+              <button type="button" className="schedule-error__retry" onClick={() => void loadSchedule()}>
+                {texts.scheduleRetryButton}
+              </button>
+            </div>
+          ) : null}
           <ul className="events-grid">
-            {localizedEvents.map((localized, index) => {
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                  <li
+                    key={`event-skeleton-${index}`}
+                    className="event-card event-card--skeleton"
+                    aria-label={texts.scheduleLoadingLabel}
+                  >
+                    <div className="event-card__inner" />
+                  </li>
+                ))
+              : localizedEvents.map((localized, index) => {
               const { event, localStart, status, startRelative, finishRelative } = localized;
               const definition = SERIES_DEFINITIONS[event.series];
               const accentColor = definition.accentColor;
