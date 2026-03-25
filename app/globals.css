@@ -2021,6 +2021,12 @@ button {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
+.events-section__actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
 .schedule-error {
   display: flex;
   align-items: center;

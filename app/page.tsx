@@ -1,6 +1,6 @@
 'use client';
 
-import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CSSProperties, KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import {
   DEFAULT_LANGUAGE,
@@ -23,6 +23,16 @@ import { LANGUAGE_STORAGE_KEY, PERIOD_STORAGE_KEY, SERIES_STORAGE_KEY } from '..
 import { useThemePreference } from './hooks/useThemePreference';
 
 const SCHEDULE_URL = './schedule.ics';
+const INITIAL_VISIBLE_EVENTS = 24;
+const VISIBLE_EVENTS_STEP = 24;
+
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter(element => !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true');
+}
 
 export default function Home() {
   const { theme, toggleTheme } = useThemePreference();
@@ -40,9 +50,14 @@ export default function Home() {
   const [language, setLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
   const [isLanguageMenuOpen, setLanguageMenuOpen] = useState(false);
   const [isPrivacyPolicyOpen, setPrivacyPolicyOpen] = useState(false);
+  const [focusedLanguageIndex, setFocusedLanguageIndex] = useState(0);
+  const [visibleEventsCount, setVisibleEventsCount] = useState(INITIAL_VISIBLE_EVENTS);
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
+  const languageToggleRef = useRef<HTMLButtonElement | null>(null);
+  const languageOptionRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const privacyPolicyDialogRef = useRef<HTMLDivElement | null>(null);
+  const privacyPolicyTriggerRef = useRef<HTMLElement | null>(null);
 
   const loadSchedule = useCallback(async () => {
     setIsLoading(true);
@@ -149,6 +164,10 @@ export default function Home() {
   }, [hours, hasLoadedPeriod]);
 
   useEffect(() => {
+    setVisibleEventsCount(INITIAL_VISIBLE_EVENTS);
+  }, [events, visibleSeries, hours]);
+
+  useEffect(() => {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
     if (stored && isLanguageCode(stored)) {
       setLanguage(stored);
@@ -243,9 +262,13 @@ export default function Home() {
       return;
     }
 
-    const previousActive = document.activeElement as HTMLElement | null;
     const dialog = privacyPolicyDialogRef.current;
-    dialog?.focus({ preventScroll: true });
+    if (!dialog) {
+      return;
+    }
+
+    const focusable = getFocusableElements(dialog);
+    (focusable[0] ?? dialog).focus({ preventScroll: true });
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -253,6 +276,30 @@ export default function Home() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setPrivacyPolicyOpen(false);
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const dynamicFocusable = getFocusableElements(dialog);
+      if (dynamicFocusable.length === 0) {
+        event.preventDefault();
+        dialog.focus({ preventScroll: true });
+        return;
+      }
+
+      const first = dynamicFocusable[0];
+      const last = dynamicFocusable[dynamicFocusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus({ preventScroll: true });
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus({ preventScroll: true });
       }
     };
 
@@ -261,9 +308,27 @@ export default function Home() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = previousOverflow;
-      previousActive?.focus?.();
+      privacyPolicyTriggerRef.current?.focus?.();
+      privacyPolicyTriggerRef.current = null;
     };
   }, [isPrivacyPolicyOpen]);
+
+  useEffect(() => {
+    if (!isLanguageMenuOpen) {
+      return;
+    }
+
+    const selectedIndex = Math.max(
+      0,
+      LANGUAGE_CODES.findIndex(code => code === language),
+    );
+    setFocusedLanguageIndex(selectedIndex);
+  }, [isLanguageMenuOpen, language]);
+
+  useEffect(() => {
+    if (!isLanguageMenuOpen) return;
+    languageOptionRefs.current[focusedLanguageIndex]?.focus({ preventScroll: true });
+  }, [isLanguageMenuOpen, focusedLanguageIndex]);
 
   useEffect(() => {
     if (!isLanguageMenuOpen) return;
@@ -271,6 +336,7 @@ export default function Home() {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         setLanguageMenuOpen(false);
+        languageToggleRef.current?.focus({ preventScroll: true });
       }
     }
 
@@ -297,8 +363,18 @@ export default function Home() {
     [events, visibleSeries, hours],
   );
 
-  const nowLocal = DateTime.local().setZone(userTz).setLocale(locale);
-  const localizedEvents = filtered.map(event => localizeEvent(event, userTz, locale, nowLocal));
+  const localizedEvents = useMemo(() => {
+    const nowLocal = DateTime.local().setZone(userTz).setLocale(locale);
+    return filtered.map(event => localizeEvent(event, userTz, locale, nowLocal));
+  }, [filtered, userTz, locale]);
+  const visibleEvents = useMemo(
+    () => localizedEvents.slice(0, visibleEventsCount),
+    [localizedEvents, visibleEventsCount],
+  );
+  const hasMoreEvents = visibleEventsCount < localizedEvents.length;
+  const remainingEvents = Math.max(localizedEvents.length - visibleEvents.length, 0);
+  const loadMoreLabel =
+    language === 'ru' ? `Показать ещё (${remainingEvents})` : `Show more (${remainingEvents})`;
   const activeSeries = (Object.entries(visibleSeries) as [SeriesId, boolean][])
     .filter(([, active]) => active)
     .map(([series]) => series);
@@ -362,6 +438,55 @@ export default function Home() {
   const currentYear = new Date().getFullYear();
   const footerLegal = footer.legal.replace('{year}', currentYear.toString());
   const privacyPolicyTitleId = 'privacy-policy-title';
+  const privacyPolicyDescriptionId = 'privacy-policy-description';
+  const languageMenuLabel =
+    language === 'ru'
+      ? `Выбор языка. Текущий язык: ${languageDisplayName}`
+      : `Language selector. Current language: ${languageDisplayName}`;
+
+  const handleLanguageToggleKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const selectedIndex = Math.max(
+        0,
+        LANGUAGE_CODES.findIndex(code => code === language),
+      );
+      setFocusedLanguageIndex(selectedIndex);
+      setLanguageMenuOpen(true);
+    }
+  };
+
+  const handleLanguageMenuKeyDown = (event: ReactKeyboardEvent<HTMLUListElement>) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setFocusedLanguageIndex(prev => (prev + 1) % LANGUAGE_CODES.length);
+      return;
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setFocusedLanguageIndex(prev => (prev - 1 + LANGUAGE_CODES.length) % LANGUAGE_CODES.length);
+      return;
+    }
+    if (event.key === 'Home') {
+      event.preventDefault();
+      setFocusedLanguageIndex(0);
+      return;
+    }
+    if (event.key === 'End') {
+      event.preventDefault();
+      setFocusedLanguageIndex(LANGUAGE_CODES.length - 1);
+      return;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const code = LANGUAGE_CODES[focusedLanguageIndex];
+      if (code) {
+        setLanguage(code);
+      }
+      setLanguageMenuOpen(false);
+      languageToggleRef.current?.focus({ preventScroll: true });
+    }
+  };
   return (
     <div className="site" id="top">
       <header className="site-header" ref={headerRef}>
@@ -389,7 +514,8 @@ export default function Home() {
                 type="button"
                 className="theme-toggle"
                 aria-label={themeButtonLabel}
-                aria-pressed={theme === 'light'}
+                role="switch"
+                aria-checked={theme === 'dark'}
                 data-theme-state={theme}
                 onClick={toggleTheme}
               >
@@ -410,7 +536,10 @@ export default function Home() {
                     aria-haspopup="listbox"
                     aria-expanded={isLanguageMenuOpen}
                     aria-controls="language-select-menu"
+                    aria-label={languageMenuLabel}
+                    ref={languageToggleRef}
                     onClick={() => setLanguageMenuOpen(prev => !prev)}
+                    onKeyDown={handleLanguageToggleKeyDown}
                   >
                     <span className="site-header__language-value">{languageDisplayName}</span>
                   </button>
@@ -420,6 +549,7 @@ export default function Home() {
                       role="listbox"
                       id="language-select-menu"
                       aria-labelledby="language-select"
+                      onKeyDown={handleLanguageMenuKeyDown}
                     >
                       {LANGUAGE_CODES.map(code => {
                         const definition = LANGUAGE_DEFINITIONS[code];
@@ -435,9 +565,13 @@ export default function Home() {
                               type="button"
                               className="site-header__language-option-button"
                               data-active={isSelected}
+                              ref={element => {
+                                languageOptionRefs.current[LANGUAGE_CODES.indexOf(code)] = element;
+                              }}
                               onClick={() => {
                                 setLanguage(code);
                                 setLanguageMenuOpen(false);
+                                languageToggleRef.current?.focus({ preventScroll: true });
                               }}
                             >
                               <span className="site-header__language-option-name">
@@ -624,7 +758,7 @@ export default function Home() {
                     <div className="event-card__inner" />
                   </li>
                 ))
-              : localizedEvents.map((localized, index) => {
+              : visibleEvents.map((localized, index) => {
               const { event, localStart, status, startRelative, finishRelative } = localized;
               const definition = SERIES_DEFINITIONS[event.series];
               const accentColor = definition.accentColor;
@@ -714,6 +848,17 @@ export default function Home() {
               );
             })}
           </ul>
+          {!isLoading && hasMoreEvents ? (
+            <div className="events-section__actions">
+              <button
+                type="button"
+                className="schedule-error__retry"
+                onClick={() => setVisibleEventsCount(prev => prev + VISIBLE_EVENTS_STEP)}
+              >
+                {loadMoreLabel}
+              </button>
+            </div>
+          ) : null}
         </section>
 
         <section id="features" className="features-section" aria-labelledby="features-heading">
@@ -845,7 +990,10 @@ export default function Home() {
                         <button
                           type="button"
                           className="site-footer__list-button"
-                          onClick={() => setPrivacyPolicyOpen(true)}
+                          onClick={event => {
+                            privacyPolicyTriggerRef.current = event.currentTarget;
+                            setPrivacyPolicyOpen(true);
+                          }}
                         >
                           {link.label}
                         </button>
@@ -869,7 +1017,13 @@ export default function Home() {
         </div>
       </footer>
       {privacyPolicy && isPrivacyPolicyOpen ? (
-        <div className="modal" role="dialog" aria-modal="true" aria-labelledby={privacyPolicyTitleId}>
+        <div
+          className="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={privacyPolicyTitleId}
+          aria-describedby={privacyPolicyDescriptionId}
+        >
           <div className="modal__backdrop" onClick={() => setPrivacyPolicyOpen(false)} />
           <div
             className="modal__dialog"
@@ -892,7 +1046,7 @@ export default function Home() {
                 {privacyPolicy.closeLabel}
               </button>
             </div>
-            <div className="modal__content">
+            <div className="modal__content" id={privacyPolicyDescriptionId}>
               {privacyPolicy.intro.map((paragraph, index) => (
                 <p key={`privacy-intro-${index}`} className="privacy-policy__paragraph">
                   {paragraph}
