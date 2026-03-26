@@ -25,6 +25,45 @@ import { useThemePreference } from './hooks/useThemePreference';
 const SCHEDULE_URL = './schedule.ics';
 const INITIAL_VISIBLE_EVENTS = 24;
 const VISIBLE_EVENTS_STEP = 24;
+type QuickFilterMode = 'all' | 'liveToday';
+type GroupingMode = 'none' | 'day';
+
+function escapeIcsText(value: string) {
+  return value.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+}
+
+function toIcsUtc(value: string) {
+  const dt = DateTime.fromISO(value, { zone: 'utc' });
+  return dt.isValid ? dt.toFormat("yyyyMMdd'T'HHmmss'Z'") : null;
+}
+
+function buildEventIcsDeepLink(event: ScheduleEvent) {
+  const dtStart = toIcsUtc(event.startsAtUtc);
+  if (!dtStart) {
+    return './schedule.ics';
+  }
+  const dtEnd = toIcsUtc(event.endsAtUtc ?? '') ?? DateTime.fromISO(event.startsAtUtc, { zone: 'utc' }).plus({ hours: 2 }).toFormat("yyyyMMdd'T'HHmmss'Z'");
+  const uid = event.uid ?? `${event.series}-${event.startsAtUtc}`.replace(/[^a-zA-Z0-9@._-]/g, '');
+  const summary = escapeIcsText(`${event.series} · ${event.round} · ${event.session}`);
+  const location = escapeIcsText([event.circuit, event.country].filter(Boolean).join(', '));
+  const description = escapeIcsText(`Added from RaceSync: ${event.round}`);
+  const payload = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//RaceSync//Schedule//EN',
+    'BEGIN:VEVENT',
+    `UID:${uid}@racesync.app`,
+    `DTSTAMP:${DateTime.utc().toFormat("yyyyMMdd'T'HHmmss'Z'")}`,
+    `DTSTART:${dtStart}`,
+    `DTEND:${dtEnd}`,
+    `SUMMARY:${summary}`,
+    `LOCATION:${location}`,
+    `DESCRIPTION:${description}`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+  return `data:text/calendar;charset=utf-8,${encodeURIComponent(payload)}`;
+}
 
 function getFocusableElements(container: HTMLElement): HTMLElement[] {
   return Array.from(
@@ -52,6 +91,8 @@ export default function Home() {
   const [isPrivacyPolicyOpen, setPrivacyPolicyOpen] = useState(false);
   const [focusedLanguageIndex, setFocusedLanguageIndex] = useState(0);
   const [visibleEventsCount, setVisibleEventsCount] = useState(INITIAL_VISIBLE_EVENTS);
+  const [quickFilter, setQuickFilter] = useState<QuickFilterMode>('all');
+  const [grouping, setGrouping] = useState<GroupingMode>('none');
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
   const languageToggleRef = useRef<HTMLButtonElement | null>(null);
@@ -165,7 +206,7 @@ export default function Home() {
 
   useEffect(() => {
     setVisibleEventsCount(INITIAL_VISIBLE_EVENTS);
-  }, [events, visibleSeries, hours]);
+  }, [events, visibleSeries, hours, quickFilter, grouping]);
 
   useEffect(() => {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
@@ -365,12 +406,43 @@ export default function Home() {
 
   const localizedEvents = useMemo(() => {
     const nowLocal = DateTime.local().setZone(userTz).setLocale(locale);
-    return filtered.map(event => localizeEvent(event, userTz, locale, nowLocal));
-  }, [filtered, userTz, locale]);
+    const localized = filtered.map(event => localizeEvent(event, userTz, locale, nowLocal));
+    if (quickFilter === 'all') {
+      return localized;
+    }
+
+    return localized.filter(item => {
+      const isLive = item.status === 'live';
+      const isToday = item.localStart.hasSame(nowLocal, 'day');
+      return isLive || isToday;
+    });
+  }, [filtered, userTz, locale, quickFilter]);
   const visibleEvents = useMemo(
     () => localizedEvents.slice(0, visibleEventsCount),
     [localizedEvents, visibleEventsCount],
   );
+  const shouldGroupByDay = grouping === 'day' && (typeof hours !== 'number' || hours > 72);
+  const groupedVisibleEvents = useMemo(() => {
+    if (!shouldGroupByDay) {
+      return [] as Array<{ dayKey: string; dayLabel: string; items: typeof visibleEvents }>;
+    }
+    const groups = new Map<string, { dayLabel: string; items: typeof visibleEvents }>();
+    for (const item of visibleEvents) {
+      const dayKey = item.localStart.toISODate() ?? item.localStart.toFormat('yyyy-MM-dd');
+      const dayLabel = item.localStart.toFormat('cccc, dd LLL');
+      const existing = groups.get(dayKey);
+      if (existing) {
+        existing.items.push(item);
+      } else {
+        groups.set(dayKey, { dayLabel, items: [item] });
+      }
+    }
+    return Array.from(groups.entries()).map(([dayKey, value]) => ({
+      dayKey,
+      dayLabel: value.dayLabel,
+      items: value.items,
+    }));
+  }, [visibleEvents, shouldGroupByDay]);
   const hasMoreEvents = visibleEventsCount < localizedEvents.length;
   const remainingEvents = Math.max(localizedEvents.length - visibleEvents.length, 0);
   const loadMoreLabel =
@@ -426,6 +498,24 @@ export default function Home() {
       ? 'event-card__countdown hero-card__countdown'
       : `event-card__countdown event-card__countdown--${nextStatus} hero-card__countdown`;
   const heroSeriesDefinition = nextSeriesDefinition ?? FALLBACK_SERIES_DEFINITION;
+  const nextEventCalendarLink = nextEvent ? buildEventIcsDeepLink(nextEvent) : SCHEDULE_URL;
+  const nextEventCalendarFile = nextEvent
+    ? `${nextEvent.round.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase() || 'racesync-event'}.ics`
+    : 'racesync-event.ics';
+  const quickFilterLabel =
+    language === 'ru' ? 'Только live/сегодня' : 'Live & today only';
+  const quickFilterHint =
+    language === 'ru'
+      ? 'Показывать только активные сессии и события сегодняшнего дня'
+      : 'Show only active sessions and events happening today';
+  const groupingLabel = language === 'ru' ? 'Группировка' : 'Grouping';
+  const groupingOffLabel = language === 'ru' ? 'Без группировки' : 'No grouping';
+  const groupingDayLabel = language === 'ru' ? 'По дням' : 'By day';
+  const mobileNextEventLabel =
+    language === 'ru' ? 'Следующее событие через' : 'Next event in';
+  const mobileOpenLabel = language === 'ru' ? 'Открыть' : 'Open';
+  const addToCalendarLabel =
+    language === 'ru' ? 'Добавить в календарь' : 'Add to calendar';
   const heroSeriesLabel = heroSeriesDefinition?.label ?? nextSeriesLabel ?? '';
   const localizedHeroTitle = texts.heroTitle(heroSeriesLabel);
   const heroAccentColor = heroSeriesDefinition?.accentColor ?? '#e10600';
@@ -486,6 +576,96 @@ export default function Home() {
       setLanguageMenuOpen(false);
       languageToggleRef.current?.focus({ preventScroll: true });
     }
+  };
+
+  const renderEventCard = (localized: (typeof visibleEvents)[number], index: number, groupKey?: string) => {
+    const { event, localStart, status, startRelative, finishRelative } = localized;
+    const definition = SERIES_DEFINITIONS[event.series];
+    const accentColor = definition.accentColor;
+    const accentRgb = definition.accentRgb;
+    const isoLocal = localStart.toISO();
+    const timeLabel = localStart.toFormat('HH:mm');
+    const dayLabel = localStart.toFormat('ccc');
+    const dateLabel = localStart.toFormat('dd LLL');
+    const countdown = buildCountdownLabel(status, startRelative, finishRelative, countdownCopy);
+    const countdownClassName =
+      status === 'upcoming'
+        ? 'event-card__countdown'
+        : `event-card__countdown event-card__countdown--${status}`;
+    const track = getTrackLayout(event.circuit, event.round);
+    const trackLabelParts = Array.from(
+      new Set(
+        [event.circuit, event.round].filter(
+          (part): part is string => !!part && part.trim().length > 0,
+        ),
+      ),
+    );
+    const trackLabel = texts.trackLayoutLabel(trackLabelParts);
+    const sessionLabel = sessionLabels[event.session] ?? event.session;
+
+    return (
+      <li
+        key={`${groupKey ?? 'event'}-${event.startsAtUtc}-${index}`}
+        className="event-card"
+        style={
+          {
+            '--accent-color': accentColor,
+            '--accent-rgb': accentRgb,
+          } as CSSProperties
+        }
+      >
+        <div className="event-card__inner">
+          <div className="event-card__top">
+            <div className="event-card__series">
+              <img
+                src={definition.logo.src}
+                alt=""
+                width={definition.logo.width}
+                height={definition.logo.height}
+                className="event-card__series-logo"
+                loading="lazy"
+                aria-hidden="true"
+                draggable={false}
+              />
+            </div>
+            <time className="event-card__datetime" dateTime={isoLocal ?? undefined}>
+              <span className="event-card__time">{timeLabel}</span>
+              <span className="event-card__date">
+                {dayLabel}, {dateLabel}
+              </span>
+            </time>
+          </div>
+          <div className="event-card__info">
+            <span className="event-card__title">{event.round}</span>
+            {event.country ? (
+              <span className="event-card__country">{event.country}</span>
+            ) : null}
+            {event.circuit ? (
+              <span className="event-card__meta-line">{event.circuit}</span>
+            ) : null}
+            <span className="event-card__meta-line event-card__session">{sessionLabel}</span>
+          </div>
+          {track ? (
+            <div className="event-card__track">
+              <svg
+                viewBox={track.layout.viewBox}
+                role="img"
+                aria-label={trackLabel}
+                focusable="false"
+              >
+                <path className="event-card__track-shadow" d={track.layout.path} />
+                <path className="event-card__track-outline" d={track.layout.path} />
+                <path className="event-card__track-highlight" d={track.layout.path} />
+              </svg>
+            </div>
+          ) : null}
+          <div className={countdownClassName} aria-live={status === 'live' ? 'polite' : 'off'}>
+            <span className="event-card__countdown-dot" aria-hidden />
+            <span>{countdown}</span>
+          </div>
+        </div>
+      </li>
+    );
   };
   return (
     <div className="site" id="top">
@@ -674,6 +854,28 @@ export default function Home() {
                     <span className="hero__event-summary-value">{filtered.length}</span>
                     <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
                   </div>
+                  <div className="hero__quick-controls">
+                    <label className="hero__quick-toggle" title={quickFilterHint}>
+                      <input
+                        type="checkbox"
+                        checked={quickFilter === 'liveToday'}
+                        onChange={() =>
+                          setQuickFilter(prev => (prev === 'all' ? 'liveToday' : 'all'))
+                        }
+                      />
+                      <span>{quickFilterLabel}</span>
+                    </label>
+                    <label className="hero__grouping-control">
+                      <span>{groupingLabel}</span>
+                      <select
+                        value={grouping}
+                        onChange={event => setGrouping(event.target.value as GroupingMode)}
+                      >
+                        <option value="none">{groupingOffLabel}</option>
+                        <option value="day">{groupingDayLabel}</option>
+                      </select>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -709,6 +911,13 @@ export default function Home() {
                         <span>{nextCountdown}</span>
                       </div>
                     ) : null}
+                    <a
+                      className="hero-card__calendar-button"
+                      href={nextEventCalendarLink}
+                      download={nextEventCalendarFile}
+                    >
+                      {addToCalendarLabel}
+                    </a>
                   </div>
                 ) : (
                   <>
@@ -758,95 +967,16 @@ export default function Home() {
                     <div className="event-card__inner" />
                   </li>
                 ))
-              : visibleEvents.map((localized, index) => {
-              const { event, localStart, status, startRelative, finishRelative } = localized;
-              const definition = SERIES_DEFINITIONS[event.series];
-              const accentColor = definition.accentColor;
-              const accentRgb = definition.accentRgb;
-              const isoLocal = localStart.toISO();
-              const timeLabel = localStart.toFormat('HH:mm');
-              const dayLabel = localStart.toFormat('ccc');
-              const dateLabel = localStart.toFormat('dd LLL');
-              const countdown = buildCountdownLabel(status, startRelative, finishRelative, countdownCopy);
-              const countdownClassName =
-                status === 'upcoming'
-                  ? 'event-card__countdown'
-                  : `event-card__countdown event-card__countdown--${status}`;
-              const track = getTrackLayout(event.circuit, event.round);
-              const trackLabelParts = Array.from(
-                new Set(
-                  [event.circuit, event.round].filter(
-                    (part): part is string => !!part && part.trim().length > 0,
-                  ),
-                ),
-              );
-              const trackLabel = texts.trackLayoutLabel(trackLabelParts);
-              const sessionLabel = sessionLabels[event.session] ?? event.session;
-
-              return (
-                <li
-                  key={`${event.startsAtUtc}-${index}`}
-                  className="event-card"
-                  style={
-                    {
-                      '--accent-color': accentColor,
-                      '--accent-rgb': accentRgb,
-                    } as CSSProperties
-                  }
-                >
-                  <div className="event-card__inner">
-                    <div className="event-card__top">
-                      <div className="event-card__series">
-                        <img
-                          src={definition.logo.src}
-                          alt=""
-                          width={definition.logo.width}
-                          height={definition.logo.height}
-                          className="event-card__series-logo"
-                          loading="lazy"
-                          aria-hidden="true"
-                          draggable={false}
-                        />
-                      </div>
-                      <time className="event-card__datetime" dateTime={isoLocal ?? undefined}>
-                        <span className="event-card__time">{timeLabel}</span>
-                        <span className="event-card__date">
-                          {dayLabel}, {dateLabel}
-                        </span>
-                      </time>
-                    </div>
-                    <div className="event-card__info">
-                      <span className="event-card__title">{event.round}</span>
-                      {event.country ? (
-                        <span className="event-card__country">{event.country}</span>
-                      ) : null}
-                      {event.circuit ? (
-                        <span className="event-card__meta-line">{event.circuit}</span>
-                      ) : null}
-                      <span className="event-card__meta-line event-card__session">{sessionLabel}</span>
-                    </div>
-                    {track ? (
-                      <div className="event-card__track">
-                        <svg
-                          viewBox={track.layout.viewBox}
-                          role="img"
-                          aria-label={trackLabel}
-                          focusable="false"
-                        >
-                          <path className="event-card__track-shadow" d={track.layout.path} />
-                          <path className="event-card__track-outline" d={track.layout.path} />
-                          <path className="event-card__track-highlight" d={track.layout.path} />
-                        </svg>
-                      </div>
-                    ) : null}
-                    <div className={countdownClassName} aria-live={status === 'live' ? 'polite' : 'off'}>
-                      <span className="event-card__countdown-dot" aria-hidden />
-                      <span>{countdown}</span>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
+              : shouldGroupByDay
+                ? groupedVisibleEvents.flatMap(group => [
+                    <li key={`group-${group.dayKey}`} className="events-grid__group-label" aria-hidden>
+                      {group.dayLabel}
+                    </li>,
+                    ...group.items.map((localized, index) =>
+                      renderEventCard(localized, index, group.dayKey),
+                    ),
+                  ])
+                : visibleEvents.map((localized, index) => renderEventCard(localized, index))}
           </ul>
           {!isLoading && hasMoreEvents ? (
             <div className="events-section__actions">
@@ -860,6 +990,13 @@ export default function Home() {
             </div>
           ) : null}
         </section>
+        {nextCountdown ? (
+          <a className="mobile-next-event" href="#schedule">
+            <span>{mobileNextEventLabel}</span>
+            <strong>{nextCountdown}</strong>
+            <em>{mobileOpenLabel}</em>
+          </a>
+        ) : null}
 
         <section id="features" className="features-section" aria-labelledby="features-heading">
           <div className="section-heading">

@@ -2720,3 +2720,102 @@ button {
     justify-content: center;
   }
 }
+
+.hero__quick-controls {
+  margin-top: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.hero__quick-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.hero__quick-toggle input {
+  accent-color: var(--hero-accent);
+}
+
+.hero__grouping-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.hero__grouping-control select {
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  padding: 6px 10px;
+}
+
+.hero-card__calendar-button {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--hero-accent-rgb), 0.45);
+  background: rgba(var(--hero-accent-rgb), 0.16);
+  color: var(--text-primary);
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+}
+
+.events-grid__group-label {
+  grid-column: 1 / -1;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.mobile-next-event {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .mobile-next-event {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 25;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(5, 7, 15, 0.92);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 16px 32px -16px rgba(0, 0, 0, 0.8);
+    font-size: 0.8rem;
+  }
+
+  .mobile-next-event strong {
+    text-align: center;
+    color: #fff;
+    font-size: 0.84rem;
+  }
+
+  .mobile-next-event em {
+    font-style: normal;
+    color: rgba(var(--hero-accent-rgb), 1);
+    font-weight: 700;
+  }
+
+  .page-shell {
+    padding-bottom: 160px;
+  }
+}
