@@ -25,8 +25,6 @@ import { useThemePreference } from './hooks/useThemePreference';
 const SCHEDULE_URL = './schedule.ics';
 const INITIAL_VISIBLE_EVENTS = 24;
 const VISIBLE_EVENTS_STEP = 24;
-type QuickFilterMode = 'all' | 'liveToday';
-type GroupingMode = 'none' | 'day';
 
 function escapeIcsText(value: string) {
   return value.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
@@ -91,8 +89,6 @@ export default function Home() {
   const [isPrivacyPolicyOpen, setPrivacyPolicyOpen] = useState(false);
   const [focusedLanguageIndex, setFocusedLanguageIndex] = useState(0);
   const [visibleEventsCount, setVisibleEventsCount] = useState(INITIAL_VISIBLE_EVENTS);
-  const [quickFilter, setQuickFilter] = useState<QuickFilterMode>('all');
-  const [grouping, setGrouping] = useState<GroupingMode>('none');
   const headerRef = useRef<HTMLElement | null>(null);
   const languageControlRef = useRef<HTMLDivElement | null>(null);
   const languageToggleRef = useRef<HTMLButtonElement | null>(null);
@@ -206,7 +202,7 @@ export default function Home() {
 
   useEffect(() => {
     setVisibleEventsCount(INITIAL_VISIBLE_EVENTS);
-  }, [events, visibleSeries, hours, quickFilter, grouping]);
+  }, [events, visibleSeries, hours]);
 
   useEffect(() => {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
@@ -406,43 +402,12 @@ export default function Home() {
 
   const localizedEvents = useMemo(() => {
     const nowLocal = DateTime.local().setZone(userTz).setLocale(locale);
-    const localized = filtered.map(event => localizeEvent(event, userTz, locale, nowLocal));
-    if (quickFilter === 'all') {
-      return localized;
-    }
-
-    return localized.filter(item => {
-      const isLive = item.status === 'live';
-      const isToday = item.localStart.hasSame(nowLocal, 'day');
-      return isLive || isToday;
-    });
-  }, [filtered, userTz, locale, quickFilter]);
+    return filtered.map(event => localizeEvent(event, userTz, locale, nowLocal));
+  }, [filtered, userTz, locale]);
   const visibleEvents = useMemo(
     () => localizedEvents.slice(0, visibleEventsCount),
     [localizedEvents, visibleEventsCount],
   );
-  const shouldGroupByDay = grouping === 'day' && (typeof hours !== 'number' || hours > 72);
-  const groupedVisibleEvents = useMemo(() => {
-    if (!shouldGroupByDay) {
-      return [] as Array<{ dayKey: string; dayLabel: string; items: typeof visibleEvents }>;
-    }
-    const groups = new Map<string, { dayLabel: string; items: typeof visibleEvents }>();
-    for (const item of visibleEvents) {
-      const dayKey = item.localStart.toISODate() ?? item.localStart.toFormat('yyyy-MM-dd');
-      const dayLabel = item.localStart.toFormat('cccc, dd LLL');
-      const existing = groups.get(dayKey);
-      if (existing) {
-        existing.items.push(item);
-      } else {
-        groups.set(dayKey, { dayLabel, items: [item] });
-      }
-    }
-    return Array.from(groups.entries()).map(([dayKey, value]) => ({
-      dayKey,
-      dayLabel: value.dayLabel,
-      items: value.items,
-    }));
-  }, [visibleEvents, shouldGroupByDay]);
   const hasMoreEvents = visibleEventsCount < localizedEvents.length;
   const remainingEvents = Math.max(localizedEvents.length - visibleEvents.length, 0);
   const loadMoreLabel =
@@ -502,15 +467,6 @@ export default function Home() {
   const nextEventCalendarFile = nextEvent
     ? `${nextEvent.round.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase() || 'racesync-event'}.ics`
     : 'racesync-event.ics';
-  const quickFilterLabel =
-    language === 'ru' ? 'Только live/сегодня' : 'Live & today only';
-  const quickFilterHint =
-    language === 'ru'
-      ? 'Показывать только активные сессии и события сегодняшнего дня'
-      : 'Show only active sessions and events happening today';
-  const groupingLabel = language === 'ru' ? 'Группировка' : 'Grouping';
-  const groupingOffLabel = language === 'ru' ? 'Без группировки' : 'No grouping';
-  const groupingDayLabel = language === 'ru' ? 'По дням' : 'By day';
   const mobileNextEventLabel =
     language === 'ru' ? 'Следующее событие через' : 'Next event in';
   const mobileOpenLabel = language === 'ru' ? 'Открыть' : 'Open';
@@ -854,28 +810,6 @@ export default function Home() {
                     <span className="hero__event-summary-value">{filtered.length}</span>
                     <span className="hero__event-summary-period">{selectedPeriodLabel}</span>
                   </div>
-                  <div className="hero__quick-controls">
-                    <label className="hero__quick-toggle" title={quickFilterHint}>
-                      <input
-                        type="checkbox"
-                        checked={quickFilter === 'liveToday'}
-                        onChange={() =>
-                          setQuickFilter(prev => (prev === 'all' ? 'liveToday' : 'all'))
-                        }
-                      />
-                      <span>{quickFilterLabel}</span>
-                    </label>
-                    <label className="hero__grouping-control">
-                      <span>{groupingLabel}</span>
-                      <select
-                        value={grouping}
-                        onChange={event => setGrouping(event.target.value as GroupingMode)}
-                      >
-                        <option value="none">{groupingOffLabel}</option>
-                        <option value="day">{groupingDayLabel}</option>
-                      </select>
-                    </label>
-                  </div>
                 </div>
               </div>
             </div>
@@ -967,16 +901,7 @@ export default function Home() {
                     <div className="event-card__inner" />
                   </li>
                 ))
-              : shouldGroupByDay
-                ? groupedVisibleEvents.flatMap(group => [
-                    <li key={`group-${group.dayKey}`} className="events-grid__group-label" aria-hidden>
-                      {group.dayLabel}
-                    </li>,
-                    ...group.items.map((localized, index) =>
-                      renderEventCard(localized, index, group.dayKey),
-                    ),
-                  ])
-                : visibleEvents.map((localized, index) => renderEventCard(localized, index))}
+              : visibleEvents.map((localized, index) => renderEventCard(localized, index))}
           </ul>
           {!isLoading && hasMoreEvents ? (
             <div className="events-section__actions">
