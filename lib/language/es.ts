@@ -19,7 +19,7 @@ export const es: LanguageDefinition = {
     Sprint: 'Sprint',
   },
   texts: {
-    heroTitle: 'My race weekend',
+    heroTitle: 'Mi fin de semana de carreras',
     heroSubtitle:
       'Mantente sincronizado con los fines de semana de carreras: filtra las series, ajusta la ventana de visualización y sigue los horarios de las sesiones en tu propio huso horario.',
     seriesLabel: 'Series',
