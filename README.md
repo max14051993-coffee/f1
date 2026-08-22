@@ -43,6 +43,14 @@ npm run build
 
 Формат SUMMARY: `СЕРИЯ | Этап | Страна | Трасса | Сессия`. Сессии практик/разминки отбрасываются — сайт показывает Qualifying / Sprint / Race.
 
+## Индексация поисковиками
+
+- Расписание запекается в статический HTML при сборке (`app/page.tsx` читает `public/schedule.ics`), поэтому краулеры видят карточки событий без исполнения JS.
+- Структурированные данные schema.org запекаются рядом: `SportsEvent` (50 ближайших), `FAQPage`, `WebSite` — см. `app/schema-org.tsx` и `lib/schema-org.ts`.
+- `sitemap.xml` и `robots.txt` генерируются Metadata API Next.js (`app/sitemap.ts`, `app/robots.ts`).
+- Обновления анонсируются по протоколу [IndexNow](https://www.indexnow.org) (Bing, Яндекс, Seznam, Naver): после каждого задеплоенного изменения расписания workflow отправляет URL через `scripts/notify-indexnow.mjs`. Ключ верификации лежит в `public/<ключ>.txt`; ручной запуск: `INDEXNOW_KEY=<ключ> node scripts/notify-indexnow.mjs [URL...]`.
+- Google IndexNow не поддерживает: его робот находит `sitemap.xml` через `robots.txt` автоматически. Для ускорения и статистики добавьте сайт вручную в [Google Search Console](https://search.google.com/search-console) и [Яндекс Вебмастер](https://webmaster.yandex.ru) и отправьте там `sitemap.xml`.
+
 ## Заметки
 
 - GitHub Pages не поддерживает SSR и API-роуты Next.js: проект собран в режиме `output: 'export'`.
