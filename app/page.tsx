@@ -105,9 +105,14 @@ export default function Home() {
   );
 
   const [visibleEventsCount, setVisibleEventsCount] = useState(INITIAL_VISIBLE_EVENTS);
-  useEffect(() => {
+  // Reset pagination when the filter inputs change. React's documented pattern of
+  // adjusting state during render — no effect needed (react-hooks/set-state-in-effect).
+  const filterSignature = `${events.length}|${SERIES_IDS.map(series => String(visibleSeries[series])).join(',')}|${hours ?? 'all'}`;
+  const [lastFilterSignature, setLastFilterSignature] = useState(filterSignature);
+  if (lastFilterSignature !== filterSignature) {
+    setLastFilterSignature(filterSignature);
     setVisibleEventsCount(INITIAL_VISIBLE_EVENTS);
-  }, [events, visibleSeries, hours]);
+  }
   const visibleEvents = useMemo(
     () => localizedEvents.slice(0, visibleEventsCount),
     [localizedEvents, visibleEventsCount],

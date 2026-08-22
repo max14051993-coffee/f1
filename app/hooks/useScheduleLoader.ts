@@ -40,7 +40,9 @@ export function useScheduleLoader(): ScheduleLoaderState {
   }, []);
 
   useEffect(() => {
-    void load();
+    // Deferred so the loader's state updates never run synchronously inside the
+    // effect body (react-hooks/set-state-in-effect).
+    void Promise.resolve().then(load);
   }, [load]);
 
   return { events, isLoading, isError, errorMessage, reload: () => void load() };
