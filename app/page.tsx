@@ -4,11 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 
 import { LANGUAGE_DEFINITIONS } from '../lib/language';
-import {
-  buildSeriesVisibility,
-  SERIES_IDS,
-  type SeriesId,
-} from '../lib/series';
+import { buildSeriesVisibility, SERIES_IDS, type SeriesId } from '../lib/series';
 import { filterEventsByVisibility, localizeEvent } from '../lib/schedule';
 import { PERIOD_HOUR_OPTIONS, PERIOD_STORAGE_KEY, SERIES_STORAGE_KEY } from '../lib/preferences';
 
@@ -135,9 +131,7 @@ export default function Home() {
           events={localizedEvents}
           filteredCount={filtered.length}
           visibleSeries={visibleSeries}
-          onToggleSeries={series =>
-            setVisibleSeries(prev => ({ ...prev, [series]: !prev[series] }))
-          }
+          onToggleSeries={series => setVisibleSeries(prev => ({ ...prev, [series]: !prev[series] }))}
           hours={hours}
           onSelectHours={setHours}
           countdownCopy={countdownCopy}
@@ -164,10 +158,7 @@ export default function Home() {
         onOpenPrivacyPolicy={() => setPrivacyPolicyOpen(true)}
       />
       {isPrivacyPolicyOpen ? (
-        <PrivacyPolicyModal
-          policy={texts.privacyPolicy}
-          onClose={() => setPrivacyPolicyOpen(false)}
-        />
+        <PrivacyPolicyModal policy={texts.privacyPolicy} onClose={() => setPrivacyPolicyOpen(false)} />
       ) : null}
     </div>
   );

@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Exo_2, Manrope } from 'next/font/google';
 import { withAssetPrefix } from '../lib/assets';
+import { SITE_URL } from '../lib/site-url';
+import { ScheduleJsonLd } from './schema-org';
 
 const sans = Manrope({
   subsets: ['latin', 'latin-ext', 'cyrillic'],
@@ -16,12 +18,28 @@ const display = Exo_2({
 });
 
 export const metadata: Metadata = {
-  title: 'RaceSync',
-  description: 'Upcoming qualifying & race times (your time zone)',
-  icons: {
-    icon: withAssetPrefix('/favicon.svg'),
-    shortcut: withAssetPrefix('/favicon.svg'),
-    apple: withAssetPrefix('/favicon.svg'),
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'RaceSync — F1 · F2 · F3 · MotoGP race times in your timezone',
+    template: '%s | RaceSync',
+  },
+  description:
+    'Upcoming F1, F2, F3 and MotoGP qualifying, sprint and race times automatically converted to your time zone.',
+  alternates: { canonical: withAssetPrefix('/') },
+  openGraph: {
+    type: 'website',
+    siteName: 'RaceSync',
+    url: withAssetPrefix('/'),
+    title: 'RaceSync — live weekend calendar',
+    description:
+      'F1, F2, F3 and MotoGP sessions converted to your timezone. Filter series, pick a window, catch every lights-out.',
+    images: [{ url: withAssetPrefix('/og-image.png'), width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'RaceSync — live weekend calendar',
+    description: 'F1, F2, F3 and MotoGP sessions in your timezone.',
+    images: [withAssetPrefix('/og-image.png')],
   },
 };
 
@@ -39,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru" suppressHydrationWarning>
       <body className={`${sans.variable} ${display.variable}`}>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <ScheduleJsonLd />
         {children}
       </body>
     </html>

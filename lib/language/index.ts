@@ -6,13 +6,7 @@ import { fr } from './fr';
 import { ru } from './ru';
 import { zh } from './zh';
 
-export type {
-  FooterCopy,
-  LanguageCode,
-  LanguageDefinition,
-  RaceSession,
-  TranslationBundle,
-} from './types';
+export type { FooterCopy, LanguageCode, LanguageDefinition, RaceSession, TranslationBundle } from './types';
 
 export const LANGUAGE_DEFINITIONS: Record<LanguageCode, LanguageDefinition> = {
   ru,

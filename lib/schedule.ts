@@ -53,9 +53,7 @@ export function localizeEvent(
   locale: string,
   nowLocal: DateTime,
 ): LocalizedScheduleEvent {
-  const localStart = DateTime.fromISO(event.startsAtUtc, { zone: 'utc' })
-    .setZone(userTz)
-    .setLocale(locale);
+  const localStart = DateTime.fromISO(event.startsAtUtc, { zone: 'utc' }).setZone(userTz).setLocale(locale);
   const endLocalRaw = event.endsAtUtc
     ? DateTime.fromISO(event.endsAtUtc, { zone: 'utc' }).setZone(userTz)
     : null;

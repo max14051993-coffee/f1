@@ -49,7 +49,8 @@ export const es: LanguageDefinition = {
     scheduleSubtitle: 'Horarios actualizados en vivo según tu zona horaria.',
     scheduleLoadingLabel: 'Cargando calendario…',
     scheduleErrorTitle: 'No se pudo cargar el calendario',
-    scheduleErrorDescription: 'Inténtalo de nuevo. Si el problema continúa, abre el archivo del calendario directamente.',
+    scheduleErrorDescription:
+      'Inténtalo de nuevo. Si el problema continúa, abre el archivo del calendario directamente.',
     scheduleRetryButton: 'Reintentar',
     scheduleErrorFallbackPrefix: 'Archivo para diagnóstico:',
     scheduleIcsLinkLabel: 'Abrir schedule.ics',
@@ -58,7 +59,8 @@ export const es: LanguageDefinition = {
     features: [
       {
         title: 'Horas locales automáticas',
-        description: 'Cada sesión se convierte automáticamente a tu zona horaria. Olvídate de los cálculos manuales.',
+        description:
+          'Cada sesión se convierte automáticamente a tu zona horaria. Olvídate de los cálculos manuales.',
       },
       {
         title: 'Control multiserie',
@@ -136,9 +138,7 @@ export const es: LanguageDefinition = {
       sections: [
         {
           title: 'Qué datos recopilamos',
-          paragraphs: [
-            'Solo reunimos la información necesaria para operar y mejorar el servicio.',
-          ],
+          paragraphs: ['Solo reunimos la información necesaria para operar y mejorar el servicio.'],
           list: [
             'Datos de contacto que compartes voluntariamente al escribir a hello@racesync.app.',
             'Analíticas anónimas sobre visitas a páginas y uso de funciones.',

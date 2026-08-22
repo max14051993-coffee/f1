@@ -4,12 +4,7 @@ import { CSSProperties } from 'react';
 
 import type { LanguageDefinition } from '../../lib/language';
 import { buildEventIcsDeepLink, buildEventIcsFile } from '../../lib/calendar-link';
-import {
-  FALLBACK_SERIES_DEFINITION,
-  SERIES_DEFINITIONS,
-  SERIES_IDS,
-  type SeriesId,
-} from '../../lib/series';
+import { FALLBACK_SERIES_DEFINITION, SERIES_DEFINITIONS, SERIES_IDS, type SeriesId } from '../../lib/series';
 import { buildCountdownLabel, type CountdownCopy, type LocalizedScheduleEvent } from '../../lib/schedule';
 
 type HeroSectionProps = {
@@ -44,8 +39,7 @@ export function HeroSection({
   const activeSeriesSelection = hasActiveSeries
     ? texts.activeSelection(activeSeries.map(series => SERIES_DEFINITIONS[series].label))
     : texts.allSeriesHidden;
-  const selectedPeriodLabel =
-    periodOptions.find(option => option.value === hours)?.label ?? '';
+  const selectedPeriodLabel = periodOptions.find(option => option.value === hours)?.label ?? '';
 
   const nextLocalized = events[0];
   const nextEvent = nextLocalized?.event;
@@ -53,7 +47,7 @@ export function HeroSection({
   const heroSeriesDefinition = nextSeriesDefinition ?? FALLBACK_SERIES_DEFINITION;
   const heroSeriesLabel =
     nextSeriesDefinition?.label ?? nextEvent?.series ?? FALLBACK_SERIES_DEFINITION.label;
-  const nextSessionLabel = nextEvent ? sessionLabels[nextEvent.session] ?? nextEvent.session : null;
+  const nextSessionLabel = nextEvent ? (sessionLabels[nextEvent.session] ?? nextEvent.session) : null;
   const nextCountdown = nextLocalized
     ? buildCountdownLabel(
         nextLocalized.status,
@@ -72,7 +66,7 @@ export function HeroSection({
         .filter((part): part is string => !!part && part.length > 0)
     : [];
   const nextLocationLabel =
-    nextLocationParts.length > 0 ? nextLocationParts.join(' • ') : nextEvent?.country ?? '';
+    nextLocationParts.length > 0 ? nextLocationParts.join(' • ') : (nextEvent?.country ?? '');
   const nextDetailsLabel = nextEvent
     ? nextLocationLabel.length > 0
       ? nextLocationLabel

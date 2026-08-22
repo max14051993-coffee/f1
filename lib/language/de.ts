@@ -34,8 +34,7 @@ export const de: LanguageDefinition = {
     countdownLive: relative => (relative ? `Live • Start ${relative}` : 'Live'),
     countdownFinish: relative => `Beendet ${relative}`,
     countdownScheduled: 'Planmäßig',
-    trackLayoutLabel: parts =>
-      parts.length ? `Streckenlayout: ${parts.join(' — ')}` : 'Streckenlayout',
+    trackLayoutLabel: parts => (parts.length ? `Streckenlayout: ${parts.join(' — ')}` : 'Streckenlayout'),
     theme: {
       toggleToDark: 'Zur dunklen Ansicht wechseln',
       toggleToLight: 'Zur hellen Ansicht wechseln',
@@ -49,7 +48,8 @@ export const de: LanguageDefinition = {
     scheduleSubtitle: 'Live aktualisierte Startzeiten in deiner Zeitzone.',
     scheduleLoadingLabel: 'Zeitplan wird geladen…',
     scheduleErrorTitle: 'Zeitplan konnte nicht geladen werden',
-    scheduleErrorDescription: 'Bitte versuche es erneut. Wenn der Fehler bleibt, öffne die Kalenderdatei direkt.',
+    scheduleErrorDescription:
+      'Bitte versuche es erneut. Wenn der Fehler bleibt, öffne die Kalenderdatei direkt.',
     scheduleRetryButton: 'Erneut versuchen',
     scheduleErrorFallbackPrefix: 'Diagnosedatei:',
     scheduleIcsLinkLabel: 'schedule.ics öffnen',
@@ -90,8 +90,7 @@ export const de: LanguageDefinition = {
     faqItems: [
       {
         question: 'Woher stammen die Daten?',
-        answer:
-          'Wir nutzen die offiziellen Meisterschaftskalender und aktualisieren den Feed automatisch.',
+        answer: 'Wir nutzen die offiziellen Meisterschaftskalender und aktualisieren den Feed automatisch.',
       },
       {
         question: 'Funktioniert das auf dem Smartphone?',

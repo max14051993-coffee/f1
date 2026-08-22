@@ -16,13 +16,7 @@ type SiteHeaderProps = {
   onSelectLanguage: (code: LanguageCode) => void;
 };
 
-export function SiteHeader({
-  texts,
-  theme,
-  onToggleTheme,
-  language,
-  onSelectLanguage,
-}: SiteHeaderProps) {
+export function SiteHeader({ texts, theme, onToggleTheme, language, onSelectLanguage }: SiteHeaderProps) {
   const headerRef = useRef<HTMLElement | null>(null);
   useHeaderOffset(headerRef);
 

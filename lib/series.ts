@@ -71,8 +71,11 @@ export function isSeriesId(value: string): value is SeriesId {
 }
 
 export function buildSeriesVisibility(value: boolean): Record<SeriesId, boolean> {
-  return SERIES_IDS.reduce<Record<SeriesId, boolean>>((acc, series) => {
-    acc[series] = value;
-    return acc;
-  }, {} as Record<SeriesId, boolean>);
+  return SERIES_IDS.reduce<Record<SeriesId, boolean>>(
+    (acc, series) => {
+      acc[series] = value;
+      return acc;
+    },
+    {} as Record<SeriesId, boolean>,
+  );
 }

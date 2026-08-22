@@ -101,11 +101,7 @@ describe('localization configuration', () => {
         expect(footer.productLinks.length).toBeGreaterThan(0);
         expect(footer.resourcesLinks.length).toBeGreaterThan(0);
         expect(footer.supportLinks.length).toBeGreaterThan(0);
-        for (const linkGroup of [
-          footer.productLinks,
-          footer.resourcesLinks,
-          footer.supportLinks,
-        ]) {
+        for (const linkGroup of [footer.productLinks, footer.resourcesLinks, footer.supportLinks]) {
           for (const link of linkGroup) {
             expect(link.label.trim().length).toBeGreaterThan(0);
             expect(link.href.trim().length).toBeGreaterThan(0);

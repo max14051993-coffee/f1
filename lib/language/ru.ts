@@ -34,8 +34,7 @@ export const ru: LanguageDefinition = {
     countdownLive: relative => (relative ? `Идёт • старт ${relative}` : 'Идёт'),
     countdownFinish: relative => `Финиш ${relative}`,
     countdownScheduled: 'По расписанию',
-    trackLayoutLabel: parts =>
-      parts.length ? `Схема автодрома: ${parts.join(' — ')}` : 'Схема автодрома',
+    trackLayoutLabel: parts => (parts.length ? `Схема автодрома: ${parts.join(' — ')}` : 'Схема автодрома'),
     theme: {
       toggleToDark: 'Переключить на тёмную тему',
       toggleToLight: 'Переключить на светлую тему',
@@ -136,9 +135,7 @@ export const ru: LanguageDefinition = {
       sections: [
         {
           title: 'Какие данные мы собираем',
-          paragraphs: [
-            'Мы стремимся получать только те сведения, которые необходимы для работы сервиса.',
-          ],
+          paragraphs: ['Мы стремимся получать только те сведения, которые необходимы для работы сервиса.'],
           list: [
             'Контактные данные, которые вы добровольно отправляете на hello@racesync.app.',
             'Обезличенную аналитику о посещениях страниц и том, какие функции используются.',

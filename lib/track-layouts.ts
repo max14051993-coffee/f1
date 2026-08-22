@@ -129,5 +129,3 @@ export function getTrackLayout(circuit?: string | null, round?: string | null): 
 
   return null;
 }
-
-

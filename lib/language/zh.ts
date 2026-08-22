@@ -19,8 +19,7 @@ export const zh: LanguageDefinition = {
   },
   texts: {
     heroTitle: 'My race weekend',
-    heroSubtitle:
-      '掌握赛周节奏：筛选系列、调整查看窗口，并在本地时区追踪各场次开始时间。',
+    heroSubtitle: '掌握赛周节奏：筛选系列、调整查看窗口，并在本地时区追踪各场次开始时间。',
     seriesLabel: '系列',
     activeSelection: names => `已选择：${names.join(' · ')}`,
     allSeriesHidden: '所有系列已隐藏',
@@ -33,8 +32,7 @@ export const zh: LanguageDefinition = {
     countdownLive: relative => (relative ? `正在进行 • 开始于 ${relative}` : '正在进行'),
     countdownFinish: relative => `已于 ${relative} 结束`,
     countdownScheduled: '按计划进行',
-    trackLayoutLabel: parts =>
-      parts.length ? `赛道布局：${parts.join(' — ')}` : '赛道布局',
+    trackLayoutLabel: parts => (parts.length ? `赛道布局：${parts.join(' — ')}` : '赛道布局'),
     theme: {
       toggleToDark: '切换到深色主题',
       toggleToLight: '切换到浅色主题',
@@ -134,9 +132,7 @@ export const zh: LanguageDefinition = {
       sections: [
         {
           title: '我们收集哪些数据',
-          paragraphs: [
-            '我们仅收集维持和改进服务所必需的信息。',
-          ],
+          paragraphs: ['我们仅收集维持和改进服务所必需的信息。'],
           list: [
             '你主动发送至 hello@racesync.app 的联系信息。',
             '关于页面访问和功能使用情况的匿名分析数据。',
@@ -145,9 +141,7 @@ export const zh: LanguageDefinition = {
         },
         {
           title: '我们如何使用这些信息',
-          paragraphs: [
-            '这些数据帮助我们不断优化 RaceSync，并为所有用户保持稳定体验。',
-          ],
+          paragraphs: ['这些数据帮助我们不断优化 RaceSync，并为所有用户保持稳定体验。'],
           list: [
             '回复你通过电子邮件提交的问题或反馈。',
             '了解车迷最常使用的版块和功能。',
@@ -168,8 +162,7 @@ export const zh: LanguageDefinition = {
           ],
         },
       ],
-      conclusion:
-        '若对 RaceSync 的隐私保护有任何疑问，请发送邮件至 hello@racesync.app，我们会尽快回复。',
+      conclusion: '若对 RaceSync 的隐私保护有任何疑问，请发送邮件至 hello@racesync.app，我们会尽快回复。',
       closeLabel: '关闭',
     },
   },

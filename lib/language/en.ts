@@ -34,8 +34,7 @@ export const en: LanguageDefinition = {
     countdownLive: relative => (relative ? `Live now • started ${relative}` : 'Live now'),
     countdownFinish: relative => `Finished ${relative}`,
     countdownScheduled: 'On schedule',
-    trackLayoutLabel: parts =>
-      parts.length ? `Circuit layout: ${parts.join(' — ')}` : 'Circuit layout',
+    trackLayoutLabel: parts => (parts.length ? `Circuit layout: ${parts.join(' — ')}` : 'Circuit layout'),
     theme: {
       toggleToDark: 'Switch to dark theme',
       toggleToLight: 'Switch to light theme',
@@ -58,7 +57,8 @@ export const en: LanguageDefinition = {
     features: [
       {
         title: 'Local time awareness',
-        description: 'Every session converts to your device timezone automatically — no manual math required.',
+        description:
+          'Every session converts to your device timezone automatically — no manual math required.',
       },
       {
         title: 'Multi-series control',
@@ -136,9 +136,7 @@ export const en: LanguageDefinition = {
       sections: [
         {
           title: 'Information we collect',
-          paragraphs: [
-            'We only gather the details that allow us to operate and improve the service.',
-          ],
+          paragraphs: ['We only gather the details that allow us to operate and improve the service.'],
           list: [
             'Contact information you voluntarily share when emailing hello@racesync.app.',
             'Anonymous analytics about page visits and feature usage.',
