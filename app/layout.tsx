@@ -30,10 +30,17 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+// Applies the stored (or system) theme before first paint to avoid a light/dark flash.
+// Keep the storage key in sync with lib/theme.ts.
+const themeInitScript = `(function(){try{var t=localStorage.getItem('schedule-theme');var l=t==='light'||(!t&&window.matchMedia('(prefers-color-scheme: light)').matches);var v=l?'light':'dark';var d=document.documentElement;d.dataset.theme=v;d.style.colorScheme=v;}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru">
-      <body className={`${sans.variable} ${display.variable}`}>{children}</body>
+    <html lang="ru" suppressHydrationWarning>
+      <body className={`${sans.variable} ${display.variable}`}>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {children}
+      </body>
     </html>
   );
 }

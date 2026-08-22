@@ -15,7 +15,7 @@ export type LocalizedScheduleEvent = {
   status: EventStatus;
 };
 
-type CountdownCopy = {
+export type CountdownCopy = {
   countdownLive: (relative: string) => string;
   countdownFinish: (relative: string) => string;
   countdownStart: (relative: string) => string;

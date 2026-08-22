@@ -1,7 +1,5 @@
-# dependencies
+﻿# dependencies
 /node_modules
-functions/node_modules
-functions/lib
 
 # production
 /out
@@ -14,3 +12,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 fastf1-cache/
+
+# environment
+.env*
+!.env.local.example
+tsconfig.tsbuildinfo
