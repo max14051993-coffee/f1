@@ -18,7 +18,7 @@ export const zh: LanguageDefinition = {
     Sprint: '冲刺赛',
   },
   texts: {
-    heroTitle: 'My race weekend',
+    heroTitle: '我的赛车周末',
     heroSubtitle: '掌握赛周节奏：筛选系列、调整查看窗口，并在本地时区追踪各场次开始时间。',
     seriesLabel: '系列',
     activeSelection: names => `已选择：${names.join(' · ')}`,

@@ -19,7 +19,7 @@ export const ru: LanguageDefinition = {
     Sprint: 'Спринт',
   },
   texts: {
-    heroTitle: 'My race weekend',
+    heroTitle: 'Мой гоночный уик-энд',
     heroSubtitle:
       'Синхронизируйтесь с динамикой гоночных уик-эндов: фильтруйте серии, управляйте горизонтом просмотра и следите за временем старта в собственном часовом поясе.',
     seriesLabel: 'Серии',
