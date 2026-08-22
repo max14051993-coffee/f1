@@ -1,4 +1,4 @@
-﻿name: Deploy Next.js to GitHub Pages
+name: Deploy Next.js to GitHub Pages
 on:
   push:
     branches: [main]
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node
         uses: actions/setup-node@v4
