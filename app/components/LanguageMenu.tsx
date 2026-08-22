@@ -32,15 +32,15 @@ export function LanguageMenu({ language, onSelect }: LanguageMenuProps) {
     return () => document.removeEventListener('pointerdown', handlePointerDown);
   }, []);
 
-  useEffect(() => {
-    if (!isOpen) return;
+  const openWithCurrentLanguage = () => {
     setFocusedIndex(
       Math.max(
         0,
         LANGUAGE_CODES.findIndex(code => code === language),
       ),
     );
-  }, [isOpen, language]);
+    setIsOpen(true);
+  };
 
   useEffect(() => {
     if (!isOpen) return;
@@ -64,13 +64,7 @@ export function LanguageMenu({ language, onSelect }: LanguageMenuProps) {
   const handleToggleKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
-      setFocusedIndex(
-        Math.max(
-          0,
-          LANGUAGE_CODES.findIndex(code => code === language),
-        ),
-      );
-      setIsOpen(true);
+      openWithCurrentLanguage();
     }
   };
 
@@ -121,7 +115,7 @@ export function LanguageMenu({ language, onSelect }: LanguageMenuProps) {
         aria-controls="language-select-menu"
         aria-label={menuLabel}
         ref={toggleRef}
-        onClick={() => setIsOpen(prev => !prev)}
+        onClick={() => (isOpen ? setIsOpen(false) : openWithCurrentLanguage())}
         onKeyDown={handleToggleKeyDown}
       >
         <span className="site-header__language-value">{displayName}</span>

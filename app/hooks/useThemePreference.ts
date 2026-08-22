@@ -15,40 +15,49 @@ export function useThemePreference() {
     root.style.colorScheme = next;
   }, []);
 
+  // Initialization is deferred to a microtask so the state updates never run
+  // synchronously inside the effect body (react-hooks/set-state-in-effect).
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    let cancelled = false;
+    let cleanup: (() => void) | undefined;
 
-    const media = window.matchMedia(SYSTEM_THEME_QUERY);
-    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-    let initial: Theme = 'dark';
-    let hasStoredPreference = false;
+    void Promise.resolve().then(() => {
+      if (cancelled || typeof window === 'undefined') return;
 
-    if (isTheme(stored)) {
-      initial = stored;
-      hasStoredPreference = true;
-    } else if (media.matches) {
-      initial = 'light';
-    }
+      const media = window.matchMedia(SYSTEM_THEME_QUERY);
+      const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+      let initial: Theme = 'dark';
+      let hasStoredPreference = false;
 
-    applyThemeToDocument(initial);
-    setTheme(initial);
-    setInitialized(true);
-
-    if (hasStoredPreference) {
-      return;
-    }
-
-    const handleMediaChange = (event: MediaQueryListEvent) => {
-      const currentPreference = window.localStorage.getItem(THEME_STORAGE_KEY);
-      if (isTheme(currentPreference)) {
-        return;
+      if (isTheme(stored)) {
+        initial = stored;
+        hasStoredPreference = true;
+      } else if (media.matches) {
+        initial = 'light';
       }
-      setTheme(event.matches ? 'light' : 'dark');
-    };
 
-    media.addEventListener('change', handleMediaChange);
+      applyThemeToDocument(initial);
+      if (cancelled) return;
+      setTheme(initial);
+      setInitialized(true);
+
+      if (!hasStoredPreference) {
+        const handleMediaChange = (event: MediaQueryListEvent) => {
+          const currentPreference = window.localStorage.getItem(THEME_STORAGE_KEY);
+          if (isTheme(currentPreference)) {
+            return;
+          }
+          setTheme(event.matches ? 'light' : 'dark');
+        };
+
+        media.addEventListener('change', handleMediaChange);
+        cleanup = () => media.removeEventListener('change', handleMediaChange);
+      }
+    });
+
     return () => {
-      media.removeEventListener('change', handleMediaChange);
+      cancelled = true;
+      cleanup?.();
     };
   }, [applyThemeToDocument]);
 
@@ -71,9 +80,7 @@ export function useThemePreference() {
     };
 
     window.addEventListener('storage', handleStorage);
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-    };
+    return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
   const toggleTheme = useCallback(() => {
