@@ -16,8 +16,7 @@ export function LanguageMenu({ language, onSelect }: LanguageMenuProps) {
   const toggleRef = useRef<HTMLButtonElement | null>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
-  const displayName =
-    LANGUAGE_DEFINITIONS[language].shortName || LANGUAGE_DEFINITIONS[language].name;
+  const displayName = LANGUAGE_DEFINITIONS[language].shortName || LANGUAGE_DEFINITIONS[language].name;
   const menuLabel =
     language === 'ru'
       ? `Выбор языка. Текущий язык: ${displayName}`
@@ -35,7 +34,12 @@ export function LanguageMenu({ language, onSelect }: LanguageMenuProps) {
 
   useEffect(() => {
     if (!isOpen) return;
-    setFocusedIndex(Math.max(0, LANGUAGE_CODES.findIndex(code => code === language)));
+    setFocusedIndex(
+      Math.max(
+        0,
+        LANGUAGE_CODES.findIndex(code => code === language),
+      ),
+    );
   }, [isOpen, language]);
 
   useEffect(() => {
@@ -60,7 +64,12 @@ export function LanguageMenu({ language, onSelect }: LanguageMenuProps) {
   const handleToggleKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
-      setFocusedIndex(Math.max(0, LANGUAGE_CODES.findIndex(code => code === language)));
+      setFocusedIndex(
+        Math.max(
+          0,
+          LANGUAGE_CODES.findIndex(code => code === language),
+        ),
+      );
       setIsOpen(true);
     }
   };
@@ -129,7 +138,12 @@ export function LanguageMenu({ language, onSelect }: LanguageMenuProps) {
             const definition = LANGUAGE_DEFINITIONS[code];
             const isSelected = code === language;
             return (
-              <li key={code} className="site-header__language-option" role="option" aria-selected={isSelected}>
+              <li
+                key={code}
+                className="site-header__language-option"
+                role="option"
+                aria-selected={isSelected}
+              >
                 <button
                   type="button"
                   className="site-header__language-option-button"

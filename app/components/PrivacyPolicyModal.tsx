@@ -28,8 +28,7 @@ export function PrivacyPolicyModal({ policy, onClose }: PrivacyPolicyModalProps)
     const dialog = dialogRef.current;
     if (!dialog) return;
 
-    const previouslyFocused =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     getFocusableElements(dialog)[0]?.focus({ preventScroll: true });
     if (!dialog.contains(document.activeElement)) {
@@ -77,7 +76,13 @@ export function PrivacyPolicyModal({ policy, onClose }: PrivacyPolicyModalProps)
   }, [onClose]);
 
   return (
-    <div className="modal" role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descriptionId}>
+    <div
+      className="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
+    >
       <div className="modal__backdrop" onClick={onClose} />
       <div className="modal__dialog" role="document" ref={dialogRef} tabIndex={-1}>
         <div className="modal__header">

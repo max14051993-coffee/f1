@@ -5,11 +5,7 @@ import { CSSProperties } from 'react';
 import type { RaceSession, TranslationBundle } from '../../lib/language';
 import { SERIES_DEFINITIONS } from '../../lib/series';
 import { getTrackLayout } from '../../lib/track-layouts';
-import {
-  buildCountdownLabel,
-  type CountdownCopy,
-  type LocalizedScheduleEvent,
-} from '../../lib/schedule';
+import { buildCountdownLabel, type CountdownCopy, type LocalizedScheduleEvent } from '../../lib/schedule';
 
 type EventCardProps = {
   localized: LocalizedScheduleEvent;
@@ -32,9 +28,7 @@ export function EventCard({ localized, texts, sessionLabels, countdownCopy }: Ev
       : `event-card__countdown event-card__countdown--${status}`;
   const track = getTrackLayout(event.circuit, event.round);
   const trackLabelParts = Array.from(
-    new Set(
-      [event.circuit, event.round].filter((part): part is string => !!part && part.trim().length > 0),
-    ),
+    new Set([event.circuit, event.round].filter((part): part is string => !!part && part.trim().length > 0)),
   );
   const trackLabel = texts.trackLayoutLabel(trackLabelParts);
   const sessionLabel = sessionLabels[event.session] ?? event.session;
@@ -52,6 +46,8 @@ export function EventCard({ localized, texts, sessionLabels, countdownCopy }: Ev
       <div className="event-card__inner">
         <div className="event-card__top">
           <div className="event-card__series">
+            {/* Static export + tiny local SVGs: next/image adds no value here. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={definition.logo.src}
               alt=""

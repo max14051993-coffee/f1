@@ -49,7 +49,8 @@ export const fr: LanguageDefinition = {
     scheduleSubtitle: 'Heures de départ mises à jour en direct dans votre fuseau horaire.',
     scheduleLoadingLabel: 'Chargement du calendrier…',
     scheduleErrorTitle: 'Impossible de charger le calendrier',
-    scheduleErrorDescription: 'Réessayez. Si le problème persiste, ouvrez le fichier du calendrier directement.',
+    scheduleErrorDescription:
+      'Réessayez. Si le problème persiste, ouvrez le fichier du calendrier directement.',
     scheduleRetryButton: 'Réessayer',
     scheduleErrorFallbackPrefix: 'Fichier de diagnostic :',
     scheduleIcsLinkLabel: 'Ouvrir schedule.ics',

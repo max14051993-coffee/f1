@@ -50,9 +50,12 @@ describe('site layout rendering across languages', () => {
 
       expect(errorSpy).not.toHaveBeenCalled();
 
-      await waitFor(() => {
-        expect(document.querySelectorAll('.event-card').length).toBeGreaterThan(0);
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          expect(document.querySelectorAll('.event-card').length).toBeGreaterThan(0);
+        },
+        { timeout: 5000 },
+      );
 
       for (const code of LANGUAGE_CODES) {
         const definition = LANGUAGE_DEFINITIONS[code];
@@ -80,9 +83,7 @@ describe('site layout rendering across languages', () => {
         });
 
         await waitFor(() => {
-          expect(document.getElementById('language-select')?.textContent).toContain(
-            definition.shortName,
-          );
+          expect(document.getElementById('language-select')?.textContent).toContain(definition.shortName);
         });
 
         await waitFor(() => {

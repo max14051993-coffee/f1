@@ -24,9 +24,7 @@ export function buildEventIcsDeepLink(event: ScheduleEvent) {
   }
   const dtEnd =
     toIcsUtc(event.endsAtUtc ?? '') ??
-    DateTime.fromISO(event.startsAtUtc, { zone: 'utc' })
-      .plus({ hours: 2 })
-      .toFormat("yyyyMMdd'T'HHmmss'Z'");
+    DateTime.fromISO(event.startsAtUtc, { zone: 'utc' }).plus({ hours: 2 }).toFormat("yyyyMMdd'T'HHmmss'Z'");
   const uid = event.uid ?? `${event.series}-${event.startsAtUtc}`.replace(/[^a-zA-Z0-9@._-]/g, '');
   const summary = escapeIcsText(`${event.series} · ${event.round} · ${event.session}`);
   const location = escapeIcsText([event.circuit, event.country].filter(Boolean).join(', '));

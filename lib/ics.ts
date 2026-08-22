@@ -111,7 +111,9 @@ export function parseSchedule(ics: string, options: ParseOptions = {}): Schedule
       }
 
       const categories = current.CATEGORIES
-        ? current.CATEGORIES.split(',').map(part => part.trim()).filter(Boolean)
+        ? current.CATEGORIES.split(',')
+            .map(part => part.trim())
+            .filter(Boolean)
         : [];
       const isMotoGpEvent =
         categories.some(cat => cat.toLowerCase() === 'motogp') || /^MotoGP\b/i.test(summary);
@@ -158,14 +160,19 @@ export function parseSchedule(ics: string, options: ParseOptions = {}): Schedule
             const country = locationParts.length > 1 ? locationParts.slice(1).join(', ') : undefined;
 
             const descriptionLines = current.DESCRIPTION
-              ? current.DESCRIPTION.split('\\n').map(line => line.trim()).filter(Boolean)
+              ? current.DESCRIPTION.split('\\n')
+                  .map(line => line.trim())
+                  .filter(Boolean)
               : [];
             let round = roundCandidate;
             if (!round.length) {
               const fallbackLine =
                 descriptionLines.find(line => /grand prix/i.test(line)) ?? descriptionLines[0];
               if (fallbackLine) {
-                round = fallbackLine.replace(/^MotoGP\s*/i, '').replace(/^PT\s+/i, '').trim();
+                round = fallbackLine
+                  .replace(/^MotoGP\s*/i, '')
+                  .replace(/^PT\s+/i, '')
+                  .trim();
               } else {
                 round = sanitizeRoundLabel(roundCandidate, circuit, country);
               }
@@ -195,9 +202,7 @@ export function parseSchedule(ics: string, options: ParseOptions = {}): Schedule
             const eventName = rawEvent.replace(/^RN365\s*/, '').trim();
             const start = parseIcsDateTime(dtstart, current.DTSTART_TZID);
             if (start) {
-              const circuit = current.LOCATION
-                ?.replace(/\\,/g, ',')
-                .replace(/\\\\/g, '\\');
+              const circuit = current.LOCATION?.replace(/\\,/g, ',').replace(/\\\\/g, '\\');
               const end = parseIcsDateTime(current.DTEND, current.DTEND_TZID ?? current.DTSTART_TZID);
 
               events.push({

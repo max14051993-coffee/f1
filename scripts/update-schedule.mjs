@@ -267,8 +267,7 @@ async function main() {
   console.log(`Wrote ${OUTPUT_PATH} (${events.length} events)`);
 }
 
-const invokedDirectly =
-  process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokedDirectly = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokedDirectly) {
   main().catch(error => {
     console.error(error);
