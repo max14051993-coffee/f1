@@ -66,3 +66,10 @@ jobs:
         id: deployment
         if: steps.diff.outputs.changed != '0'
         uses: actions/deploy-pages@v5
+
+      - name: Notify search engines (IndexNow)
+        if: steps.diff.outputs.changed != '0'
+        run: node scripts/notify-indexnow.mjs
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          INDEXNOW_KEY: 09cddb1710f5465c810616ee21d79463
