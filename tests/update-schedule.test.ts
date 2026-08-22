@@ -122,8 +122,8 @@ describe('renderIcs', () => {
   it('renders a stable RFC-ready document with pipe summaries', () => {
     const ics = renderIcs(sample);
 
-    expect(ics.split('\r\n')).toContain('SUMMARY:F1 | Australian Grand Prix | Australia | Melbourne | Race');
-    expect(ics.split('\r\n')).toContain('LOCATION:Melbourne\\, Australia');
+    expect(ics.split('\n')).toContain('SUMMARY:F1 | Australian Grand Prix | Australia | Melbourne | Race');
+    expect(ics.split('\n')).toContain('LOCATION:Melbourne\\, Australia');
     expect(ics.match(/DTSTAMP:(\d{8}T\d{6}Z)/)?.[0]).toBeTruthy();
   });
 

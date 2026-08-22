@@ -232,7 +232,9 @@ export function renderIcs(events) {
   }
 
   lines.push('END:VCALENDAR');
-  return lines.join('\r\n') + '\r\n';
+  // LF keeps diffs minimal across OSes (.gitattributes pins eol=lf for *.ics);
+  // the site parser accepts both separators.
+  return lines.join('\n') + '\n';
 }
 
 function argsIncludeCheck(argv) {
