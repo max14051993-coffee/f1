@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Regenerates public/schedule.ics from the sportstimes/f1 open-data calendars
  * (MIT-licensed, https://github.com/sportstimes/f1 — the data behind f1calendar.com).
