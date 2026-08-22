@@ -24,7 +24,8 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(110% 110% at 5% 0%, rgba(225, 6, 0, 0.22) 0%, transparent 55%),
+  background:
+    radial-gradient(110% 110% at 5% 0%, rgba(225, 6, 0, 0.22) 0%, transparent 55%),
     radial-gradient(120% 115% at 90% 10%, rgba(0, 144, 255, 0.18) 0%, transparent 62%), var(--bg-primary);
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -520,7 +521,8 @@ button {
 }
 
 :root[data-theme='light'] body {
-  background: radial-gradient(110% 110% at 5% 0%, rgba(225, 6, 0, 0.08) 0%, transparent 55%),
+  background:
+    radial-gradient(110% 110% at 5% 0%, rgba(225, 6, 0, 0.08) 0%, transparent 55%),
     radial-gradient(120% 115% at 90% 10%, rgba(0, 144, 255, 0.08) 0%, transparent 62%), #f5f7fb;
   background-color: #f5f7fb;
   color: #121625;
@@ -2152,7 +2154,8 @@ button {
   content: '';
   position: absolute;
   inset: -40% -10% 30% -40%;
-  background: radial-gradient(120% 120% at 40% 20%, rgba(var(--accent-rgb), 0.35) 0%, transparent 70%),
+  background:
+    radial-gradient(120% 120% at 40% 20%, rgba(var(--accent-rgb), 0.35) 0%, transparent 70%),
     linear-gradient(140deg, rgba(var(--accent-rgb), 0.3), transparent 70%);
   opacity: 0.22;
   transition:
