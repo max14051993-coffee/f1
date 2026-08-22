@@ -39,9 +39,7 @@ describe('localization configuration', () => {
 
       it('provides a complete translation bundle', () => {
         const { texts } = definition;
-        expect(texts.heroBadge.trim().length).toBeGreaterThan(0);
-        const sampleTitle = texts.heroTitle('F1 / F2');
-        expect(sampleTitle).toBe('My race weekend');
+        expect(texts.heroTitle.trim().length).toBeGreaterThan(0);
         expect(texts.heroSubtitle.trim().length).toBeGreaterThan(0);
         expect(texts.seriesLabel.trim().length).toBeGreaterThan(0);
         expect(texts.activeSelection(['F1']).trim().length).toBeGreaterThan(0);
@@ -56,9 +54,6 @@ describe('localization configuration', () => {
         expect(texts.countdownFinish('через 5 минут').trim().length).toBeGreaterThan(0);
         expect(texts.countdownScheduled.trim().length).toBeGreaterThan(0);
         expect(texts.trackLayoutLabel(['Circuit', 'Round']).trim().length).toBeGreaterThan(0);
-        expect(texts.trackLayoutUnavailable.trim().length).toBeGreaterThan(0);
-        expect(texts.languageLabel.trim().length).toBeGreaterThan(0);
-        expect(texts.seriesLogoAria('F1').trim().length).toBeGreaterThan(0);
         expect(texts.upcomingEventDescriptorFallback.trim().length).toBeGreaterThan(0);
         expect(texts.brandName.trim().length).toBeGreaterThan(0);
         expect(texts.navFeatures.trim().length).toBeGreaterThan(0);

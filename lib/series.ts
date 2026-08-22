@@ -1,4 +1,3 @@
-import type { RaceSession } from './language';
 import { withAssetPrefix } from './assets';
 
 type SeriesLogo = {
@@ -14,9 +13,7 @@ type SeriesDefinitionBase = {
   logo: SeriesLogo;
 };
 
-export type SeriesDefinition = SeriesDefinitionBase & {
-  sessions?: Partial<Record<RaceSession, string>>;
-};
+export type SeriesDefinition = SeriesDefinitionBase;
 
 export const SERIES_DEFINITIONS = {
   F1: {
@@ -65,11 +62,9 @@ export type SeriesId = keyof typeof SERIES_DEFINITIONS;
 
 export const SERIES_IDS = Object.keys(SERIES_DEFINITIONS) as SeriesId[];
 
-export const DEFAULT_SERIES_ID: SeriesId | undefined = SERIES_IDS[0];
+export const DEFAULT_SERIES_ID: SeriesId = SERIES_IDS[0];
 
-export const FALLBACK_SERIES_DEFINITION = DEFAULT_SERIES_ID
-  ? SERIES_DEFINITIONS[DEFAULT_SERIES_ID]
-  : undefined;
+export const FALLBACK_SERIES_DEFINITION = SERIES_DEFINITIONS[DEFAULT_SERIES_ID];
 
 export function isSeriesId(value: string): value is SeriesId {
   return Object.prototype.hasOwnProperty.call(SERIES_DEFINITIONS, value);

@@ -76,8 +76,22 @@ type ParseOptions = {
   fallbackSeriesId?: SeriesId;
 };
 
+/** Unfolds RFC 5545 §3.1 continuation lines (leading space/tab belongs to the previous line). */
+function unfoldIcsLines(ics: string) {
+  const lines: string[] = [];
+  for (const line of ics.split(/\r?\n/)) {
+    const isContinuation = (line.startsWith(' ') || line.startsWith('\t')) && lines.length > 0;
+    if (isContinuation) {
+      lines[lines.length - 1] += line.slice(1);
+    } else {
+      lines.push(line);
+    }
+  }
+  return lines;
+}
+
 export function parseSchedule(ics: string, options: ParseOptions = {}): ScheduleEvent[] {
-  const lines = ics.split(/\r?\n/);
+  const lines = unfoldIcsLines(ics);
   const events: ScheduleEvent[] = [];
   let current: Record<string, string> = {};
   const fallbackSeriesId = options.fallbackSeriesId ?? DEFAULT_SERIES_ID;
@@ -175,7 +189,7 @@ export function parseSchedule(ics: string, options: ParseOptions = {}): Schedule
         }
       } else {
         const [rawEvent, rawSession] = summary.split(' - ');
-        if (rawEvent && rawSession && fallbackSeriesId) {
+        if (rawEvent && rawSession) {
           const session = normalizeSession(rawSession);
           if (session) {
             const eventName = rawEvent.replace(/^RN365\s*/, '').trim();
