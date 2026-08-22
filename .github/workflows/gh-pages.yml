@@ -1,4 +1,4 @@
-﻿name: Deploy Next.js to GitHub Pages
+name: Deploy Next.js to GitHub Pages
 on:
   push:
     branches: [main]
@@ -45,7 +45,7 @@ jobs:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./out
 
